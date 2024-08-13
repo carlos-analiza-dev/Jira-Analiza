@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
+import NavBar from "@/components/NavBar";
+import Footer from "@/components/Footer";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
-const roboto = Roboto({ subsets: ["latin"],weight:"300" });
+const roboto = Roboto({ subsets: ["latin"], weight: "300" });
 
 export const metadata: Metadata = {
   title: "Jira-Analiza",
@@ -16,7 +19,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={roboto.className}>{children}</body>
+      <body className={roboto.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <NavBar />
+          {children}
+          <Footer />
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

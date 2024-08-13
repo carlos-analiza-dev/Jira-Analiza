@@ -1,3 +1,5 @@
+import { Input } from "./ui/input";
+
 export default function LoginSesion() {
   return (
     <form className="w-full block justify-center items-center" action="">
@@ -8,7 +10,7 @@ export default function LoginSesion() {
         >
           Correo Electrónico
         </label>
-        <input
+        <Input
           type="email"
           placeholder="example@gmail.com"
           className="p-3 rounded-md shadow w-full sm:w-3/4 mt-3"
@@ -22,7 +24,7 @@ export default function LoginSesion() {
         >
           Contraseña
         </label>
-        <input
+        <Input
           type="password"
           placeholder="**************"
           className="p-3 rounded-md shadow w-full sm:w-3/4 mt-3"
