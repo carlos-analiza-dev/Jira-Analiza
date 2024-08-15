@@ -4,6 +4,7 @@ import "./globals.css";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { Toaster } from "@/components/ui/toaster";
 
 const roboto = Roboto({ subsets: ["latin"], weight: "300" });
 
@@ -28,6 +29,7 @@ export default function RootLayout({
         >
           <NavBar />
           {children}
+          <Toaster />
           <Footer />
         </ThemeProvider>
       </body>

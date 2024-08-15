@@ -4,19 +4,19 @@ export const dataSide = [
   {
     id: 1,
     title: "Dashboard",
-    link: "dashboard",
+    link: "/dashboard",
     icon: ChartColumnBig,
   },
   {
     id: 2,
     title: "Usuarios",
-    link: "users",
+    link: "/users",
     icon: Users,
   },
   {
     id: 3,
     title: "Eventos",
-    link: "eventos",
+    link: "/eventos",
     icon: CalendarPlus,
   },
 ];

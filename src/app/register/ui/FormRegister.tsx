@@ -1,3 +1,5 @@
+"use client";
+import createUsers from "@/api/createUsers";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -8,172 +10,216 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const FormRegister = () => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const [name, setName] = useState("");
+  const [correo, setCorreo] = useState("");
+  const [contrasena, setContrasena] = useState("");
+  const [confirmarContrasena, setConfirmarContrasena] = useState("");
+  const [sexo, setSexo] = useState("");
+  const [edad, setEdad] = useState(0);
+  const [dni, setDni] = useState("");
+  const [direccion, setDireccion] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (contrasena !== confirmarContrasena) {
+      toast({ title: "Las contrasenas no coinciden", variant: "destructive" });
+      return;
+    }
+
+    try {
+      const response = await createUsers({
+        nombre: name,
+        correo: correo,
+        direccion: direccion,
+        dni: dni,
+        edad: edad,
+        password: contrasena,
+        sexo: sexo,
+      });
+      setName("");
+      setCorreo("");
+      setContrasena("");
+      setDireccion("");
+      setDni("");
+      setConfirmarContrasena("");
+      setSexo("");
+      setEdad(0);
+      toast({ title: "Usuario Creado Exitosamente, espera la autorizacion" });
+      setTimeout(() => {
+        router.push("/");
+      }, 3000);
+    } catch (error: any) {
+      console.log("ERROR PETICION", error);
+      const errorMessage = Array.isArray(error?.response?.data?.message)
+        ? error.response.data.message[0]
+        : error?.response?.data?.message || "Ocurrió un error inesperado";
+
+      toast({
+        title: errorMessage,
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <>
-      <form
-        className="w-full justify-center items-center grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-3"
-        action=""
-      >
-        <div className="mt-2 w-full">
-          <label
-            htmlFor=""
-            className="block text-lg font-semibold text-custom-title"
-          >
-            Nombre Completo
-          </label>
-          <Input
-            type="text"
-            placeholder="Nombre Completo"
-            className="p-3 rounded-md shadow w-full mt-2"
-            autoFocus
-          />
+      <form onSubmit={handleSubmit}>
+        <div className="w-full justify-center items-center grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="mt-2 w-full">
+            <label
+              htmlFor="nombre"
+              className="block text-lg font-semibold text-custom-title"
+            >
+              Nombre Completo
+            </label>
+            <Input
+              id="nombre"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              type="text"
+              placeholder="Nombre Completo"
+              className="p-3 rounded-md shadow w-full mt-2"
+              autoFocus
+            />
+          </div>
+          <div className="mt-2 w-full">
+            <label
+              htmlFor="correo"
+              className="block text-lg font-semibold text-custom-title"
+            >
+              Correo Electrónico
+            </label>
+            <Input
+              id="correo"
+              value={correo}
+              onChange={(e) => setCorreo(e.target.value)}
+              type="email"
+              placeholder="example@gmail.com"
+              className="p-3 rounded-md shadow w-full  mt-2"
+            />
+          </div>
+          <div className="mt-2 w-full">
+            <label
+              htmlFor="password"
+              className="block text-lg font-semibold text-custom-title"
+            >
+              Contraseña
+            </label>
+            <Input
+              id="password"
+              value={contrasena}
+              onChange={(e) => setContrasena(e.target.value)}
+              type="password"
+              placeholder="**************"
+              className="p-3 rounded-md shadow w-full  mt-2"
+            />
+          </div>
+          <div className="mt-2 w-full">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-lg font-semibold text-custom-title"
+            >
+              Confirmar Contraseña
+            </label>
+            <Input
+              id="confirmPassword"
+              value={confirmarContrasena}
+              onChange={(e) => setConfirmarContrasena(e.target.value)}
+              type="password"
+              placeholder="**************"
+              className="p-3 rounded-md shadow w-full  mt-2"
+            />
+          </div>
+          <div className="mt-2 w-full">
+            <label className="block text-lg font-semibold text-custom-title">
+              Sexo
+            </label>
+            <Select value={sexo} onValueChange={setSexo}>
+              <SelectTrigger className="p-3 rounded-md shadow w-full mt-2">
+                <SelectValue placeholder="-- Seleccione una Opcion --" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Sexo</SelectLabel>
+                  <SelectItem value="M">Masculino</SelectItem>
+                  <SelectItem value="F">Femenino</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="mt-2 w-full">
+            <label
+              htmlFor="edad"
+              className="block text-lg font-semibold text-custom-title"
+            >
+              Edad
+            </label>
+            <Input
+              id="edad"
+              value={edad}
+              onChange={(e) => {
+                const value = parseInt(e.target.value);
+                if (value >= 0) {
+                  setEdad(value);
+                } else {
+                  setEdad(0);
+                }
+              }}
+              type="number"
+              placeholder="Edad"
+              className="p-3 rounded-md shadow w-full mt-2"
+            />
+          </div>
+          <div className="mt-2 w-full">
+            <label
+              htmlFor="dni"
+              className="block text-lg font-semibold text-custom-title"
+            >
+              DNI
+            </label>
+            <Input
+              id="dni"
+              value={dni}
+              onChange={(e) => setDni(e.target.value)}
+              type="text"
+              placeholder="DNI"
+              className="p-3 rounded-md shadow w-full mt-2"
+            />
+          </div>
+          <div className="mt-2 w-full">
+            <label
+              htmlFor="direccion"
+              className="block text-lg font-semibold text-custom-title"
+            >
+              Dirección
+            </label>
+            <Input
+              id="direccion"
+              value={direccion}
+              onChange={(e) => setDireccion(e.target.value)}
+              type="text"
+              placeholder="Direccion"
+              className="p-3 rounded-md shadow w-full mt-2"
+            />
+          </div>
         </div>
-        <div className="mt-2 w-full">
-          <label
-            htmlFor=""
-            className="block text-lg font-semibold text-custom-title"
+        <div className="mt-5 w-full flex justify-center">
+          <button
+            type="submit"
+            className="bg-custom-second text-white font-semibold rounded-md shadow hover:bg-red-500 p-3 w-full sm:w-1/2"
           >
-            Correo Electrónico
-          </label>
-          <Input
-            type="email"
-            placeholder="example@gmail.com"
-            className="p-3 rounded-md shadow w-full  mt-2"
-          />
-        </div>
-        <div className="mt-2 w-full">
-          <label
-            htmlFor=""
-            className="block text-lg font-semibold text-custom-title"
-          >
-            Contraseña
-          </label>
-          <Input
-            type="password"
-            placeholder="**************"
-            className="p-3 rounded-md shadow w-full  mt-2"
-          />
-        </div>
-        <div className="mt-2 w-full">
-          <label
-            htmlFor=""
-            className="block text-lg font-semibold text-custom-title"
-          >
-            Confirmar Contraseña
-          </label>
-          <Input
-            type="password"
-            placeholder="**************"
-            className="p-3 rounded-md shadow w-full  mt-2"
-          />
-        </div>
-        <div className="mt-2 w-full">
-          <label className="block text-lg font-semibold text-custom-title">
-            Sexo
-          </label>
-          <Select>
-            <SelectTrigger className="p-3 rounded-md shadow w-full mt-2">
-              <SelectValue placeholder="-- Seleccione una Opcion --" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Sexo</SelectLabel>
-                <SelectItem value="M">Masculino</SelectItem>
-                <SelectItem value="F">Femenino</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="mt-2 w-full">
-          <label
-            htmlFor=""
-            className="block text-lg font-semibold text-custom-title"
-          >
-            Edad
-          </label>
-          <Input
-            type="text"
-            placeholder="Edad"
-            className="p-3 rounded-md shadow w-full mt-2"
-          />
-        </div>
-        <div className="mt-2 w-full">
-          <label
-            htmlFor=""
-            className="block text-lg font-semibold text-custom-title"
-          >
-            DNI
-          </label>
-          <Input
-            type="text"
-            placeholder="DNI"
-            className="p-3 rounded-md shadow w-full mt-2"
-          />
-        </div>
-        <div className="mt-2 w-full">
-          <label
-            htmlFor=""
-            className="block text-lg font-semibold text-custom-title"
-          >
-            Dirección
-          </label>
-          <Input
-            type="text"
-            placeholder="Direccion"
-            className="p-3 rounded-md shadow w-full mt-2"
-          />
-        </div>
-        <div className="mt-2 w-full">
-          <label
-            htmlFor=""
-            className="block text-lg font-semibold text-custom-title"
-          >
-            Rol
-          </label>
-          <Select>
-            <SelectTrigger className="p-3 rounded-md shadow w-full mt-2">
-              <SelectValue placeholder="-- Seleccione una Opcion --" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Rol</SelectLabel>
-                <SelectItem value="Admin">Admnistrador</SelectItem>
-                <SelectItem value="Gerente">Gerente</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="mt-2 w-full">
-          <label
-            htmlFor=""
-            className="block text-lg font-semibold text-custom-title"
-          >
-            Sucursal
-          </label>
-          <Select>
-            <SelectTrigger className="p-3 rounded-md shadow w-full mt-2">
-              <SelectValue placeholder="-- Seleccione una Opcion --" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Sucursal</SelectLabel>
-                <SelectItem value="Comayagua">Comayagua</SelectItem>
-                <SelectItem value="TGU">Tegucigalpa</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+            Registrarse
+          </button>
         </div>
       </form>
-      <div className="mt-5 w-full flex justify-center">
-        <button
-          className="bg-custom-second text-white font-semibold rounded-md shadow hover:bg-red-500
-    p-3 w-full sm:w-1/2"
-        >
-          Registrarse
-        </button>
-      </div>
     </>
   );
 };
