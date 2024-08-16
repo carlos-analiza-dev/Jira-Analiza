@@ -5,6 +5,10 @@ import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Toaster } from "@/components/ui/toaster";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { persistor, store } from "@/store/store";
+import Providers from "@/components/Providers";
 
 const roboto = Roboto({ subsets: ["latin"], weight: "300" });
 
@@ -21,17 +25,19 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={roboto.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <NavBar />
-          {children}
-          <Toaster />
-          <Footer />
-        </ThemeProvider>
+        <Providers>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <NavBar />
+            {children}
+            <Toaster />
+            <Footer />
+          </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );

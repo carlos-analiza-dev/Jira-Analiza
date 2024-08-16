@@ -100,28 +100,28 @@ const TableUsers = ({ users }: UsersTable) => {
       </TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[100px] text-custom-title dark:text-white font-bold">
+          <TableHead className="text-center w-[100px] text-custom-title dark:text-white font-bold">
             Nombre
           </TableHead>
-          <TableHead className="text-custom-title dark:text-white font-bold">
+          <TableHead className="text-center text-custom-title dark:text-white font-bold">
             Correo
           </TableHead>
-          <TableHead className="text-custom-title dark:text-white font-bold">
+          <TableHead className="text-center text-custom-title dark:text-white font-bold">
             Sexo
           </TableHead>
-          <TableHead className="text-custom-title dark:text-white font-bold">
+          <TableHead className="text-center text-custom-title dark:text-white font-bold">
             Edad
           </TableHead>
-          <TableHead className="text-custom-title dark:text-white font-bold">
+          <TableHead className="text-center text-custom-title dark:text-white font-bold">
             DNI
           </TableHead>
-          <TableHead className="text-custom-title dark:text-white font-bold">
+          <TableHead className="text-center text-custom-title dark:text-white font-bold">
             Dirección
           </TableHead>
           <TableHead className="text-custom-title dark:text-white font-bold">
             Autorizado
           </TableHead>
-          <TableHead className="text-right text-custom-title dark:text-white font-bold">
+          <TableHead className="text-center text-custom-title dark:text-white font-bold">
             Estado
           </TableHead>
           <TableHead className="text-center text-custom-title dark:text-white font-bold">

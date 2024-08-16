@@ -1,4 +1,10 @@
-import { CalendarPlus, ChartColumnBig, Users } from "lucide-react";
+import {
+  CalendarPlus,
+  ChartColumnBig,
+  HousePlus,
+  Shield,
+  Users,
+} from "lucide-react";
 
 export const dataSide = [
   {
@@ -18,5 +24,17 @@ export const dataSide = [
     title: "Eventos",
     link: "/eventos",
     icon: CalendarPlus,
+  },
+  {
+    id: 4,
+    title: "Roles",
+    link: "/roles",
+    icon: Shield,
+  },
+  {
+    id: 5,
+    title: "Sucursales",
+    link: "/sucursales",
+    icon: HousePlus,
   },
 ];

@@ -1,38 +1,106 @@
+"use client";
+import { PostLoginData } from "@/types/dataPostLogin";
 import { Input } from "./ui/input";
+import { useForm } from "react-hook-form";
+import postLoginUser from "@/api/loginUser";
+import { useToast } from "./ui/use-toast";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/store/auth/sessionSlice";
+import { useSelector } from "react-redux";
 
 export default function LoginSesion() {
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const { toast } = useToast();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<PostLoginData>();
+
+  const user = useSelector((state: any) => state.auth);
+  console.log("USER GLOBAL", user);
+
+  const onSubmit = async (data: PostLoginData) => {
+    try {
+      const response = await postLoginUser(data);
+      dispatch(setUser(response));
+      reset();
+      if (user.token && user.id) {
+        router.push("/users");
+      }
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Credenciales Incorrectas, contactate con el administrador.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
-    <form className="w-full block justify-center items-center" action="">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="w-full block justify-center items-center"
+    >
       <div className="mt-5 w-full">
         <label
-          htmlFor=""
+          htmlFor="correo"
           className="block text-xl font-semibold text-custom-title"
         >
           Correo Electrónico
         </label>
         <Input
+          {...register("correo", {
+            required: "El correo electrónico es obligatorio",
+            pattern: {
+              value:
+                /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/,
+              message: "Correo electrónico inválido",
+            },
+          })}
           type="email"
           placeholder="example@gmail.com"
           className="p-3 rounded-md shadow w-full sm:w-3/4 mt-3"
           autoFocus
         />
+        {errors.correo && (
+          <p className="text-red-500 mt-2">
+            {errors.correo.message?.toString()}
+          </p>
+        )}
       </div>
       <div className="mt-5 w-full">
         <label
-          htmlFor=""
+          htmlFor="password"
           className="block text-xl font-semibold text-custom-title"
         >
           Contraseña
         </label>
         <Input
+          {...register("password", {
+            required: "La contraseña es obligatoria",
+            pattern: {
+              value: /(?:(?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
+              message:
+                "La contraseña debe tener una letra mayúscula, minúscula y un número.",
+            },
+          })}
           type="password"
           placeholder="**************"
           className="p-3 rounded-md shadow w-full sm:w-3/4 mt-3"
-          autoFocus
         />
+        {errors.password && (
+          <p className="text-red-500 mt-2">
+            {errors.password.message?.toString()}
+          </p>
+        )}
       </div>
       <div className="mt-5 w-full flex justify-center">
         <button
+          type="submit"
           className="bg-custom-second text-white font-semibold rounded-md shadow hover:bg-red-500
     p-3 w-full sm:w-1/2"
         >

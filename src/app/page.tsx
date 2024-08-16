@@ -16,7 +16,7 @@ export default function Login() {
             />
           </div>
         </div>
-        <div className="block justify-center">
+        <div className="block justify-center px-4">
           <p className="text-3xl text-custom-title font-bold text-center">
             Inicia Sesión
           </p>
