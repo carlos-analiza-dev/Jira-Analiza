@@ -6,4 +6,6 @@ export type DataPost = {
   edad: number;
   dni: string;
   direccion: string;
+  roleId: string;
+  sucursalId: string;
 };

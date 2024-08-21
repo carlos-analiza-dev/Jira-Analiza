@@ -1,26 +1,47 @@
-import { Text } from "lucide-react";
+import { LogIn, Text, UserRoundPlus } from "lucide-react";
 import { Button } from "./ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+
 import Link from "next/link";
+import { Separator } from "./ui/separator";
 
 const MenuMobile = () => {
   return (
     <div>
-      <Popover>
-        <PopoverTrigger asChild>
+      <Sheet>
+        <SheetTrigger>
+          {" "}
           <Button variant="outline">
             <Text />
           </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-96">
-          <Link className="block" href="/">
-            Iniciar Sesion
-          </Link>
-          <Link className="mt-2" href="/register">
-            Registrarse
-          </Link>
-        </PopoverContent>
-      </Popover>
+        </SheetTrigger>
+        <SheetContent side="left">
+          <SheetHeader>
+            <SheetTitle className="text-custom-title font-bold dark:text-white">
+              ¿Donde deseas navegar?
+            </SheetTitle>
+            <SheetDescription>
+              <div className="flex justify-around mt-3 items-center text-custom-title  dark:text-white">
+                <Link href="/">Iniciar Sesion</Link>
+
+                <LogIn />
+              </div>
+              <div className="flex justify-around mt-3 items-centern text-custom-title  dark:text-white">
+                <Link href="/register">Registrarse</Link>
+                <UserRoundPlus />
+              </div>
+            </SheetDescription>
+            <Separator />
+          </SheetHeader>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };

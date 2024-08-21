@@ -87,7 +87,7 @@ const TableUsers = ({ users }: UsersTable) => {
 
   if (!userTable || userTable.length === 0) {
     return (
-      <p className="mt-5 text-center font-bold text-custom-title text-3xl">
+      <p className="mt-5 text-center font-bold text-custom-title text-3xl dark:text-white">
         No se encontraron usuarios.
       </p>
     );

@@ -1,5 +1,7 @@
 "use client";
 import createUsers from "@/api/createUsers";
+import useAllRoles from "@/api/getAllRoles";
+import useAllSucursal from "@/api/getSucursale";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -11,11 +13,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
+import { SucursalData } from "@/types/sucursal.type";
+import { TableRolesData } from "@/types/table.roles.type";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const FormRegister = () => {
   const router = useRouter();
+  const { result } = useAllRoles();
+  const { resultSucursal } = useAllSucursal();
   const { toast } = useToast();
   const [name, setName] = useState("");
   const [correo, setCorreo] = useState("");
@@ -25,12 +31,30 @@ const FormRegister = () => {
   const [edad, setEdad] = useState(0);
   const [dni, setDni] = useState("");
   const [direccion, setDireccion] = useState("");
+  const [roleId, setRoleId] = useState("");
+  const [sucursalId, setSucursalId] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (contrasena !== confirmarContrasena) {
       toast({ title: "Las contrasenas no coinciden", variant: "destructive" });
+      return;
+    }
+
+    if (!roleId) {
+      toast({
+        title: "El campo 'Rol' es obligatorio",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!sucursalId) {
+      toast({
+        title: "El campo 'Sucursal' es obligatorio",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -43,6 +67,8 @@ const FormRegister = () => {
         edad: edad,
         password: contrasena,
         sexo: sexo,
+        roleId: roleId,
+        sucursalId: sucursalId,
       });
       setName("");
       setCorreo("");
@@ -52,6 +78,8 @@ const FormRegister = () => {
       setConfirmarContrasena("");
       setSexo("");
       setEdad(0);
+      setRoleId("");
+      setSucursalId("");
       toast({ title: "Usuario Creado Exitosamente, espera la autorizacion" });
       setTimeout(() => {
         router.push("/");
@@ -73,7 +101,7 @@ const FormRegister = () => {
     <>
       <form onSubmit={handleSubmit}>
         <div className="w-full justify-center items-center grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-3">
-          <div className="mt-2 w-full">
+          <div className="mt-1 w-full">
             <label
               htmlFor="nombre"
               className="block text-lg font-semibold text-custom-title"
@@ -86,11 +114,11 @@ const FormRegister = () => {
               onChange={(e) => setName(e.target.value)}
               type="text"
               placeholder="Nombre Completo"
-              className="p-3 rounded-md shadow w-full mt-2"
+              className="p-3 rounded-md shadow w-full mt-1"
               autoFocus
             />
           </div>
-          <div className="mt-2 w-full">
+          <div className="mt-1 w-full">
             <label
               htmlFor="correo"
               className="block text-lg font-semibold text-custom-title"
@@ -103,10 +131,10 @@ const FormRegister = () => {
               onChange={(e) => setCorreo(e.target.value)}
               type="email"
               placeholder="example@gmail.com"
-              className="p-3 rounded-md shadow w-full  mt-2"
+              className="p-3 rounded-md shadow w-full  mt-1"
             />
           </div>
-          <div className="mt-2 w-full">
+          <div className="mt-1 w-full">
             <label
               htmlFor="password"
               className="block text-lg font-semibold text-custom-title"
@@ -119,10 +147,10 @@ const FormRegister = () => {
               onChange={(e) => setContrasena(e.target.value)}
               type="password"
               placeholder="**************"
-              className="p-3 rounded-md shadow w-full  mt-2"
+              className="p-3 rounded-md shadow w-full  mt-1"
             />
           </div>
-          <div className="mt-2 w-full">
+          <div className="mt-1 w-full">
             <label
               htmlFor="confirmPassword"
               className="block text-lg font-semibold text-custom-title"
@@ -135,15 +163,15 @@ const FormRegister = () => {
               onChange={(e) => setConfirmarContrasena(e.target.value)}
               type="password"
               placeholder="**************"
-              className="p-3 rounded-md shadow w-full  mt-2"
+              className="p-3 rounded-md shadow w-full  mt-1"
             />
           </div>
-          <div className="mt-2 w-full">
+          <div className="mt-1 w-full">
             <label className="block text-lg font-semibold text-custom-title">
               Sexo
             </label>
             <Select value={sexo} onValueChange={setSexo}>
-              <SelectTrigger className="p-3 rounded-md shadow w-full mt-2">
+              <SelectTrigger className="p-3 rounded-md shadow w-full mt-1">
                 <SelectValue placeholder="-- Seleccione una Opcion --" />
               </SelectTrigger>
               <SelectContent>
@@ -155,7 +183,55 @@ const FormRegister = () => {
               </SelectContent>
             </Select>
           </div>
-          <div className="mt-2 w-full">
+          <div className="mt-1 w-full">
+            <label className="block text-lg font-semibold text-custom-title">
+              Rol
+            </label>
+            <Select value={roleId} onValueChange={setRoleId}>
+              <SelectTrigger className="p-3 rounded-md shadow w-full mt-1">
+                <SelectValue placeholder="-- Seleccione una Opcion --" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Rol</SelectLabel>
+                  {result && result.length > 0 ? (
+                    result.map((res: TableRolesData) => (
+                      <SelectItem key={res.id} value={res.id}>
+                        {res.nombre}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <p>No hay roles disponibles</p>
+                  )}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="mt-1 w-full">
+            <label className="block text-lg font-semibold text-custom-title">
+              Sucursal
+            </label>
+            <Select value={sucursalId} onValueChange={setSucursalId}>
+              <SelectTrigger className="p-3 rounded-md shadow w-full mt-1">
+                <SelectValue placeholder="-- Seleccione una Opcion --" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Sucursal</SelectLabel>
+                  {resultSucursal && resultSucursal.length > 0 ? (
+                    resultSucursal.map((sucursal: SucursalData) => (
+                      <SelectItem key={sucursal.id} value={sucursal.id}>
+                        {sucursal.nombre}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <p>No hay sucursales disponibles</p>
+                  )}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="mt-1 w-full">
             <label
               htmlFor="edad"
               className="block text-lg font-semibold text-custom-title"
@@ -175,10 +251,10 @@ const FormRegister = () => {
               }}
               type="number"
               placeholder="Edad"
-              className="p-3 rounded-md shadow w-full mt-2"
+              className="p-3 rounded-md shadow w-full mt-1"
             />
           </div>
-          <div className="mt-2 w-full">
+          <div className="mt-1 w-full">
             <label
               htmlFor="dni"
               className="block text-lg font-semibold text-custom-title"
@@ -191,10 +267,10 @@ const FormRegister = () => {
               onChange={(e) => setDni(e.target.value)}
               type="text"
               placeholder="DNI"
-              className="p-3 rounded-md shadow w-full mt-2"
+              className="p-3 rounded-md shadow w-full mt-1"
             />
           </div>
-          <div className="mt-2 w-full">
+          <div className="mt-1 w-full">
             <label
               htmlFor="direccion"
               className="block text-lg font-semibold text-custom-title"
@@ -207,7 +283,7 @@ const FormRegister = () => {
               onChange={(e) => setDireccion(e.target.value)}
               type="text"
               placeholder="Direccion"
-              className="p-3 rounded-md shadow w-full mt-2"
+              className="p-3 rounded-md shadow w-full mt-1"
             />
           </div>
         </div>

@@ -2,7 +2,7 @@
 import useAllUsers from "@/api/getAllUsers";
 import { ResponseData } from "@/types/response.type";
 import TableUsers from "./ui/TableUsers";
-import SkeletonTableUsers from "./ui/SkeletonTableUsers";
+import SkeletonTable from "@/components/SkeletonTable";
 
 export default function UsersPage() {
   const { result, loading }: ResponseData = useAllUsers();
@@ -14,7 +14,7 @@ export default function UsersPage() {
           Usuarios
         </p>
       </div>
-      {loading ? <SkeletonTableUsers /> : <TableUsers users={result} />}
+      {loading ? <SkeletonTable /> : <TableUsers users={result} />}
     </div>
   );
 }
