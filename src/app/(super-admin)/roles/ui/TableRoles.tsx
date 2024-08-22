@@ -23,6 +23,11 @@ import {
 import deleteRol from "@/api/deleteRol";
 import useAllRoles from "@/api/getAllRoles";
 import { useToast } from "@/components/ui/use-toast";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import updateRol from "@/api/updateRol";
+import { Input } from "@/components/ui/input";
+import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
 
 export interface Props {
   roles: TableRolesData[];
@@ -33,7 +38,13 @@ export interface Props {
 const TableRoles = ({ roles, check, setCheck }: Props) => {
   const { toast } = useToast();
   const { result: allRoles } = useAllRoles(check);
-
+  const [selectedRol, setSelectedRol] = useState<TableRolesData | null>(null);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<TableRolesData>();
   const handleDelete = async (id: string) => {
     try {
       await deleteRol(id);
@@ -42,6 +53,28 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
     } catch (error) {
       console.error("Failed to delete role:", error);
       toast({ title: "No se pudo eliminar este rol", variant: "destructive" });
+    }
+  };
+
+  const handleEdit = (rol: TableRolesData) => {
+    setSelectedRol(rol);
+    reset(rol);
+  };
+
+  const handleUpdate = async (data: TableRolesData) => {
+    try {
+      if (selectedRol) {
+        const response = await updateRol(selectedRol.id, data.nombre);
+        setCheck(!check);
+        toast({ title: "Rol actualizado exitosamente" });
+        setSelectedRol(null);
+      }
+    } catch (error) {
+      console.log("Error interno", error);
+      toast({
+        title: "No se pudo actualizar este rol",
+        variant: "destructive",
+      });
     }
   };
 
@@ -56,64 +89,126 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
   }
 
   return (
-    <Table>
-      <TableCaption className="text-custom-title dark:text-white">
-        Lista de roles
-      </TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="text-center text-custom-title dark:text-white">
-            Numero de rol
-          </TableHead>
-          <TableHead className="text-center text-custom-title dark:text-white">
-            Nombre
-          </TableHead>
-          <TableHead className="text-center text-custom-title dark:text-white">
-            Acciones
-          </TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {allRoles.map((rol: TableRolesData) => (
-          <TableRow key={rol.id}>
-            <TableCell className="font-medium text-center">{rol.id}</TableCell>
-            <TableCell className="text-center">{rol.nombre}</TableCell>
-            <TableCell className="text-center">
-              <div className="flex justify-around gap-3 sm:gap-0">
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button className="bg-custom-title text-white dark:bg-white dark:text-custom-title">
-                      <Trash2 size={15} />
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle className="text-custom-title dark:text-white">
-                        ¿Estas seguro de eliminar este rol?
-                      </AlertDialogTitle>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel className="text-custom-title dark:text-white">
-                        Cancelar
-                      </AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => handleDelete(rol.id)}
-                        className="bg-custom-title text-white dark:bg-white dark:text-custom-title"
-                      >
-                        Continuar
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-                <Button className="bg-custom-title text-white dark:bg-white dark:text-custom-title">
-                  <Pencil size={15} />
-                </Button>
-              </div>
-            </TableCell>
+    <>
+      <Table>
+        <TableCaption className="text-custom-title dark:text-white">
+          Lista de roles
+        </TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="text-center text-custom-title dark:text-white">
+              Numero de rol
+            </TableHead>
+            <TableHead className="text-center text-custom-title dark:text-white">
+              Nombre
+            </TableHead>
+            <TableHead className="text-center text-custom-title dark:text-white">
+              Acciones
+            </TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {allRoles.map((rol: TableRolesData) => (
+            <TableRow key={rol.id}>
+              <TableCell className="font-medium text-center">
+                {rol.id}
+              </TableCell>
+              <TableCell className="text-center">{rol.nombre}</TableCell>
+              <TableCell className="text-center">
+                <div className="flex justify-around gap-3 sm:gap-0">
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button className="bg-custom-title text-white dark:bg-white dark:text-custom-title">
+                        <Trash2 size={15} />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle className="text-custom-title dark:text-white">
+                          ¿Estas seguro de eliminar este rol?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Una vez elimines el rol no podras revertirlo
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="text-custom-title dark:text-white">
+                          Cancelar
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => handleDelete(rol.id)}
+                          className="bg-custom-title text-white dark:bg-white dark:text-custom-title"
+                        >
+                          Continuar
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                  <Button
+                    onClick={() => handleEdit(rol)}
+                    className="bg-custom-title text-white dark:bg-white dark:text-custom-title"
+                  >
+                    <Pencil size={15} />
+                  </Button>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      {selectedRol && (
+        <AlertDialog
+          open={!!selectedRol}
+          onOpenChange={() => setSelectedRol(null)}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-custom-title dark:text-white">
+                Actualizar Rol
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                Por favor, realiza los cambios necesarios y confirma para
+                actualizar el rol.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <form onSubmit={handleSubmit(handleUpdate)}>
+              <div className="mt-5 mb-5">
+                <label className="text-custom-title dark:text-white font-medium">
+                  Nombre del rol
+                </label>
+                <Input
+                  autoFocus
+                  {...register("nombre", {
+                    required: "El nombre del rol es obligatorio",
+                    pattern: {
+                      value: /^[a-zA-Z\s]+$/,
+                      message: "Solo se permiten letras y espacios en blanco",
+                    },
+                  })}
+                  className="mt-3"
+                  placeholder="Nombre del Rol"
+                />
+                {errors.nombre && (
+                  <p className="text-red-500 mt-2">
+                    {errors.nombre.message?.toString()}
+                  </p>
+                )}
+              </div>
+
+              <AlertDialogFooter>
+                <AlertDialogCancel type="button">Cancelar</AlertDialogCancel>
+                <Button
+                  type="submit"
+                  className="bg-custom-title text-white dark:bg-white dark:text-custom-title"
+                >
+                  Actualizar
+                </Button>
+              </AlertDialogFooter>
+            </form>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+    </>
   );
 };
 

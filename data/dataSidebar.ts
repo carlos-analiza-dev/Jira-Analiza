@@ -3,6 +3,7 @@ import {
   ChartColumnBig,
   HousePlus,
   Shield,
+  UserCog,
   Users,
 } from "lucide-react";
 
@@ -21,18 +22,24 @@ export const dataSide = [
   },
   {
     id: 3,
+    title: "Autorizar usuarios",
+    link: "/autorizar",
+    icon: UserCog,
+  },
+  {
+    id: 4,
     title: "Eventos",
     link: "/eventos",
     icon: CalendarPlus,
   },
   {
-    id: 4,
+    id: 5,
     title: "Roles",
     link: "/roles",
     icon: Shield,
   },
   {
-    id: 5,
+    id: 6,
     title: "Sucursales",
     link: "/sucursales",
     icon: HousePlus,

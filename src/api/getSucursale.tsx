@@ -13,11 +13,9 @@ const useAllSucursal = (check?: boolean) => {
       try {
         const response = await get(url);
         setResultSucursal(response);
-        console.log("RESPONSE SUCURSAL", response);
 
         setLoading(false);
       } catch (error: any) {
-        console.log("ERROR RESPONSE SUCURSALES");
         setError(error.message || "Error al obtener los datos");
         setLoading(true);
       }
