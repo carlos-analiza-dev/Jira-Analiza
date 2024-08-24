@@ -28,6 +28,7 @@ import { useForm } from "react-hook-form";
 import updateRol from "@/api/updateRol";
 import { Input } from "@/components/ui/input";
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
+import Image from "next/image";
 
 export interface Props {
   roles: TableRolesData[];
@@ -52,7 +53,10 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
       toast({ title: "Rol eliminado exitosamente" });
     } catch (error) {
       console.error("Failed to delete role:", error);
-      toast({ title: "No se pudo eliminar este rol", variant: "destructive" });
+      toast({
+        title: "Rol asignado a usuarios, no es posible eliminarlo.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -80,10 +84,15 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
 
   if (!allRoles || allRoles.length === 0) {
     return (
-      <div className="flex justify-center mt-5">
-        <p className="text-3xl font-bold text-custom-title dark:text-white">
-          No se encontraron roles en la base de datos
-        </p>
+      <div className="block">
+        <div className="flex justify-center mt-10">
+          <Image src="/empty.svg" alt="NotFound" width={400} height={500} />
+        </div>
+        <div className="mt-5">
+          <p className="text-center font-bold text-custom-title text-2xl dark:text-white">
+            No se encontraron usuarios.
+          </p>
+        </div>
       </div>
     );
   }
@@ -118,7 +127,7 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
                 <div className="flex justify-around gap-3 sm:gap-0">
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button className="bg-custom-title text-white dark:bg-white dark:text-custom-title">
+                      <Button variant="outline">
                         <Trash2 size={15} />
                       </Button>
                     </AlertDialogTrigger>
@@ -144,10 +153,7 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
-                  <Button
-                    onClick={() => handleEdit(rol)}
-                    className="bg-custom-title text-white dark:bg-white dark:text-custom-title"
-                  >
+                  <Button onClick={() => handleEdit(rol)} variant="outline">
                     <Pencil size={15} />
                   </Button>
                 </div>

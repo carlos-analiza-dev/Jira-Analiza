@@ -24,17 +24,23 @@ import { UserType } from "@/types/user.type";
 import updateUser from "@/api/updateUser";
 import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import Image from "next/image";
+import { Trash2 } from "lucide-react";
+import deleteUser from "@/api/deleteUser";
 
 export type UsersTable = {
   users: UserType[];
+  check: boolean;
+  setCheck: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const TableUsers = ({ users }: UsersTable) => {
+const TableUsers = ({ users, check, setCheck }: UsersTable) => {
   const { toast } = useToast();
-  const [userTable, setUserTable] = useState<UserType[]>(users);
+
+  const [filteredUsers, setFilteredUsers] = useState<UserType[]>(users);
 
   useEffect(() => {
-    setUserTable(users);
+    setFilteredUsers(users);
   }, [users]);
 
   const handleToggleActive = async (
@@ -51,45 +57,42 @@ const TableUsers = ({ users }: UsersTable) => {
       toast({
         title: "La actividad del usuario ha sido actualizada exitosamente",
       });
-
-      setUserTable((prevUserTable) =>
-        prevUserTable.map((user) =>
-          user.id === userId ? { ...user, isActive: newState } : user
-        )
-      );
+      setCheck(!check);
     } catch (error) {
       console.error("Error al actualizar el usuario:", error);
     }
   };
 
-  const handleAuthorize = async (
-    userId: string,
-    currentState: number,
-    token?: string
-  ) => {
-    const newState = currentState === 1 ? 0 : 1;
-    const updateData = { autorizado: newState };
-
+  const handleDelete = async (id: string) => {
     try {
-      const response = await updateUser(userId, updateData, token);
-      console.log("Usuario autorizado:", response);
-      toast({ title: "Autorizacion del usuario actualizada exitosamente" });
+      const response = await deleteUser(id);
+      console.log("RESPONSE DELETE", response);
 
-      setUserTable((prevUserTable) =>
-        prevUserTable.map((user) =>
-          user.id === userId ? { ...user, autorizado: newState } : user
-        )
-      );
+      const updatedUsers = filteredUsers.filter((user) => user.id !== id);
+      setFilteredUsers(updatedUsers);
+
+      toast({ title: "Usuario eliminado exitosamente" });
     } catch (error) {
-      console.error("Error al autorizar el usuario:", error);
+      console.log(error);
+      toast({
+        title: "Ocurrió un error al eliminar el usuario",
+        variant: "destructive",
+      });
     }
   };
 
-  if (!userTable || userTable.length === 0) {
+  if (!filteredUsers || filteredUsers.length === 0) {
     return (
-      <p className="mt-5 text-center font-bold text-custom-title text-3xl dark:text-white">
-        No se encontraron usuarios.
-      </p>
+      <div className="block">
+        <div className="flex justify-center mt-10">
+          <Image src="/notfound.svg" alt="NotFound" width={400} height={500} />
+        </div>
+        <div className="mt-5">
+          <p className="text-center font-bold text-custom-title text-2xl dark:text-white">
+            No se encontraron usuarios.
+          </p>
+        </div>
+      </div>
     );
   }
 
@@ -130,7 +133,7 @@ const TableUsers = ({ users }: UsersTable) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {userTable.map((user) => (
+        {filteredUsers.map((user) => (
           <TableRow key={user.id}>
             <TableCell className="font-medium text-custom-title dark:text-white">
               {user.nombre}
@@ -194,7 +197,7 @@ const TableUsers = ({ users }: UsersTable) => {
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="outline">
-                      {user.autorizado === 0 ? "Autorizar" : "Desautorizar"}
+                      <Trash2 />
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
@@ -203,20 +206,16 @@ const TableUsers = ({ users }: UsersTable) => {
                         <AlertDialogCancel>X</AlertDialogCancel>
                       </div>
                       <AlertDialogTitle className="text-custom-title dark:text-white">
-                        ¿Estás seguro de{" "}
-                        {user.autorizado === 0 ? "autorizar" : "desautorizar"}{" "}
-                        este usuario?
+                        ¿Estás seguro de eliminar este usuario?
                       </AlertDialogTitle>
-                      <AlertDialogDescription>
+                      <AlertDialogDescription className="text-custom-title dark:text-white">
                         ¡Debes estar seguro de esta acción antes de continuar!
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancelar</AlertDialogCancel>
                       <AlertDialogAction
-                        onClick={() =>
-                          handleAuthorize(user.id, user.autorizado)
-                        }
+                        onClick={() => handleDelete(user.id)}
                         className="bg-custom-title dark:bg-white dark:text-custom-title font-semibold"
                       >
                         Continuar

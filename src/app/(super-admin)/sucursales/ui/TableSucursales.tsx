@@ -56,7 +56,7 @@ const TableSucursales = ({ resultSucursal, check, setCheck }: dataTable) => {
     } catch (error) {
       console.log("ERROR ELIMINAR SUCURSAL");
       toast({
-        title: "Ocurrió un error al eliminar la sucursal",
+        title: "Sucursal asignada a usuarios, no es posible eliminarla.",
         variant: "destructive",
       });
     }
@@ -136,7 +136,7 @@ const TableSucursales = ({ resultSucursal, check, setCheck }: dataTable) => {
                 <div className="flex justify-around gap-3 sm:gap-0">
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button className="bg-custom-title text-white dark:bg-white dark:text-custom-title">
+                      <Button variant="outline">
                         <Trash2 size={15} />
                       </Button>
                     </AlertDialogTrigger>
@@ -161,7 +161,7 @@ const TableSucursales = ({ resultSucursal, check, setCheck }: dataTable) => {
                   </AlertDialog>
                   <Button
                     onClick={() => handleEdit(sucursal)}
-                    className="bg-custom-title text-white dark:bg-white dark:text-custom-title"
+                    variant="outline"
                   >
                     <Pencil size={15} />
                   </Button>

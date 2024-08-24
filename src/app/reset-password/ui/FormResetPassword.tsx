@@ -4,7 +4,7 @@ const FormResetPassword = () => {
   return (
     <>
       <form
-        className="w-3/4 justify-center items-center grid grid-cols-1 gap-3"
+        className="w-full justify-center items-center grid grid-cols-1 gap-3"
         action=""
       >
         <div className="mt-5 w-full">

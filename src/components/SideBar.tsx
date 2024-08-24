@@ -4,13 +4,15 @@ import { Separator } from "./ui/separator";
 import { dataSide } from "../../data/dataSidebar";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSelector } from "react-redux";
 const SideBar = () => {
   const path = usePathname();
+  const user = useSelector((state: any) => state.auth);
 
   return (
     <div>
       <p className="text-custom-title dark:text-white font-semibold text-lg text-center">
-        Bienvenido Administrador
+        Bienvenido {user.nombre}
       </p>
       <div className="mt-3 flex justify-center">
         <Avatar>
@@ -20,7 +22,9 @@ const SideBar = () => {
             src="/images/perfil.png"
             alt="perfilPhoto"
           />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarFallback className="text-custom-title dark:text-white">
+            {user?.nombre ? user?.nombre[0] : "?"}
+          </AvatarFallback>
         </Avatar>
       </div>
       <Separator className="mt-2" />

@@ -3,9 +3,11 @@ import useAllUsers from "@/api/getAllUsers";
 import { ResponseData } from "@/types/response.type";
 import TableUsers from "./ui/TableUsers";
 import SkeletonTable from "@/components/SkeletonTable";
+import { useState } from "react";
 
 export default function UsersPage() {
-  const { result, loading }: ResponseData = useAllUsers();
+  const [check, setCheck] = useState(true);
+  const { result, loading }: ResponseData = useAllUsers(check);
 
   return (
     <div className="max-w-3xl sm:max-w-5xl p-3">
@@ -14,7 +16,11 @@ export default function UsersPage() {
           Usuarios
         </p>
       </div>
-      {loading ? <SkeletonTable /> : <TableUsers users={result} />}
+      {loading ? (
+        <SkeletonTable />
+      ) : (
+        <TableUsers users={result} check={check} setCheck={setCheck} />
+      )}
     </div>
   );
 }

@@ -25,12 +25,22 @@ import updateUser from "@/api/updateUser";
 import { useToast } from "@/components/ui/use-toast";
 import Image from "next/image";
 export interface Props {
-  users: UserType[];
+  users: UserType[] | null;
   check: boolean;
   setCheck: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const TableAuth = ({ users, check, setCheck }: Props) => {
   const { toast } = useToast();
+  const [filteredUsers, setFilteredUsers] = useState<UserType[]>([]);
+
+  useEffect(() => {
+    if (users) {
+      const updatedFilteredUsers = users.filter(
+        (user) => user.autorizado === 0
+      );
+      setFilteredUsers(updatedFilteredUsers);
+    }
+  }, [users, check]);
 
   const handleAuthorize = async (
     userId: string,
@@ -43,12 +53,14 @@ const TableAuth = ({ users, check, setCheck }: Props) => {
     try {
       await updateUser(userId, updateData, token);
       toast({ title: "Autorización del usuario actualizada exitosamente" });
-      setCheck(!check);
+
+      window.location.reload();
     } catch (error) {
       console.error("Error al autorizar el usuario:", error);
     }
   };
-  if (!users || users.length === 0) {
+
+  if (!filteredUsers || filteredUsers.length === 0) {
     return (
       <div className="block">
         <div className="flex justify-center mt-10">
@@ -56,7 +68,7 @@ const TableAuth = ({ users, check, setCheck }: Props) => {
         </div>
         <div className="mt-5">
           <p className="text-center font-bold text-custom-title text-2xl dark:text-white">
-            No se encontraron usuarios.
+            No se encontraron usuarios por autorizar.
           </p>
         </div>
       </div>
@@ -98,7 +110,7 @@ const TableAuth = ({ users, check, setCheck }: Props) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {users.map((user: UserType) => (
+        {filteredUsers.map((user: UserType) => (
           <TableRow key={user.id}>
             <TableCell className="font-medium text-custom-title dark:text-white">
               {user.nombre}
@@ -140,7 +152,7 @@ const TableAuth = ({ users, check, setCheck }: Props) => {
                         {user.autorizado === 0 ? "autorizar" : "desautorizar"}{" "}
                         este usuario?
                       </AlertDialogTitle>
-                      <AlertDialogDescription>
+                      <AlertDialogDescription className="text-custom-title dark:text-white">
                         ¡Debes estar seguro de esta acción antes de continuar!
                       </AlertDialogDescription>
                     </AlertDialogHeader>

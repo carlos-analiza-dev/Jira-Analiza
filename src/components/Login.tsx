@@ -8,11 +8,15 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/store/auth/sessionSlice";
 import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 export default function LoginSesion() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { toast } = useToast();
+  const user = useSelector((state: any) => state.auth);
+  console.log("USER GLOBAL", user);
+
   const {
     register,
     handleSubmit,
@@ -20,17 +24,17 @@ export default function LoginSesion() {
     formState: { errors },
   } = useForm<PostLoginData>();
 
-  const user = useSelector((state: any) => state.auth);
-  console.log("USER GLOBAL", user);
+  useEffect(() => {
+    if (user && user.role && user.role.nombre === "Administrador") {
+      router.push("/dashboard");
+    }
+  }, [user, router]);
 
   const onSubmit = async (data: PostLoginData) => {
     try {
       const response = await postLoginUser(data);
       dispatch(setUser(response));
       reset();
-      if (user.token && user.id) {
-        router.push("/users");
-      }
     } catch (error) {
       console.error(error);
       toast({
