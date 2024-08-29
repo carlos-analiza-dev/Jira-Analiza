@@ -3,30 +3,44 @@ import Image from "next/image";
 import Link from "next/link";
 import MenuMobile from "./MenuMobile";
 import ModeToggle from "./ModeToggle";
-import { Button } from "./ui/button";
 import { clearUser } from "@/store/auth/sessionSlice";
 import { useDispatch } from "react-redux";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
-import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useState } from "react";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { LogOut, User } from "lucide-react";
+import { Droplet, FileLock2, LogOut, User } from "lucide-react";
 
 export default function NavBar() {
   const user = useSelector((state: any) => state.auth);
-  console.log("User desde NavBar", user);
+  const pathname = usePathname();
 
   const dispatch = useDispatch();
   const router = useRouter();
+  const [popoverOpen, setPopoverOpen] = useState(false);
 
   const handleLogout = () => {
     dispatch(clearUser());
     router.push("/");
+  };
+
+  const handleOptionClick = (path: string) => {
+    setPopoverOpen(false);
+    router.push(path);
   };
 
   return (
@@ -40,6 +54,64 @@ export default function NavBar() {
           className="h-20 w-20"
         />
       </Link>
+      {user &&
+        user.role &&
+        user.role.nombre !== "Administrador" &&
+        user.token && (
+          <NavigationMenu className="hidden sm:flex">
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger>Analiza</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+                    <li className="row-span-3">
+                      <NavigationMenuLink asChild>
+                        <a
+                          className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                          href="/"
+                        >
+                          <Droplet className="h-6 w-6 text-custom-second" />
+                          <div className="mb-2 mt-4 text-lg font-medium">
+                            Jira - Analiza
+                          </div>
+                          <p className="text-sm leading-tight text-muted-foreground">
+                            En esta seccion puedes observar todos los proyectos
+                            en los cuales estas incluido, disfruta tu
+                            experiencia y colabora en los proyectos.
+                          </p>
+                        </a>
+                      </NavigationMenuLink>
+                    </li>
+                    <Link href="/docs" title="Introduction">
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    </Link>
+                    <Link href="/docs/installation" title="Installation">
+                      How to install dependencies and structure your app.
+                    </Link>
+                    <Link href="/docs/primitives/typography" title="Typography">
+                      Styles for headings, paragraphs, lists...etc
+                    </Link>
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link href="/docs" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    Nuevo Proyecto
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link href="/docs" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    Historial
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+        )}
+
       {!user?.role && !user?.token ? (
         <div className="justify-between gap-2 hidden sm:flex">
           <Link
@@ -57,11 +129,20 @@ export default function NavBar() {
           </Link>
         </div>
       ) : (
-        <div className="sm:flex gap-3 hidden">
+        <div
+          className={`${
+            pathname === "/comfirm-password" ||
+            pathname === "/register" ||
+            pathname === "/" ||
+            pathname === "/reset-password"
+              ? "hidden"
+              : "sm:flex gap-3 hidden"
+          }`}
+        >
           <div className="hidden sm:block">
             <ModeToggle />
           </div>
-          <Popover>
+          <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
             <PopoverTrigger asChild>
               <Avatar>
                 <AvatarImage
@@ -76,14 +157,23 @@ export default function NavBar() {
               </Avatar>
             </PopoverTrigger>
             <PopoverContent className="w-80">
-              <Link
-                className="flex justify-between items-center hover:bg-gray-100 dark:hover:bg-gray-800 p-2 text-custom-title dark:text-white"
-                href="/perfil"
+              <div
+                className="flex justify-between items-center hover:bg-gray-100 dark:hover:bg-gray-800 p-2 text-custom-title dark:text-white hover:cursor-pointer"
+                onClick={() => handleOptionClick("/perfil")}
               >
                 Perfil <User />
-              </Link>
+              </div>
+              <div
+                className="flex justify-between items-center hover:bg-gray-100 dark:hover:bg-gray-800 p-2 text-custom-title dark:text-white hover:cursor-pointer"
+                onClick={() => handleOptionClick("/reset-password")}
+              >
+                Cambiar contraseña <FileLock2 />
+              </div>
               <p
-                onClick={handleLogout}
+                onClick={() => {
+                  handleLogout();
+                  setPopoverOpen(false);
+                }}
                 className="flex justify-between items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 p-2 text-custom-title dark:text-white"
               >
                 Cerrar Sesion <LogOut />
@@ -92,6 +182,7 @@ export default function NavBar() {
           </Popover>
         </div>
       )}
+
       <div className="sm:hidden flex gap-4 items-center">
         {user && user.role && user.token && <ModeToggle />}
         <MenuMobile />

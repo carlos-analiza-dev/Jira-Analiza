@@ -15,7 +15,6 @@ export default function LoginSesion() {
   const router = useRouter();
   const { toast } = useToast();
   const user = useSelector((state: any) => state.auth);
-  console.log("USER GLOBAL", user);
 
   const {
     register,
@@ -27,6 +26,8 @@ export default function LoginSesion() {
   useEffect(() => {
     if (user && user.role && user.role.nombre === "Administrador") {
       router.push("/dashboard");
+    } else if (user && user.role && user.role.nombre !== "Administrador") {
+      router.push("/proyectos");
     }
   }, [user, router]);
 

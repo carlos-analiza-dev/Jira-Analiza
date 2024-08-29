@@ -15,17 +15,19 @@ const SideBar = () => {
         Bienvenido {user.nombre}
       </p>
       <div className="mt-3 flex justify-center">
-        <Avatar>
-          <AvatarImage
-            width={100}
-            height={100}
-            src="/images/perfil.png"
-            alt="perfilPhoto"
-          />
-          <AvatarFallback className="text-custom-title dark:text-white">
-            {user?.nombre ? user?.nombre[0] : "?"}
-          </AvatarFallback>
-        </Avatar>
+        <Link href="/perfil">
+          <Avatar>
+            <AvatarImage
+              width={100}
+              height={100}
+              src="/images/perfil.png"
+              alt="perfilPhoto"
+            />
+            <AvatarFallback className="text-custom-title dark:text-white">
+              {user?.nombre ? user?.nombre[0] : "?"}
+            </AvatarFallback>
+          </Avatar>
+        </Link>
       </div>
       <Separator className="mt-2" />
       <div className="mt-5 mb-5">
