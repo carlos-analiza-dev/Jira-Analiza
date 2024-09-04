@@ -4,12 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { DataProject } from "@/types/dataProjects.type";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
 const FormProyectos = () => {
   const user = useSelector((state: any) => state.auth);
   const { toast } = useToast();
+  const router = useRouter();
 
   const {
     register,
@@ -22,6 +24,7 @@ const FormProyectos = () => {
     try {
       const response = await createProjects(data, user.token);
       toast({ title: "Proyecto creado exitosamente" });
+      router.push("/admin-proyectos");
       reset();
     } catch (error: any) {
       toast({

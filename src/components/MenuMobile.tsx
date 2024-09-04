@@ -1,4 +1,4 @@
-import { LogIn, LogOut, Text, UserRoundPlus } from "lucide-react";
+import { FileLock2, LogIn, LogOut, Text, UserRoundPlus } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   Sheet,
@@ -52,14 +52,25 @@ const MenuMobile = () => {
               </SheetDescription>
             )}
             {user && user.role && user.role.nombre === "Administrador" && (
-              <div
-                onClick={handleLogout}
-                className="flex justify-around items-center text-custom-title  dark:text-white"
-              >
-                <p className="text-custom-title dark:text-white">
-                  Cerrar Sesion
-                </p>
-                <LogOut />
+              <div>
+                <div
+                  onClick={handleLogout}
+                  className="flex justify-between items-center text-custom-title  dark:text-white"
+                >
+                  <p className="text-custom-title dark:text-white">
+                    Cerrar Sesion
+                  </p>
+                  <LogOut />
+                </div>
+                <Link
+                  href="/reset-password"
+                  className="flex justify-between items-center text-custom-title  dark:text-white mt-4"
+                >
+                  <p className="text-custom-title dark:text-white">
+                    Cambiar contraseña
+                  </p>
+                  <FileLock2 />
+                </Link>
               </div>
             )}
             <Separator />

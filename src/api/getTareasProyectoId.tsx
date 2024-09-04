@@ -1,15 +1,14 @@
 import { get } from "@/helpers/axiosInstance";
 import { useEffect, useState } from "react";
-import { boolean } from "zod";
 
-const useAllProjects = (token?: string, check?: boolean) => {
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos`;
+const useTareasProyectosId = (id: string, token?: string, check?: boolean) => {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/tareas/${id}`;
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const getAllProjects = async () => {
+    const getProject = async () => {
       setLoading(true);
       try {
         const response = await get(url, "", token);
@@ -24,10 +23,10 @@ const useAllProjects = (token?: string, check?: boolean) => {
       }
     };
 
-    getAllProjects();
-  }, [url, token, check]);
+    getProject();
+  }, [url, token, id, check]);
 
   return { result, loading, error };
 };
 
-export default useAllProjects;
+export default useTareasProyectosId;

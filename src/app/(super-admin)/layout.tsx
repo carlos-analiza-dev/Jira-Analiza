@@ -22,10 +22,10 @@ export default function AdminLayout({ children }: any) {
   return (
     <div className="h-full">
       <div className="mt-10 md:mt-16 w-full block md:flex">
-        <div className="w-full md:w-1/4">
+        <div className="w-full sm:w-1/5">
           <SideBar />
         </div>
-        <main className="mt-5 p-2 md:w-3/4">{children}</main>
+        <main className="mt-5 p-2 sm:w-4/5">{children}</main>
       </div>
     </div>
   );
