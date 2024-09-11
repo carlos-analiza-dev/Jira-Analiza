@@ -95,7 +95,7 @@ export default function NavBar() {
                 </NavigationMenuContent>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link href="/docs" legacyBehavior passHref>
+                <Link href="/nuevo-proyecto" legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     Nuevo Proyecto
                   </NavigationMenuLink>

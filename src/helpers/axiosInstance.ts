@@ -4,6 +4,7 @@ const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
 });
 
+// Función GET
 export const get = async <T>(
   url: string,
   params?: any,

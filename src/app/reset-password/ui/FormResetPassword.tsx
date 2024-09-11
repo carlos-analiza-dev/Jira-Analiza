@@ -2,6 +2,8 @@
 import resetPassword from "@/api/resetPassword";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface sendEmail {
@@ -47,6 +49,7 @@ const FormResetPassword = () => {
           >
             Correo Electrónico
           </label>
+
           <Input
             {...register("correo", {
               required: "El correo electrónico es obligatorio",
@@ -60,6 +63,7 @@ const FormResetPassword = () => {
             placeholder="example@gmail.com"
             className="p-3 rounded-md shadow w-full  mt-3"
           />
+
           {errors.correo && (
             <p className="text-red-500 mt-2">
               {errors.correo.message?.toString()}

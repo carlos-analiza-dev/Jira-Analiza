@@ -1,4 +1,4 @@
-export type TableRolesData={
-    id:string
-    nombre:string
-}
+export type TableRolesData = {
+  id: string;
+  nombre: string;
+};

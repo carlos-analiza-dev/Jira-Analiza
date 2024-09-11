@@ -14,41 +14,65 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { SucursalData } from "@/types/sucursal.type";
 import createSucursal from "@/api/createSucursal";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { departamentosData } from "../../../../data/departamentos";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { clearUser } from "@/store/auth/sessionSlice";
+import { useSelector } from "react-redux";
 
 export default function SucursalPage() {
+  const user = useSelector((state: any) => state.auth);
+  const dispatch = useDispatch();
+  const router = useRouter();
   const [check, setCheck] = useState(true);
   const { toast } = useToast();
-  const { loading, resultSucursal } = useAllSucursal(check);
+  const { loading, resultSucursal, error } = useAllSucursal(check, user.token);
   const {
     register,
     reset,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<SucursalData>();
 
+  useEffect(() => {
+    if (error === "Request failed with status code 401") {
+      dispatch(clearUser());
+      router.push("/");
+    }
+  }, [error, dispatch, router]);
+
   const onSubmit = async (data: SucursalData) => {
     try {
-      const response = await createSucursal(data);
+      const response = await createSucursal(data, user.token);
       setCheck(!check);
       reset();
       toast({ title: "Sucursal creada exitosamente" });
     } catch (error) {
-      console.log("ERROR SUCURSAL", error);
       toast({
-        title: "Hubo un errro al momento de crear la sucursal",
+        title: "Hubo un error al momento de crear la sucursal",
         variant: "destructive",
       });
     }
   };
 
   return (
-    <div className="max-w-3xl sm:max-w-5xl mx-auto">
+    <div className="max-w-3xl sm:max-w-6xl mx-auto">
       <div className="mt-5 text-center">
         <p className="text-custom-title font-bold text-3xl dark:text-white">
           Sucursales
@@ -120,18 +144,32 @@ export default function SucursalPage() {
               </div>
               <div className="mt-5 mb-5">
                 <label className="text-custom-title dark:text-white font-medium">
-                  Departamento de Sucursal
+                  Departamento Sucursal
                 </label>
-                <Input
-                  {...register("departamento", {
-                    required: "El campo departamento obligatorio",
-                    pattern: {
-                      value: /^[a-zA-Z\s]+$/,
-                      message: "Solo se permiten letras y espacios en blanco",
-                    },
-                  })}
-                  className="mt-3"
-                  placeholder="Departamento"
+                <Controller
+                  name="departamento"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Selecciona un departamento" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Departamentos</SelectLabel>
+                          {departamentosData.map((dep) => (
+                            <SelectItem key={dep.id} value={dep.nombre}>
+                              {dep.nombre}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  )}
+                  rules={{
+                    required: "El departamento de la sucursal es obligatorio",
+                  }}
                 />
                 {errors.departamento && (
                   <p className="text-red-500 mt-2">

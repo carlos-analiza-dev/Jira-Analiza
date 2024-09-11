@@ -1,6 +1,5 @@
 import { patch } from "@/helpers/axiosInstance";
 import { PostTarea } from "@/types/postTareas.type";
-import { TareasData } from "@/types/tareas.type";
 
 const updateTarea = async (
   tareaId: string,

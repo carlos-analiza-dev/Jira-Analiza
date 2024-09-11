@@ -20,8 +20,7 @@ import { useSelector } from "react-redux";
 import SkeletonProyectos from "@/components/SkeletonProyectos";
 import { clearUser } from "@/store/auth/sessionSlice";
 import { useDispatch } from "react-redux";
-
-const TeamPage = () => {
+const ColaboradoresUsers = () => {
   const user = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -47,7 +46,7 @@ const TeamPage = () => {
   };
 
   return (
-    <div className="max-w-3xl sm:max-w-6xl px-4">
+    <div className="sm:w-full px-4 py-3 sm:px-28">
       <div className="mt-5">
         <h1 className="text-3xl text-custom-title font-bold dark:text-white">
           Administrar Equipos
@@ -108,4 +107,4 @@ const TeamPage = () => {
   );
 };
 
-export default TeamPage;
+export default ColaboradoresUsers;

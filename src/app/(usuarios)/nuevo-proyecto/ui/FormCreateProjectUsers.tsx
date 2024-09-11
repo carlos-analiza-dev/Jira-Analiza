@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
-const FormProyectos = () => {
+const FormCreateProjectUsers = () => {
   const user = useSelector((state: any) => state.auth);
   const { toast } = useToast();
   const router = useRouter();
@@ -24,7 +24,7 @@ const FormProyectos = () => {
     try {
       const response = await createProjects(data, user.token);
       toast({ title: "Proyecto creado exitosamente" });
-      router.push("/admin-proyectos");
+      router.push("/proyectos");
       reset();
     } catch (error: any) {
       toast({
@@ -100,21 +100,7 @@ const FormProyectos = () => {
           </p>
         )}
       </div>
-      {/*  <div className="mt-3">
-            <label className="text-custom-title dark:text-white">Estado</label>
-            <Select>
-              <SelectTrigger className="w-full dark:bg-gray-800">
-                <SelectValue placeholder="Seleccione un estado" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Estado</SelectLabel>
-                  <SelectItem value="grapes">En progreso</SelectItem>
-                  <SelectItem value="pineapple">Finalizado</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div> */}
+
       <div className="mt-3 w-full">
         <Button
           type="submit"
@@ -127,4 +113,4 @@ const FormProyectos = () => {
   );
 };
 
-export default FormProyectos;
+export default FormCreateProjectUsers;

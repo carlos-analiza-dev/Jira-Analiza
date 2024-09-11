@@ -3,13 +3,9 @@ import { patch } from "@/helpers/axiosInstance";
 const updateUser = async (userId: string, updateData: any, token?: string) => {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/${userId}`;
 
-  try {
-    const response = await patch(url, updateData);
+  const response = await patch(url, updateData, token);
 
-    return response;
-  } catch (error) {
-    console.log(error);
-  }
+  return response;
 };
 
 export default updateUser;

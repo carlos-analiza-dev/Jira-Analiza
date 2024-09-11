@@ -3,14 +3,34 @@ import useAllUsers from "@/api/getAllUsers";
 import { ResponseData } from "@/types/response.type";
 import TableUsers from "./ui/TableUsers";
 import SkeletonTable from "@/components/SkeletonTable";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { clearUser } from "@/store/auth/sessionSlice";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
 
 export default function UsersPage() {
+  const user = useSelector((state: any) => state.auth);
+  console.log("USER TOKEN", user.token);
+
+  const dispatch = useDispatch();
+  const router = useRouter();
+
   const [check, setCheck] = useState(true);
-  const { result, loading }: ResponseData = useAllUsers(check);
+  const { result, loading, error }: ResponseData = useAllUsers(
+    check,
+    user.token
+  );
+
+  useEffect(() => {
+    if (error === "Request failed with status code 401") {
+      dispatch(clearUser());
+      router.push("/");
+    }
+  }, [error, dispatch, router]);
 
   return (
-    <div className="max-w-3xl sm:max-w-5xl p-3">
+    <div className="max-w-3xl sm:max-w-6xl p-3">
       <div className="mt-5 text-center mb-5">
         <p className="text-3xl font-semibold text-custom-title dark:text-white">
           Usuarios
@@ -19,7 +39,9 @@ export default function UsersPage() {
       {loading ? (
         <SkeletonTable />
       ) : (
-        <TableUsers users={result} check={check} setCheck={setCheck} />
+        <div className="px-3 mx-auto">
+          <TableUsers users={result} check={check} setCheck={setCheck} />
+        </div>
       )}
     </div>
   );

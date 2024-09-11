@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import { FormDataConfirm } from "@/types/confirm-password.type";
 import confirmPasswordUpdate from "@/api/confirmPassword";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 
 const FormConfirmPassword = () => {
   const router = useRouter();
@@ -17,6 +19,8 @@ const FormConfirmPassword = () => {
     watch,
     getValues,
   } = useForm<FormDataConfirm>();
+  const [isActive, setIsActive] = useState(true);
+  const [isActiveConfirm, setIsActiveConfirm] = useState(true);
 
   const onSubmit = async (data: FormDataConfirm) => {
     try {
@@ -78,20 +82,35 @@ const FormConfirmPassword = () => {
           >
             Contraseña
           </label>
-          <Input
-            {...register("nuevaContrasena", {
-              required: "La contraseña es obligatoria",
-              pattern: {
-                value:
-                  /(?:(?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
-                message:
-                  "La contraseña debe tener una letra mayúscula, minúscula y un número.",
-              },
-            })}
-            type="password"
-            placeholder="**************"
-            className="p-3 rounded-md shadow w-full mt-2"
-          />
+          <div className="relative w-full">
+            <Input
+              {...register("nuevaContrasena", {
+                required: "La contraseña es obligatoria",
+                pattern: {
+                  value:
+                    /(?:(?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
+                  message:
+                    "La contraseña debe tener una letra mayúscula, minúscula y un número.",
+                },
+              })}
+              type={isActive ? "password" : "text"}
+              placeholder="**************"
+              className="p-3 rounded-md shadow w-full mt-2"
+            />
+            {isActive ? (
+              <Eye
+                onClick={() => setIsActive(!isActive)}
+                size={20}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+              />
+            ) : (
+              <EyeOff
+                onClick={() => setIsActive(!isActive)}
+                size={20}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+              />
+            )}
+          </div>
           {errors.nuevaContrasena && (
             <p className="text-red-500 mt-2">
               {errors.nuevaContrasena.message}
@@ -106,17 +125,32 @@ const FormConfirmPassword = () => {
           >
             Confirmar Contraseña
           </label>
-          <Input
-            {...register("confirmPassword", {
-              required: "Debes confirmar tu contraseña",
-              validate: (value) =>
-                value === getValues("nuevaContrasena") ||
-                "Las contraseñas no coinciden",
-            })}
-            type="password"
-            placeholder="**************"
-            className="p-3 rounded-md shadow w-full mt-2"
-          />
+          <div className="relative w-full">
+            <Input
+              {...register("confirmPassword", {
+                required: "Debes confirmar tu contraseña",
+                validate: (value) =>
+                  value === getValues("nuevaContrasena") ||
+                  "Las contraseñas no coinciden",
+              })}
+              type={isActiveConfirm ? "password" : "text"}
+              placeholder="**************"
+              className="p-3 rounded-md shadow w-full mt-2"
+            />
+            {isActiveConfirm ? (
+              <Eye
+                size={20}
+                onClick={() => setIsActiveConfirm(!isActiveConfirm)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+              />
+            ) : (
+              <EyeOff
+                size={20}
+                onClick={() => setIsActiveConfirm(!isActiveConfirm)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+              />
+            )}
+          </div>
           {errors.confirmPassword && (
             <p className="text-red-500 mt-2">
               {errors.confirmPassword.message?.toString()}

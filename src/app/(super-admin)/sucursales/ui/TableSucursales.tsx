@@ -27,6 +27,17 @@ import { useToast } from "@/components/ui/use-toast";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import updateSucursal from "@/api/updateSucursal";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { departamentosData } from "../../../../../data/departamentos";
+import { useSelector } from "react-redux";
 
 export interface dataTable {
   resultSucursal: SucursalData[];
@@ -37,6 +48,7 @@ export interface dataTable {
 type SucursalFormData = Omit<SucursalData, "id">;
 
 const TableSucursales = ({ resultSucursal, check, setCheck }: dataTable) => {
+  const user = useSelector((state: any) => state.auth);
   const { toast } = useToast();
   const [sucursalUpdate, setSucursalUpdate] = useState<SucursalData | null>(
     null
@@ -45,16 +57,19 @@ const TableSucursales = ({ resultSucursal, check, setCheck }: dataTable) => {
     register,
     reset,
     handleSubmit,
+    watch,
     formState: { errors },
+    setValue,
   } = useForm<SucursalFormData>();
+
+  const departamentoWatch = watch("departamento");
 
   const handleDelete = async (id: string) => {
     try {
-      const response = await deleteSucursal(id);
+      const response = await deleteSucursal(id, user.token);
       setCheck(!check);
       toast({ title: "Sucursal eliminada exitosamente" });
     } catch (error) {
-      console.log("ERROR ELIMINAR SUCURSAL");
       toast({
         title: "Sucursal asignada a usuarios, no es posible eliminarla.",
         variant: "destructive",
@@ -74,7 +89,11 @@ const TableSucursales = ({ resultSucursal, check, setCheck }: dataTable) => {
   const handleUpdate = async (data: SucursalFormData) => {
     try {
       if (sucursalUpdate) {
-        const response = await updateSucursal(sucursalUpdate.id, data);
+        const response = await updateSucursal(
+          sucursalUpdate.id,
+          data,
+          user.token
+        );
         setCheck(!check);
         setSucursalUpdate(null);
         toast({ title: "Sucursal actualizada exitosamente" });
@@ -133,7 +152,7 @@ const TableSucursales = ({ resultSucursal, check, setCheck }: dataTable) => {
                 {sucursal.departamento}
               </TableCell>
               <TableCell className="text-custom-title font-medium dark:text-white text-center">
-                <div className="flex justify-around gap-3 sm:gap-0">
+                <div className="flex justify-around gap-3">
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button variant="outline">
@@ -214,7 +233,6 @@ const TableSucursales = ({ resultSucursal, check, setCheck }: dataTable) => {
                   Dirección Sucursal
                 </label>
                 <Input
-                  autoFocus
                   {...register("direccion", {
                     required: "La dirección de la sucursal es obligatoria",
                     pattern: {
@@ -235,18 +253,28 @@ const TableSucursales = ({ resultSucursal, check, setCheck }: dataTable) => {
                 <label className="text-custom-title dark:text-white font-medium">
                   Departamento Sucursal
                 </label>
-                <Input
-                  autoFocus
-                  {...register("departamento", {
-                    required: "El departamento de la sucursal es obligatorio",
-                    pattern: {
-                      value: /^[a-zA-Z\s]+$/,
-                      message: "Solo se permiten letras y espacios en blanco",
-                    },
-                  })}
-                  className="mt-3"
-                  placeholder="Departamento Sucursal"
-                />
+                <Select
+                  onValueChange={(value) => setValue("departamento", value)}
+                  value={departamentoWatch}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue
+                      placeholder={
+                        departamentoWatch || "Selecciona un departamento"
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Departamentos</SelectLabel>
+                      {departamentosData.map((dep) => (
+                        <SelectItem key={dep.id} value={dep.nombre}>
+                          {dep.nombre}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
                 {errors.departamento && (
                   <p className="text-red-500 mt-2">
                     {errors.departamento.message?.toString()}
@@ -254,7 +282,9 @@ const TableSucursales = ({ resultSucursal, check, setCheck }: dataTable) => {
                 )}
               </div>
               <AlertDialogFooter>
-                <AlertDialogCancel type="button">Cancelar</AlertDialogCancel>
+                <AlertDialogCancel className="text-custom-title dark:text-white">
+                  Cancelar
+                </AlertDialogCancel>
                 <Button
                   type="submit"
                   className="bg-custom-title text-white dark:bg-white dark:text-custom-title"

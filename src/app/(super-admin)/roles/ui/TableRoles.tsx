@@ -21,7 +21,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import deleteRol from "@/api/deleteRol";
-import useAllRoles from "@/api/getAllRoles";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -29,6 +28,7 @@ import updateRol from "@/api/updateRol";
 import { Input } from "@/components/ui/input";
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
 import Image from "next/image";
+import { useSelector } from "react-redux";
 
 export interface Props {
   roles: TableRolesData[];
@@ -37,8 +37,9 @@ export interface Props {
 }
 
 const TableRoles = ({ roles, check, setCheck }: Props) => {
+  const user = useSelector((state: any) => state.auth);
   const { toast } = useToast();
-  const { result: allRoles } = useAllRoles(check);
+
   const [selectedRol, setSelectedRol] = useState<TableRolesData | null>(null);
   const {
     register,
@@ -48,13 +49,12 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
   } = useForm<TableRolesData>();
   const handleDelete = async (id: string) => {
     try {
-      await deleteRol(id);
+      await deleteRol(id, user.token);
       setCheck(!check);
       toast({ title: "Rol eliminado exitosamente" });
     } catch (error) {
-      console.error("Failed to delete role:", error);
       toast({
-        title: "Rol asignado a usuarios, no es posible eliminarlo.",
+        title: "No es posible eliminar este rol.",
         variant: "destructive",
       });
     }
@@ -68,7 +68,11 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
   const handleUpdate = async (data: TableRolesData) => {
     try {
       if (selectedRol) {
-        const response = await updateRol(selectedRol.id, data.nombre);
+        const response = await updateRol(
+          selectedRol.id,
+          data.nombre,
+          user.token
+        );
         setCheck(!check);
         toast({ title: "Rol actualizado exitosamente" });
         setSelectedRol(null);
@@ -82,7 +86,7 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
     }
   };
 
-  if (!allRoles || allRoles.length === 0) {
+  if (!roles || roles.length === 0) {
     return (
       <div className="block">
         <div className="flex justify-center mt-10">
@@ -90,7 +94,7 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
         </div>
         <div className="mt-5">
           <p className="text-center font-bold text-custom-title text-2xl dark:text-white">
-            No se encontraron usuarios.
+            No se encontraron roles.
           </p>
         </div>
       </div>
@@ -98,7 +102,7 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
   }
 
   return (
-    <>
+    <div className="flex mx-auto px-3">
       <Table>
         <TableCaption className="text-custom-title dark:text-white">
           Lista de roles
@@ -117,7 +121,7 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {allRoles.map((rol: TableRolesData) => (
+          {roles.map((rol: TableRolesData) => (
             <TableRow key={rol.id}>
               <TableCell className="font-medium text-center">
                 {rol.id}
@@ -214,7 +218,7 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
           </AlertDialogContent>
         </AlertDialog>
       )}
-    </>
+    </div>
   );
 };
 

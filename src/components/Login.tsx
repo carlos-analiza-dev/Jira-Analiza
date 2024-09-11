@@ -8,13 +8,15 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/store/auth/sessionSlice";
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginSesion() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { toast } = useToast();
   const user = useSelector((state: any) => state.auth);
+  const [isActive, setIsActive] = useState(true);
 
   const {
     register,
@@ -84,19 +86,36 @@ export default function LoginSesion() {
         >
           Contraseña
         </label>
-        <Input
-          {...register("password", {
-            required: "La contraseña es obligatoria",
-            pattern: {
-              value: /(?:(?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
-              message:
-                "La contraseña debe tener una letra mayúscula, minúscula y un número.",
-            },
-          })}
-          type="password"
-          placeholder="**************"
-          className="p-3 rounded-md shadow w-full sm:w-3/4 mt-3"
-        />
+        <div className="relative w-full sm:w-3/4 mt-3">
+          <Input
+            {...register("password", {
+              required: "La contraseña es obligatoria",
+              pattern: {
+                value:
+                  /(?:(?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
+                message:
+                  "La contraseña debe tener una letra mayúscula, minúscula y un número.",
+              },
+            })}
+            type={isActive ? "password" : "text"}
+            placeholder="**************"
+            className="p-3 rounded-md shadow w-full"
+          />
+          {isActive ? (
+            <Eye
+              onClick={() => setIsActive(!isActive)}
+              size={20}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+            />
+          ) : (
+            <EyeOff
+              onClick={() => setIsActive(!isActive)}
+              size={20}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+            />
+          )}
+        </div>
+
         {errors.password && (
           <p className="text-red-500 mt-2">
             {errors.password.message?.toString()}

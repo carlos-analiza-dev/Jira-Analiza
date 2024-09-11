@@ -9,7 +9,7 @@ const useGetUserAuth = (check?: boolean, token?: string) => {
   useEffect(() => {
     const getAuthUsers = async () => {
       try {
-        const response = await get(url, token);
+        const response = await get(url, "", token);
 
         setResult(response);
         setLoading(false);

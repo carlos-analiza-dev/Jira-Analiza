@@ -14,9 +14,9 @@ export default function UserLayout({ children }: any) {
   }, [user, router]);
 
   return (
-    <div className="h-full">
-      <div className="mt-10 md:mt-16 w-full block md:flex">
-        <main className="mt-5 p-2 w-full h-screen">{children}</main>
+    <div>
+      <div className="mt-10 md:mt-16 w-full block md:flex h-full">
+        <main className="mt-5 p-2 w-full">{children}</main>
       </div>
     </div>
   );

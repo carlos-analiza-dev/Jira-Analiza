@@ -1,14 +1,18 @@
 import { get } from "@/helpers/axiosInstance";
 import { useEffect, useState } from "react";
 
-const useAllProjects = (token?: string, check?: boolean) => {
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/mis-proyectos`;
+const useColaboradoresByProjectId = (
+  proyectoId: string,
+  token?: string,
+  check?: boolean
+) => {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/${proyectoId}/colaborador`;
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const getAllProjects = async () => {
+    const getProject = async () => {
       setLoading(true);
       try {
         const response = await get(url, "", token);
@@ -23,10 +27,10 @@ const useAllProjects = (token?: string, check?: boolean) => {
       }
     };
 
-    getAllProjects();
-  }, [url, token, check]);
+    getProject();
+  }, [url, token, proyectoId, check]);
 
   return { result, loading, error };
 };
 
-export default useAllProjects;
+export default useColaboradoresByProjectId;

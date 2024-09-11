@@ -1,5 +1,5 @@
 import { TareasData } from "@/types/tareas.type";
-import { GripVerticalIcon, Pencil, Trash2 } from "lucide-react";
+import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -16,13 +16,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import TareasForm from "./TareasForm";
 import { useParams } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import deleteTarea from "@/api/deleteTarea";
 import { useSelector } from "react-redux";
+import { useDraggable } from "@dnd-kit/core";
+import { formatFecha } from "@/helpers/formatDate";
 
 interface Props {
   tarea: TareasData;
@@ -30,6 +31,9 @@ interface Props {
   setCheck: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const TareasCard = ({ tarea, check, setCheck }: Props) => {
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: tarea.id,
+  });
   const user = useSelector((state: any) => state.auth);
   const params = useParams();
   const proyectoId = Array.isArray(params.id) ? params.id[0] : params.id;
@@ -68,22 +72,43 @@ const TareasCard = ({ tarea, check, setCheck }: Props) => {
     }
   };
 
+  const style = transform
+    ? {
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+        padding: "1.25rem",
+        backgroundColor: "#f8fafc",
+        width: "400px",
+        display: "block",
+        borderWidth: "1px",
+        borderColor: "rgb(203 213 225 / var(--tw-border-opacity))",
+      }
+    : undefined;
+
   return (
-    <button className="p-1 bg-gray-50 dark:bg-gray-900 mt-2 shadow-md block w-full">
-      <div className="flex justify-between">
-        <div>
+    <div className="p-2 bg-gray-50 dark:bg-gray-900 mt-2 shadow-md block w-full">
+      <div className="flex justify-between gap-3">
+        <div
+          {...listeners}
+          {...attributes}
+          ref={setNodeRef}
+          style={style}
+          className="text-start w-full"
+        >
           <p className="text-custom-title text-lg font-bold dark:text-white">
             {tarea.titulo}
           </p>
           <p className="text-custom-title text-base font-light dark:text-white">
             {tarea.descripcion}
           </p>
+          <p className="text-custom-title text-sm font-light dark:text-white mt-2">
+            Actualzada: {formatFecha(tarea.updatedAt)}
+          </p>
         </div>
         {user.id === tarea.creador.id && (
           <div className="flex items-center cursor-pointer">
             <Popover>
               <PopoverTrigger asChild>
-                <GripVerticalIcon />
+                <EllipsisVertical />
               </PopoverTrigger>
               <PopoverContent className="w-72">
                 <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -149,7 +174,7 @@ const TareasCard = ({ tarea, check, setCheck }: Props) => {
           </div>
         )}
       </div>
-    </button>
+    </div>
   );
 };
 

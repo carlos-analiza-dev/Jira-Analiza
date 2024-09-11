@@ -1,8 +1,7 @@
 import { get } from "@/helpers/axiosInstance";
 import { useEffect, useState } from "react";
-import { boolean } from "zod";
 
-const useAllSucursal = (check?: boolean) => {
+const useAllSucursal = (check?: boolean, token?: string) => {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/sucursal`;
   const [resultSucursal, setResultSucursal] = useState<any>(null);
   const [error, setError] = useState<string>("");
@@ -11,7 +10,7 @@ const useAllSucursal = (check?: boolean) => {
   useEffect(() => {
     const getAllSucursales = async () => {
       try {
-        const response = await get(url);
+        const response = await get(url, "", token);
         setResultSucursal(response);
 
         setLoading(false);
@@ -23,7 +22,7 @@ const useAllSucursal = (check?: boolean) => {
     getAllSucursales();
   }, [url, check]);
 
-  return { resultSucursal, loading };
+  return { resultSucursal, loading, error };
 };
 
 export default useAllSucursal;

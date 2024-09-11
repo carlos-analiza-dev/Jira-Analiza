@@ -20,7 +20,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-import { UserType } from "@/types/user.type";
 import updateUser from "@/api/updateUser";
 import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
@@ -43,6 +42,7 @@ import useAllRoles from "@/api/getAllRoles";
 import { TableRolesData } from "@/types/table.roles.type";
 import useAllSucursal from "@/api/getSucursale";
 import { SucursalData } from "@/types/sucursal.type";
+import { useSelector } from "react-redux";
 
 export type UsersTable = {
   users: UserUpdateType[];
@@ -64,9 +64,12 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
 
   const [filteredUsers, setFilteredUsers] = useState<UserUpdateType[]>(users);
 
+  const currentUserId = useSelector((state: any) => state.auth.id);
+
   useEffect(() => {
-    setFilteredUsers(users);
-  }, [users]);
+    const filtered = users.filter((user) => user.id !== currentUserId);
+    setFilteredUsers(filtered);
+  }, [users, currentUserId]);
 
   const handleToggleActive = async (
     userId: string,
@@ -83,6 +86,8 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
       });
       setCheck(!check);
     } catch (error) {
+      console.log("error user", error);
+
       console.error("Error al actualizar el usuario:", error);
     }
   };

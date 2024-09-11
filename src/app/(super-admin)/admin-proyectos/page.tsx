@@ -2,12 +2,13 @@
 import useAllProjects from "@/api/getAllProjects";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import Proyectos from "./ui/Proyectos";
+/* import Proyectos from "./ui/Proyectos"; */
 import SkeletonProyectos from "@/components/SkeletonProyectos";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { clearUser } from "@/store/auth/sessionSlice";
 import { useRouter } from "next/navigation";
+import Proyectos from "@/components/Proyectos";
 
 const ProyectosPage = () => {
   const user = useSelector((state: any) => state.auth);

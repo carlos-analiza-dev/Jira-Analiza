@@ -7,7 +7,7 @@ const updateStatusTarea = async (
 ) => {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/tareas/${tareaId}`;
 
-  const response = await patch(url, estado, token);
+  const response = await patch(url, { estado }, token);
 
   return response;
 };

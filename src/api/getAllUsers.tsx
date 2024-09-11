@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { get } from "../helpers/axiosInstance";
 
-const useAllUsers = (check?: boolean) => {
+const useAllUsers = (check?: boolean, token?: string) => {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/users`;
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -11,7 +11,7 @@ const useAllUsers = (check?: boolean) => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await get(url);
+        const res = await get(url, "", token);
         setResult(res);
       } catch (error: any) {
         setError(error.message || "Error al obtener los datos");

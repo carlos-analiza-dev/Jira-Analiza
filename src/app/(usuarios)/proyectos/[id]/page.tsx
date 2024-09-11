@@ -57,7 +57,7 @@ const PageProyectoId = () => {
   };
 
   return (
-    <div className="w-full mx-auto mt-5">
+    <div className="w-full mx-auto mt-5 px-5 py-5 sm:px-12">
       <h1 className="text-xl sm:text-3xl text-custom-title dark:text-white font-bold">
         {result.nombre}
       </h1>
@@ -90,7 +90,11 @@ const PageProyectoId = () => {
             </AlertDialogContent>
           </AlertDialog>
           <Link
-            href={`/admin-proyectos/${proyectoId}/team`}
+            href={
+              user.role && user.role === "Administrador"
+                ? `/admin-proyectos/${proyectoId}/team`
+                : `/proyectos/${proyectoId}/team-users`
+            }
             className="dark:bg-sky-600 dark:text-white bg-custom-title text-white rounded-md p-2 shadow-md"
           >
             Colaboradores

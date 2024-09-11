@@ -15,6 +15,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { SucursalData } from "@/types/sucursal.type";
 import { TableRolesData } from "@/types/table.roles.type";
+import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -33,6 +34,8 @@ const FormRegister = () => {
   const [direccion, setDireccion] = useState("");
   const [roleId, setRoleId] = useState("");
   const [sucursalId, setSucursalId] = useState("");
+  const [isActive, setIsActive] = useState(true);
+  const [isActiveConfirm, setIsActiveConfirm] = useState(true);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -141,14 +144,29 @@ const FormRegister = () => {
             >
               Contraseña
             </label>
-            <Input
-              id="password"
-              value={contrasena}
-              onChange={(e) => setContrasena(e.target.value)}
-              type="password"
-              placeholder="**************"
-              className="p-3 rounded-md shadow w-full  mt-1"
-            />
+            <div className="relative w-full">
+              <Input
+                id="password"
+                value={contrasena}
+                onChange={(e) => setContrasena(e.target.value)}
+                type={isActive ? "password" : "text"}
+                placeholder="**************"
+                className="p-3 rounded-md shadow w-full  mt-1"
+              />
+              {isActive ? (
+                <Eye
+                  onClick={() => setIsActive(!isActive)}
+                  size={20}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                />
+              ) : (
+                <EyeOff
+                  onClick={() => setIsActive(!isActive)}
+                  size={20}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                />
+              )}
+            </div>
           </div>
           <div className="mt-1 w-full">
             <label
@@ -157,14 +175,29 @@ const FormRegister = () => {
             >
               Confirmar Contraseña
             </label>
-            <Input
-              id="confirmPassword"
-              value={confirmarContrasena}
-              onChange={(e) => setConfirmarContrasena(e.target.value)}
-              type="password"
-              placeholder="**************"
-              className="p-3 rounded-md shadow w-full  mt-1"
-            />
+            <div className="relative w-full">
+              <Input
+                id="confirmPassword"
+                value={confirmarContrasena}
+                onChange={(e) => setConfirmarContrasena(e.target.value)}
+                type={isActiveConfirm ? "password" : "text"}
+                placeholder="**************"
+                className="p-3 rounded-md shadow w-full  mt-1"
+              />
+              {isActiveConfirm ? (
+                <Eye
+                  size={20}
+                  onClick={() => setIsActiveConfirm(!isActiveConfirm)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                />
+              ) : (
+                <EyeOff
+                  size={20}
+                  onClick={() => setIsActiveConfirm(!isActiveConfirm)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                />
+              )}
+            </div>
           </div>
           <div className="mt-1 w-full">
             <label className="block text-lg font-semibold text-custom-title">

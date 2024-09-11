@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import FormProyectos from "./ui/FormProyectos";
+import FormCreateProject from "@/components/ui/FormCreateProject";
 
 const CrearProyecto = () => {
   return (
@@ -22,7 +22,7 @@ const CrearProyecto = () => {
         </Link>
       </div>
       <div className="flex justify-center mt-8">
-        <FormProyectos />
+        <FormCreateProject />
       </div>
     </div>
   );

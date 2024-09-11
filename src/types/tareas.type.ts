@@ -5,6 +5,7 @@ export type TareasData = {
   titulo: string;
   descripcion: string;
   estado: string;
+  updatedAt: string;
   proyecto: {
     id: string;
     cliente: string;
