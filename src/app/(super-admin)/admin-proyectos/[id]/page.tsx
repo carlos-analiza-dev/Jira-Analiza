@@ -1,10 +1,8 @@
 "use client";
-import useProyectoId from "@/api/getProyectoId";
-import SkeletonProyectos from "@/components/SkeletonProyectos";
-import { Button } from "@/components/ui/button";
-import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useParams, useRouter } from "next/navigation";
+import SkeletonProyectos from "@/components/SkeletonProyectos";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -13,11 +11,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import useTareasProyectosId from "@/api/getTareasProyectoId";
-import { clearUser } from "@/store/auth/sessionSlice";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import TareasForm from "@/components/TareasForm";
 import TaskList from "@/components/TaskList";
+import useProyectoId from "@/api/getProyectoId";
+import useTareasProyectosId from "@/api/getTareasProyectoId";
+import { clearUser } from "@/store/auth/sessionSlice";
 
 const PageProyectoId = () => {
   const user = useSelector((state: any) => state.auth);
@@ -28,6 +28,7 @@ const PageProyectoId = () => {
   const router = useRouter();
   const proyectoId = Array.isArray(params.id) ? params.id[0] : params.id;
   const { result, loading, error } = useProyectoId(proyectoId, user.token);
+
   const {
     result: resultTareas,
     loading: resultLoading,
@@ -37,13 +38,17 @@ const PageProyectoId = () => {
   useEffect(() => {
     if (error === "Request failed with status code 401") {
       dispatch(clearUser());
-      router.push("/");
+      router.push("/unauthorized");
     }
   }, [error, dispatch, router]);
 
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+  };
+
   if (loading) return <SkeletonProyectos />;
 
-  if (!result)
+  if (!result || !result.nombre)
     return (
       <div className="flex justify-center">
         <p className="text-3xl text-custom-title dark:text-white">
@@ -52,9 +57,15 @@ const PageProyectoId = () => {
       </div>
     );
 
-  const handleCloseDialog = () => {
-    setIsDialogOpen(false);
-  };
+  const esCreador = result.creador && user.id === result.creador.id;
+  const esResponsable = result.responsable && user.id === result.responsable.id;
+  const esColaborador = result.usuarios.some(
+    (colaborador) => colaborador.id === user.id
+  );
+
+  console.log("creador", esCreador);
+  console.log("responsable", esResponsable);
+  console.log("colaborador", esColaborador);
 
   return (
     <div className="w-full mx-auto mt-5">
@@ -64,6 +75,7 @@ const PageProyectoId = () => {
       <h3 className="text-base sm:text-xl text-custom-title dark:text-white font-semibold mt-5">
         {result.descripcion}
       </h3>
+
       {user.id === result.creador.id ? (
         <div className="flex justify-around sm:w-2/6 mt-5 gap-3">
           <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -90,7 +102,11 @@ const PageProyectoId = () => {
             </AlertDialogContent>
           </AlertDialog>
           <Link
-            href={`/admin-proyectos/${proyectoId}/team`}
+            href={
+              user.role && user.role === "Administrador"
+                ? `/admin-proyectos/${proyectoId}/team`
+                : `/proyectos/${proyectoId}/team-users`
+            }
             className="dark:bg-sky-600 dark:text-white bg-custom-title text-white rounded-md p-2 shadow-md"
           >
             Colaboradores
@@ -99,7 +115,6 @@ const PageProyectoId = () => {
       ) : (
         ""
       )}
-
       <TaskList tareas={resultTareas} check={check} setCheck={setCheck} />
     </div>
   );

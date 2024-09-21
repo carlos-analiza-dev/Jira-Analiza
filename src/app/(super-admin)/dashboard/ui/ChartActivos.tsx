@@ -1,30 +1,63 @@
 "use client";
-
 import { Pie, PieChart, Cell } from "recharts";
 import { ChartContainer, ChartConfig } from "@/components/ui/chart";
+import useGetActiveUsers from "@/api/getActiveUsers";
+import { useState, useEffect } from "react";
+import { ActiveData } from "@/types/active.type";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { clearUser } from "@/store/auth/sessionSlice";
 
-const chartData = [
-  { name: "Activos", value: 1224 },
-  { name: "Inactivos", value: 860 },
-];
-
-const chartColors = ["#2563eb", "#60a5fa"];
-
-const chartConfig: ChartConfig = {
-  activos: {
-    label: "Activos",
-    color: "#2563eb",
-  },
-  iactivos: {
-    label: "Inactivos",
-    color: "#60a5fa",
-  },
-};
 const ChartActivos = () => {
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const { result, loading, error } = useGetActiveUsers();
+
+  useEffect(() => {
+    if (error === "Request failed with status code 401") {
+      dispatch(clearUser());
+      router.push("/unauthorized");
+    }
+  }, [error, dispatch, router]);
+
+  const [resultado, setResultado] = useState<ActiveData>({
+    activos: 0,
+    inactivos: 0,
+  });
+
+  useEffect(() => {
+    if (
+      result &&
+      typeof result === "object" &&
+      "activos" in result &&
+      "inactivos" in result
+    ) {
+      setResultado(result as ActiveData);
+    }
+  }, [result]);
+
+  const chartData = [
+    { name: "Activos", value: resultado.activos },
+    { name: "Inactivos", value: resultado.inactivos },
+  ];
+
+  const chartColors = ["#2563eb", "#60a5fa"];
+
+  const chartConfig: ChartConfig = {
+    activos: {
+      label: "Activos",
+      color: "#2563eb",
+    },
+    iactivos: {
+      label: "Inactivos",
+      color: "#60a5fa",
+    },
+  };
+
   return (
     <div>
       <p className="text-custom-title font-bold dark:text-white">
-        Productos más vendidos
+        Actividad de usuarios
       </p>
 
       <ChartContainer config={chartConfig} className="min-h-[200px] w-full">

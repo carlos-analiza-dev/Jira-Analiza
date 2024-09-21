@@ -76,11 +76,18 @@ const TareasCard = ({ tarea, check, setCheck }: Props) => {
     ? {
         transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
         padding: "1.25rem",
-        backgroundColor: "#f8fafc",
+        backgroundColor: document.documentElement.classList.contains("dark")
+          ? "#1f2937"
+          : "#f8fafc",
+        color: document.documentElement.classList.contains("dark")
+          ? "#f8fafc"
+          : "#1f2937",
         width: "400px",
         display: "block",
         borderWidth: "1px",
-        borderColor: "rgb(203 213 225 / var(--tw-border-opacity))",
+        borderColor: document.documentElement.classList.contains("dark")
+          ? "rgb(75 85 99 / var(--tw-border-opacity))"
+          : "rgb(203 213 225 / var(--tw-border-opacity))",
       }
     : undefined;
 
@@ -97,11 +104,15 @@ const TareasCard = ({ tarea, check, setCheck }: Props) => {
           <p className="text-custom-title text-lg font-bold dark:text-white">
             {tarea.titulo}
           </p>
-          <p className="text-custom-title text-base font-light dark:text-white">
+          <p className="text-custom-title text-base font-light dark:text-white ">
             {tarea.descripcion}
           </p>
-          <p className="text-custom-title text-sm font-light dark:text-white mt-2">
-            Actualzada: {formatFecha(tarea.updatedAt)}
+          <p className="text-custom-title text-sm font-light dark:text-white mt-1">
+            actualizada por:{" "}
+            {tarea.actualizadoPor ? tarea.actualizadoPor.nombre : "N/A"}
+          </p>
+          <p className="text-custom-title text-sm font-light dark:text-white mt-1">
+            ultima actualizacion: {formatFecha(tarea.updatedAt)}
           </p>
         </div>
         {user.id === tarea.creador.id && (

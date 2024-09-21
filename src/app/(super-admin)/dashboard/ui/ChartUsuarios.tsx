@@ -1,43 +1,87 @@
 "use client";
-
-import { Bar, BarChart } from "recharts";
-
-import { ChartConfig, ChartContainer } from "@/components/ui/chart";
-
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-];
-
-const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "#2563eb",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "#60a5fa",
-  },
-} satisfies ChartConfig;
+import { Pie, PieChart, Cell } from "recharts";
+import { ChartContainer, ChartConfig } from "@/components/ui/chart";
+import { useState, useEffect } from "react";
+import { ActiveData } from "@/types/active.type";
+import useGetUsersAutorizados from "@/api/getUsersAutorizados";
+import { AutorizadoData } from "@/types/atorizado.type";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { clearUser } from "@/store/auth/sessionSlice";
 const ChartUsuarios = () => {
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const { result, loading, error } = useGetUsersAutorizados();
+
+  useEffect(() => {
+    if (error === "Request failed with status code 401") {
+      dispatch(clearUser());
+      router.push("/unauthorized");
+    }
+  }, [error, dispatch, router]);
+
+  const [resultado, setResultado] = useState<AutorizadoData>({
+    autorizado: 0,
+    no_autorizado: 0,
+  });
+
+  useEffect(() => {
+    if (
+      result &&
+      typeof result === "object" &&
+      "autorizado" in result &&
+      "no_autorizado" in result
+    ) {
+      setResultado(result as AutorizadoData);
+    }
+  }, [result]);
+
+  const chartData = [
+    { name: "Autorizados", value: resultado.autorizado },
+    { name: "No autorizados", value: resultado.no_autorizado },
+  ];
+
+  const chartColors = ["#f16666", "#ef1616"];
+
+  const chartConfig: ChartConfig = {
+    activos: {
+      label: "Autorizados",
+      color: "#f16666",
+    },
+    iactivos: {
+      label: "No autorizados",
+      color: "#ef1616",
+    },
+  };
+
   return (
     <div>
       <p className="text-custom-title font-bold dark:text-white">
-        Usuarios por mes
+        Actividad de usuarios
       </p>
 
-      <ChartContainer
-        config={chartConfig}
-        className="min-h-[200px] w-full mt-5"
-      >
-        <BarChart accessibilityLayer data={chartData}>
-          <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-          <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
-        </BarChart>
+      <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+        <PieChart>
+          <Pie
+            data={chartData}
+            cx="50%"
+            cy="50%"
+            labelLine={false}
+            label={({ name, percent }) =>
+              `${name} ${(percent * 100).toFixed(0)}%`
+            }
+            outerRadius={80}
+            fill="#8884d8"
+            dataKey="value"
+          >
+            {chartData.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={chartColors[index % chartColors.length]}
+              />
+            ))}
+          </Pie>
+        </PieChart>
       </ChartContainer>
     </div>
   );

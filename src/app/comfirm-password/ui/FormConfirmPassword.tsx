@@ -45,13 +45,13 @@ const FormConfirmPassword = () => {
   return (
     <>
       <form
-        className="w-full sm:w-3/4 mx-auto justify-center items-center grid grid-cols-1 gap-3 sm:p-8"
+        className="w-full mx-auto justify-center items-center grid grid-cols-1 gap-3 sm:p-2"
         onSubmit={handleSubmit(onSubmit)}
       >
         <div className="mt-5 w-full ">
           <label
             htmlFor="correo"
-            className="block text-xl font-semibold text-custom-title"
+            className="block text-xl font-semibold text-custom-title dark:text-white"
           >
             Correo Electrónico
           </label>
@@ -78,7 +78,7 @@ const FormConfirmPassword = () => {
         <div className="mt-5 w-full">
           <label
             htmlFor="nuevaContrasena"
-            className="block text-xl font-semibold text-custom-title"
+            className="block text-xl font-semibold text-custom-title dark:text-white"
           >
             Contraseña
           </label>
@@ -121,7 +121,7 @@ const FormConfirmPassword = () => {
         <div className="mt-5 w-full">
           <label
             htmlFor="confirmPassword"
-            className="block text-xl font-semibold text-custom-title"
+            className="block text-xl font-semibold text-custom-title dark:text-white"
           >
             Confirmar Contraseña
           </label>
@@ -161,7 +161,7 @@ const FormConfirmPassword = () => {
         <div className="mt-5 w-full flex justify-center">
           <button
             type="submit"
-            className="bg-custom-second text-white font-semibold rounded-md shadow hover:bg-red-500 p-3 w-full sm:w-1/2"
+            className="bg-custom-second text-white font-semibold rounded-md shadow hover:bg-red-500 dark:bg-custom-title dark:hover:bg-custom-title/45 p-3 w-full "
           >
             Cambiar Contraseña
           </button>

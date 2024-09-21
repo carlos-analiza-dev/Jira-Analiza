@@ -107,7 +107,7 @@ const FormRegister = () => {
           <div className="mt-1 w-full">
             <label
               htmlFor="nombre"
-              className="block text-lg font-semibold text-custom-title"
+              className="block text-lg font-semibold text-custom-title dark:text-white"
             >
               Nombre Completo
             </label>
@@ -124,7 +124,7 @@ const FormRegister = () => {
           <div className="mt-1 w-full">
             <label
               htmlFor="correo"
-              className="block text-lg font-semibold text-custom-title"
+              className="block text-lg font-semibold text-custom-title dark:text-white"
             >
               Correo Electrónico
             </label>
@@ -140,7 +140,7 @@ const FormRegister = () => {
           <div className="mt-1 w-full">
             <label
               htmlFor="password"
-              className="block text-lg font-semibold text-custom-title"
+              className="block text-lg font-semibold text-custom-title dark:text-white"
             >
               Contraseña
             </label>
@@ -171,7 +171,7 @@ const FormRegister = () => {
           <div className="mt-1 w-full">
             <label
               htmlFor="confirmPassword"
-              className="block text-lg font-semibold text-custom-title"
+              className="block text-lg font-semibold text-custom-title dark:text-white"
             >
               Confirmar Contraseña
             </label>
@@ -200,7 +200,7 @@ const FormRegister = () => {
             </div>
           </div>
           <div className="mt-1 w-full">
-            <label className="block text-lg font-semibold text-custom-title">
+            <label className="block text-lg font-semibold text-custom-title dark:text-white">
               Sexo
             </label>
             <Select value={sexo} onValueChange={setSexo}>
@@ -217,7 +217,7 @@ const FormRegister = () => {
             </Select>
           </div>
           <div className="mt-1 w-full">
-            <label className="block text-lg font-semibold text-custom-title">
+            <label className="block text-lg font-semibold text-custom-title dark:text-white">
               Rol
             </label>
             <Select value={roleId} onValueChange={setRoleId}>
@@ -241,7 +241,7 @@ const FormRegister = () => {
             </Select>
           </div>
           <div className="mt-1 w-full">
-            <label className="block text-lg font-semibold text-custom-title">
+            <label className="block text-lg font-semibold text-custom-title dark:text-white">
               Sucursal
             </label>
             <Select value={sucursalId} onValueChange={setSucursalId}>
@@ -267,7 +267,7 @@ const FormRegister = () => {
           <div className="mt-1 w-full">
             <label
               htmlFor="edad"
-              className="block text-lg font-semibold text-custom-title"
+              className="block text-lg font-semibold text-custom-title dark:text-white"
             >
               Edad
             </label>
@@ -290,7 +290,7 @@ const FormRegister = () => {
           <div className="mt-1 w-full">
             <label
               htmlFor="dni"
-              className="block text-lg font-semibold text-custom-title"
+              className="block text-lg font-semibold text-custom-title dark:text-white"
             >
               DNI
             </label>
@@ -306,7 +306,7 @@ const FormRegister = () => {
           <div className="mt-1 w-full">
             <label
               htmlFor="direccion"
-              className="block text-lg font-semibold text-custom-title"
+              className="block text-lg font-semibold text-custom-title dark:text-white"
             >
               Dirección
             </label>
@@ -323,7 +323,7 @@ const FormRegister = () => {
         <div className="mt-5 w-full flex justify-center">
           <button
             type="submit"
-            className="bg-custom-second text-white font-semibold rounded-md shadow hover:bg-red-500 p-3 w-full sm:w-1/2"
+            className="bg-custom-second text-white font-semibold rounded-md shadow hover:bg-red-500 dark:bg-custom-title dark:hover:bg-custom-title/45 p-3 w-full"
           >
             Registrarse
           </button>

@@ -64,7 +64,8 @@ const PageProyectoId = () => {
       <h3 className="text-base sm:text-xl text-custom-title dark:text-white font-semibold mt-5">
         {result.descripcion}
       </h3>
-      {user.id === result.creador.id ? (
+      {user?.id === result?.creador?.id ||
+      user?.id === result?.responsable?.id ? (
         <div className="flex justify-around sm:w-2/6 mt-5 gap-3">
           <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <AlertDialogTrigger asChild>
@@ -90,19 +91,13 @@ const PageProyectoId = () => {
             </AlertDialogContent>
           </AlertDialog>
           <Link
-            href={
-              user.role && user.role === "Administrador"
-                ? `/admin-proyectos/${proyectoId}/team`
-                : `/proyectos/${proyectoId}/team-users`
-            }
+            href={`/proyectos/${proyectoId}/team-users`}
             className="dark:bg-sky-600 dark:text-white bg-custom-title text-white rounded-md p-2 shadow-md"
           >
             Colaboradores
           </Link>
         </div>
-      ) : (
-        ""
-      )}
+      ) : null}
 
       <TaskList tareas={resultTareas} check={check} setCheck={setCheck} />
     </div>

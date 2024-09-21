@@ -14,6 +14,7 @@ const useAllProjects = (token?: string, check?: boolean) => {
         const response = await get(url, "", token);
 
         setResult(response);
+        console.log("RESPONSE PROYECTOS", response);
       } catch (error: any) {
         setError(
           error.message || "Hubo un error al momento de extraer los proyectos"

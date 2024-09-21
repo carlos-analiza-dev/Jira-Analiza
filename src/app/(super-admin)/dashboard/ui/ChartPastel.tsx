@@ -2,30 +2,63 @@
 
 import { Pie, PieChart, Cell } from "recharts";
 import { ChartContainer, ChartConfig } from "@/components/ui/chart";
-
-const chartData = [
-  { name: "Desktop", value: 1224 },
-  { name: "Mobile", value: 860 },
-];
-
-const chartColors = ["#2563eb", "#60a5fa"];
-
-const chartConfig: ChartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "#2563eb",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "#60a5fa",
-  },
-};
+import { useEffect, useState } from "react";
+import { StatusProyectos } from "@/types/proyectos-status.type";
+import useGetStatusProyectos from "@/api/getStatusProyectos";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { clearUser } from "@/store/auth/sessionSlice";
 
 const ChartPastel = () => {
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const { result, loading, error } = useGetStatusProyectos();
+
+  useEffect(() => {
+    if (error === "Request failed with status code 401") {
+      dispatch(clearUser());
+      router.push("/unauthorized");
+    }
+  }, [error, dispatch, router]);
+
+  const [resultado, setResultado] = useState<StatusProyectos>({
+    progreso: 0,
+    finalizado: 0,
+  });
+
+  useEffect(() => {
+    if (
+      result &&
+      typeof result === "object" &&
+      "progreso" in result &&
+      "finalizado" in result
+    ) {
+      setResultado(result as StatusProyectos);
+    }
+  }, [result]);
+
+  const chartData = [
+    { name: "En Progreso", value: resultado.progreso },
+    { name: "Finalizado", value: resultado.finalizado },
+  ];
+
+  const chartColors = ["#d62645", "#d05f74"];
+
+  const chartConfig: ChartConfig = {
+    progreso: {
+      label: "En Progreso",
+      color: "#d62645",
+    },
+    finalizado: {
+      label: "Finalizado",
+      color: "#d05f74",
+    },
+  };
+
   return (
     <div>
       <p className="text-custom-title font-bold dark:text-white">
-        Productos más vendidos
+        Seguimiento de proyectos
       </p>
 
       <ChartContainer config={chartConfig} className="min-h-[200px] w-full">

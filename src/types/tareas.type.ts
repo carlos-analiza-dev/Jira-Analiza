@@ -15,6 +15,10 @@ export type TareasData = {
     id: string;
     nombre: string;
   };
+
+  actualizadoPor: {
+    nombre: string;
+  };
 };
 
 export const taskStatus = z.enum(["Nueva", "EnProgreso", "Finalizada"]);

@@ -67,8 +67,12 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
   const currentUserId = useSelector((state: any) => state.auth.id);
 
   useEffect(() => {
-    const filtered = users.filter((user) => user.id !== currentUserId);
-    setFilteredUsers(filtered);
+    if (users && Array.isArray(users)) {
+      const filtered = users.filter((user) => user.id !== currentUserId);
+      setFilteredUsers(filtered);
+    } else {
+      setFilteredUsers([]);
+    }
   }, [users, currentUserId]);
 
   const handleToggleActive = async (
@@ -88,7 +92,10 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
     } catch (error) {
       console.log("error user", error);
 
-      console.error("Error al actualizar el usuario:", error);
+      toast({
+        title: "Ocurrio un error al actualizar la actividad.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -101,7 +108,6 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
 
       toast({ title: "Usuario eliminado exitosamente" });
     } catch (error) {
-      console.log(error);
       toast({
         title: "Ocurrió un error al eliminar el usuario",
         variant: "destructive",
@@ -115,18 +121,14 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
   };
 
   const onSubmit = async (data: UserUpdateType) => {
-    console.log("DATA UPDATE", data);
-
     try {
       if (userUpdate) {
         const response = await updateUser(userUpdate.id, data);
-        console.log("RESPUESTA UPDATE USER", response);
+
         setCheck(!check);
         toast({ title: "Usuario actualizado exitosamente" });
       }
     } catch (error) {
-      console.log("ERROR UPDATE", error);
-
       toast({
         title: "Error al actualizar el usuario",
         variant: "destructive",
@@ -156,7 +158,7 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
       </TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead className="text-center w-[100px] text-custom-title dark:text-white font-bold">
+          <TableHead className="text-center text-custom-title dark:text-white font-bold">
             Nombre
           </TableHead>
           <TableHead className="text-center text-custom-title dark:text-white font-bold">
@@ -238,7 +240,7 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
                       <AlertDialogCancel>Cancelar</AlertDialogCancel>
                       <AlertDialogAction
                         onClick={() =>
-                          handleToggleActive(user.id, user.isActive)
+                          handleToggleActive(user.id, user.isActive ?? 0)
                         }
                         className="bg-custom-title dark:bg-white dark:text-custom-title font-semibold"
                       >

@@ -19,7 +19,7 @@ const useGetUserAuth = (check?: boolean, token?: string) => {
       }
     };
     getAuthUsers();
-  }, [url, check]);
+  }, [url, check, token]);
 
   return { result, loading, error };
 };

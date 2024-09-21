@@ -5,12 +5,22 @@ import ChartUsuarios from "./ui/ChartUsuarios";
 
 export default function DashBoardPage() {
   return (
-    <div className="max-w-3xl sm:max-w-5xl">
+    <div className=" mx-auto">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <ChartBarras />
-        <ChartUsuarios />
-        <ChartPastel />
-        <ChartActivos />
+        <div className="mt-4 w-full">
+          <ChartBarras />
+        </div>
+        <div className="mt-4 w-full">
+          {" "}
+          <ChartUsuarios />
+        </div>
+        <div className="mt-4 w-full">
+          {" "}
+          <ChartPastel />
+        </div>
+        <div className="mt-4 w-full">
+          <ChartActivos />
+        </div>
       </div>
     </div>
   );

@@ -2,7 +2,6 @@
 import SkeletonTable from "@/components/SkeletonTable";
 import TableAuth from "./ui/TableAuth";
 import useGetUserAuth from "@/api/getUserAuth";
-import { ResponseData } from "@/types/response.type";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { clearUser } from "@/store/auth/sessionSlice";
@@ -14,14 +13,11 @@ const AutorizarPage = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [check, setCheck] = useState(true);
-  const { loading, result, error }: ResponseData = useGetUserAuth(
-    check,
-    user.token
-  );
+  const { loading, result, error } = useGetUserAuth(check, user.token);
   useEffect(() => {
     if (error === "Request failed with status code 401") {
       dispatch(clearUser());
-      router.push("/");
+      router.push("/unauthorized");
     }
   }, [error, dispatch, router]);
   return (

@@ -39,13 +39,13 @@ const FormResetPassword = () => {
   return (
     <>
       <form
-        className="w-full justify-center items-center grid grid-cols-1 gap-3"
+        className="w-full  grid grid-cols-1 gap-3"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <div className="mt-5 w-full sm:px-20 sm:py-20">
+        <div className="mt-5 w-full ">
           <label
             htmlFor=""
-            className="block text-xl font-semibold text-custom-title"
+            className="block text-xl font-semibold text-custom-title dark:text-white"
           >
             Correo Electrónico
           </label>
@@ -73,8 +73,8 @@ const FormResetPassword = () => {
         <div className=" w-full flex justify-center">
           <button
             type="submit"
-            className="bg-custom-second text-white font-semibold rounded-md shadow hover:bg-red-500
-    p-3 w-full sm:w-1/2"
+            className="bg-custom-second text-white font-semibold rounded-md shadow hover:bg-red-500 dark:bg-custom-title dark:hover:bg-custom-title/45
+    p-3 w-full "
           >
             Enviar
           </button>

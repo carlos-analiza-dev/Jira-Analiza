@@ -4,10 +4,10 @@ import FormConfirmPassword from "./ui/FormConfirmPassword";
 
 export default function ConfirmPassword() {
   return (
-    <div className="h-full sm:h-screen w-screen flex justify-center items-center">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50 p-5 sm:w-full">
+    <div className="h-full w-full flex justify-center items-center">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50 dark:bg-gray-900 p-5 w-full">
         <div className="grid-cols-1 sm:max-w-2xl flex justify-center">
-          <div className="h-full w-full">
+          <div className="h-full w-full flex flex-col items-center justify-center">
             <Image
               src="/images/Logotipo_principal.png"
               alt="LogoAnaliza"
@@ -19,7 +19,7 @@ export default function ConfirmPassword() {
           </div>
         </div>
         <div className="block justify-center">
-          <p className="text-3xl text-custom-title font-bold text-center">
+          <p className="text-3xl text-custom-title dark:text-white font-bold text-center">
             Cambiar Contraseña
           </p>
           <FormConfirmPassword />

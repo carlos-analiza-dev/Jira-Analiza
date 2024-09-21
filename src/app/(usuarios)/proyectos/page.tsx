@@ -19,11 +19,11 @@ const ProyectosPage = () => {
   useEffect(() => {
     if (error === "Request failed with status code 401") {
       dispatch(clearUser());
-      router.push("/");
+      router.push("/unauthorized");
     }
   }, [error, dispatch, router]);
   return (
-    <div className="w-full px-5 py-4 sm:px-16 sm:py-12">
+    <div className="w-full px-5 py-4 md:px-16 md:py-12">
       <div className="mt-4">
         <h1 className="text-3xl font-bold text-custom-title dark:text-white">
           Mis Proyectos

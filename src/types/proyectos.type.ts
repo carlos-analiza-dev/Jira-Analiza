@@ -9,9 +9,33 @@ export type TypeProyectos = {
     id: string;
     nombre: string;
     correo: string;
+    sexo: string;
+    edad: number;
+    dni: string;
+    direccion: string;
+    autorizado: number;
+    isActive: number;
   };
-  role: {
+  usuarios: {
     id: string;
     nombre: string;
+    correo: string;
+    sexo: string;
+    edad: number;
+    dni: string;
+    direccion: string;
+    autorizado: number;
+    isActive: number;
+  }[];
+  responsable: {
+    id: string;
+    nombre: string;
+    correo: string;
+    sexo: string;
+    edad: number;
+    dni: string;
+    direccion: string;
+    autorizado: number;
+    isActive: number;
   };
 };

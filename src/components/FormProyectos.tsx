@@ -45,19 +45,31 @@ const FormProyectos = ({ proyecto, setCheck, check }: FormProyectos) => {
   }, [proyecto, reset]);
 
   const onSubmit = async (data: DataProject) => {
-    data.estado = selectedEstado;
+    const projectData = {
+      nombre: data.nombre,
+      cliente: data.cliente,
+      descripcion: data.descripcion,
+      estado: selectedEstado,
+    };
 
     try {
-      const response = await updateProyecto(proyecto.id, data, user.token);
+      const response = await updateProyecto(
+        proyecto.id,
+        projectData,
+        user.token
+      );
       setCheck(!check);
       toast({ title: "Proyecto actualizado con éxito" });
     } catch (error) {
+      console.log("ERROR UPDATE", error);
+
       toast({
         title: "Error al actualizar el proyecto",
         variant: "destructive",
       });
     }
   };
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}

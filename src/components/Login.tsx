@@ -50,12 +50,12 @@ export default function LoginSesion() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="w-full block justify-center items-center"
+      className="w-full block justify-center items-center sm:px-5"
     >
       <div className="mt-5 w-full">
         <label
           htmlFor="correo"
-          className="block text-xl font-semibold text-custom-title"
+          className="block text-xl font-semibold text-custom-title dark:text-white"
         >
           Correo Electrónico
         </label>
@@ -70,7 +70,7 @@ export default function LoginSesion() {
           })}
           type="email"
           placeholder="example@gmail.com"
-          className="p-3 rounded-md shadow w-full sm:w-3/4 mt-3"
+          className="p-3 rounded-md shadow w-full sm:w-full mt-3"
           autoFocus
         />
         {errors.correo && (
@@ -82,11 +82,11 @@ export default function LoginSesion() {
       <div className="mt-5 w-full">
         <label
           htmlFor="password"
-          className="block text-xl font-semibold text-custom-title"
+          className="block text-xl font-semibold text-custom-title dark:text-white"
         >
           Contraseña
         </label>
-        <div className="relative w-full sm:w-3/4 mt-3">
+        <div className="relative w-full sm:w-full mt-3">
           <Input
             {...register("password", {
               required: "La contraseña es obligatoria",
@@ -125,8 +125,8 @@ export default function LoginSesion() {
       <div className="mt-5 w-full flex justify-center">
         <button
           type="submit"
-          className="bg-custom-second text-white font-semibold rounded-md shadow hover:bg-red-500
-    p-3 w-full sm:w-1/2"
+          className="bg-custom-second text-white font-semibold rounded-md shadow hover:bg-red-500 dark:bg-custom-title dark:hover:bg-custom-title/45
+    p-3 w-full"
         >
           Iniciar Sesión
         </button>

@@ -1,42 +1,77 @@
 "use client";
 
-import { Bar, BarChart } from "recharts";
-
+import {
+  Bar,
+  BarChart,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+} from "recharts";
+import { useEffect, useState } from "react";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
+import useGetUsersBySucursal from "@/api/getUsersBySucursal";
+import { UserSucursalData } from "@/types/users-sucursales.type";
+import { useDispatch } from "react-redux";
+import { clearUser } from "@/store/auth/sessionSlice";
+import { useRouter } from "next/navigation";
 
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-];
-
-const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "#2563eb",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "#60a5fa",
-  },
-} satisfies ChartConfig;
 const ChartBarras = () => {
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const { result: data, loading, error } = useGetUsersBySucursal();
+
+  useEffect(() => {
+    if (error === "Request failed with status code 401") {
+      dispatch(clearUser());
+      router.push("/unauthorized");
+    }
+  }, [error, dispatch, router]);
+
+  const [chartData, setChartData] = useState<UserSucursalData[]>([]);
+
+  useEffect(() => {
+    if (data) {
+      const transformedData = data.map((item: UserSucursalData) => ({
+        sucursal: item.sucursal,
+        cantidadUsuarios: Number(item.cantidadUsuarios),
+      }));
+      setChartData(transformedData);
+    }
+  }, [data]);
+
+  const chartConfig = {
+    cantidadUsuarios: {
+      label: "Cantidad de Usuarios",
+      color: "#2563eb",
+    },
+  } satisfies ChartConfig;
+
   return (
     <div>
       <p className="text-custom-title font-bold dark:text-white">
-        Productos mas vendidos
+        Usuarios por Sucursal
       </p>
 
       <ChartContainer
         config={chartConfig}
         className="min-h-[200px] w-full mt-5"
       >
-        <BarChart accessibilityLayer data={chartData}>
-          <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-          <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+        <BarChart
+          data={chartData}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="sucursal" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar
+            dataKey="cantidadUsuarios"
+            fill={chartConfig.cantidadUsuarios.color}
+            radius={4}
+          />
         </BarChart>
       </ChartContainer>
     </div>

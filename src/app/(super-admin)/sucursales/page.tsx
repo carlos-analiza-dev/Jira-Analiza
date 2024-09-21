@@ -53,7 +53,7 @@ export default function SucursalPage() {
   useEffect(() => {
     if (error === "Request failed with status code 401") {
       dispatch(clearUser());
-      router.push("/");
+      router.push("/unauthorized");
     }
   }, [error, dispatch, router]);
 

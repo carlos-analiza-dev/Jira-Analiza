@@ -75,16 +75,28 @@ const Proyectos = ({ result, setCheck, check }: Props) => {
           className="bg-gray-50 p-5 rounded-sm mt-4 dark:bg-gray-900"
           key={proyecto.id}
         >
-          {proyecto.creador && user.id === proyecto.creador.id ? (
+          {proyecto.creador && user.id === proyecto.creador.id && (
             <div className="sm:w-2/12 mb-4">
-              <p className=" p-1 bg-custom-title text-white shadow-md rounded-md text-center">
+              <p className="p-1 bg-custom-title text-white shadow-md rounded-md text-center">
                 Manager
               </p>
             </div>
-          ) : (
+          )}
+
+          {proyecto.usuarios.some(
+            (colaborador) => colaborador.id === user.id
+          ) && (
             <div className="sm:w-2/12 mb-4">
-              <p className=" p-1 bg-green-800 text-white shadow-md rounded-md text-center">
+              <p className="p-1 bg-green-800 text-white shadow-md rounded-md text-center">
                 Colaborador
+              </p>
+            </div>
+          )}
+
+          {proyecto.responsable && user.id === proyecto.responsable.id && (
+            <div className="sm:w-2/12 mb-4">
+              <p className="p-1 bg-sky-800 text-white shadow-md rounded-md text-center">
+                Responsable
               </p>
             </div>
           )}
@@ -187,7 +199,7 @@ const Proyectos = ({ result, setCheck, check }: Props) => {
                                 disabled={loading}
                                 className="bg-custom-title text-white dark:bg-white dark:text-custom-title"
                               >
-                                {loading ? "Eliminando..." : "Continuar"}
+                                Eliminar
                               </AlertDialogAction>
                             </AlertDialogFooter>
                           </AlertDialogContent>

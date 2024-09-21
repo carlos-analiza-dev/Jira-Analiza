@@ -46,7 +46,7 @@ const ColaboradoresUsers = () => {
   };
 
   return (
-    <div className="sm:w-full px-4 py-3 sm:px-28">
+    <div className="sm:w-full px-4 py-3 md:px-28">
       <div className="mt-5">
         <h1 className="text-3xl text-custom-title font-bold dark:text-white">
           Administrar Equipos

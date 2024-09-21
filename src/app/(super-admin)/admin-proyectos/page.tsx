@@ -2,7 +2,6 @@
 import useAllProjects from "@/api/getAllProjects";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-/* import Proyectos from "./ui/Proyectos"; */
 import SkeletonProyectos from "@/components/SkeletonProyectos";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
@@ -16,12 +15,16 @@ const ProyectosPage = () => {
   const router = useRouter();
   const [check, setCheck] = useState(false);
   const { result, error, loading } = useAllProjects(user.token, check);
+
   useEffect(() => {
     if (error === "Request failed with status code 401") {
       dispatch(clearUser());
-      router.push("/");
+      router.push("/unauthorized");
     }
   }, [error, dispatch, router]);
+
+  console.log("PROYECTOS", result);
+  console.log("CHECK", check);
 
   return (
     <div className="max-w-2xl sm:max-w-6xl mx-auto">

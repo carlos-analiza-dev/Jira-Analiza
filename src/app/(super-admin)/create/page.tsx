@@ -1,8 +1,27 @@
+"use client";
 import Link from "next/link";
-import React from "react";
-import FormCreateProject from "@/components/ui/FormCreateProject";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useSelector, useDispatch } from "react-redux";
+import { clearUser } from "@/store/auth/sessionSlice";
+import FormCreateProject from "@/components/FormCreateProject";
 
 const CrearProyecto = () => {
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const user = useSelector((state: any) => state.auth);
+  const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
+
+  useEffect(() => {
+    if (!hasCheckedAuth) {
+      if (!user || !user.role || !user.token) {
+        dispatch(clearUser());
+        router.push("/unauthorized");
+      }
+      setHasCheckedAuth(true);
+    }
+  }, [user, dispatch, router, hasCheckedAuth]);
+
   return (
     <div className="max-w-2xl sm:max-w-5xl mx-auto">
       <div className="mt-4">

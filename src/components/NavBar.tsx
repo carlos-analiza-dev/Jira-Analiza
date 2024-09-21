@@ -44,7 +44,7 @@ export default function NavBar() {
   };
 
   return (
-    <div className="flex items-center justify-between p-2 mx-auto cursor-pointer sm:max-w-4xl md:max-w-6xl">
+    <div className="flex items-center justify-between px-4 py-2 mx-auto cursor-pointer sm:max-w-4xl md:max-w-6xl">
       <Link href="/">
         <Image
           src="/images/Logotipo_principal.png"
@@ -68,7 +68,7 @@ export default function NavBar() {
                       <NavigationMenuLink asChild>
                         <a
                           className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                          href="/"
+                          href="/proyectos"
                         >
                           <Droplet className="h-6 w-6 text-custom-second" />
                           <div className="mb-2 mt-4 text-lg font-medium">

@@ -25,7 +25,6 @@ const initialStatusGroups: GroupedTasks = {
 const TaskList = ({ tareas, check, setCheck }: TareaListProps) => {
   const user = useSelector((state: any) => state.auth);
   const { toast } = useToast();
-  console.log("tareas", tareas);
 
   const groupedTasks = (tareas || []).reduce((acc, task) => {
     let currentGroup = acc[task.estado] ? [...acc[task.estado]] : [];

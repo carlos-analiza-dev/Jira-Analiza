@@ -8,4 +8,10 @@ export type UserType = {
   direccion: string;
   autorizado?: number;
   isActive?: number;
+  role?: {
+    nombre: string;
+  };
+  sucursal?: {
+    nombre: string;
+  };
 };

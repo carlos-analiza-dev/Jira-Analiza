@@ -21,12 +21,19 @@ const FormCreateProjectUsers = () => {
   } = useForm<DataProject>();
 
   const onSubmit = async (data: DataProject) => {
+    const dataProject = {
+      nombre: data.nombre,
+      cliente: data.cliente,
+      descripcion: data.descripcion,
+    };
     try {
-      const response = await createProjects(data, user.token);
+      const response = await createProjects(dataProject, user.token);
       toast({ title: "Proyecto creado exitosamente" });
       router.push("/proyectos");
       reset();
     } catch (error: any) {
+      console.log("errorrrrr", error);
+
       toast({
         title: `${error?.response?.data?.statusCode === 401 ? "Usuario no autorizado, no puedes ejecutar esta accion." : "Ocurrio un error al momento de crear el proyecto."}`,
         variant: "destructive",

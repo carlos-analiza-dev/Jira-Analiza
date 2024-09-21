@@ -30,6 +30,8 @@ export interface Props {
   setCheck: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const TableAuth = ({ users, check, setCheck }: Props) => {
+  console.log("USERS AUTH", users);
+
   const { toast } = useToast();
   const [filteredUsers, setFilteredUsers] = useState<UserType[]>([]);
 
@@ -56,7 +58,7 @@ const TableAuth = ({ users, check, setCheck }: Props) => {
 
       window.location.reload();
     } catch (error) {
-      console.error("Error al autorizar el usuario:", error);
+      toast({ title: "Error al autorizar el usuario", variant: "destructive" });
     }
   };
 
@@ -82,7 +84,7 @@ const TableAuth = ({ users, check, setCheck }: Props) => {
       </TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead className="text-center w-[100px] text-custom-title dark:text-white font-bold">
+          <TableHead className="text-center  text-custom-title dark:text-white font-bold">
             Nombre
           </TableHead>
           <TableHead className="text-center text-custom-title dark:text-white font-bold">
@@ -92,10 +94,10 @@ const TableAuth = ({ users, check, setCheck }: Props) => {
             Sexo
           </TableHead>
           <TableHead className="text-center text-custom-title dark:text-white font-bold">
-            Edad
+            Rol
           </TableHead>
           <TableHead className="text-center text-custom-title dark:text-white font-bold">
-            DNI
+            Sucursal
           </TableHead>
           <TableHead className="text-center text-custom-title dark:text-white font-bold">
             Dirección
@@ -122,10 +124,10 @@ const TableAuth = ({ users, check, setCheck }: Props) => {
               {user.sexo}
             </TableCell>
             <TableCell className="text-custom-title dark:text-white">
-              {user.edad}
+              {user.role?.nombre}
             </TableCell>
             <TableCell className="text-custom-title dark:text-white">
-              {user.dni}
+              {user.sucursal?.nombre}
             </TableCell>
             <TableCell className="text-custom-title dark:text-white">
               {user.direccion}
@@ -160,7 +162,7 @@ const TableAuth = ({ users, check, setCheck }: Props) => {
                       <AlertDialogCancel>Cancelar</AlertDialogCancel>
                       <AlertDialogAction
                         onClick={() =>
-                          handleAuthorize(user.id, user.autorizado)
+                          handleAuthorize(user.id, user.autorizado ?? 0)
                         }
                         className="bg-custom-title dark:bg-white dark:text-custom-title font-semibold"
                       >
