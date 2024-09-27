@@ -23,11 +23,8 @@ const ProyectosPage = () => {
     }
   }, [error, dispatch, router]);
 
-  console.log("PROYECTOS", result);
-  console.log("CHECK", check);
-
   return (
-    <div className="max-w-2xl sm:max-w-6xl mx-auto">
+    <div className="mx-auto px-4 md:px-12">
       <div className="mt-4">
         <h1 className="text-3xl font-bold text-custom-title dark:text-white">
           Mis Proyectos

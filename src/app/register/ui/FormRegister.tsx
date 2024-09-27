@@ -88,7 +88,6 @@ const FormRegister = () => {
         router.push("/");
       }, 3000);
     } catch (error: any) {
-      console.log("ERROR PETICION", error);
       const errorMessage = Array.isArray(error?.response?.data?.message)
         ? error.response.data.message[0]
         : error?.response?.data?.message || "Ocurrió un error inesperado";
@@ -218,7 +217,7 @@ const FormRegister = () => {
           </div>
           <div className="mt-1 w-full">
             <label className="block text-lg font-semibold text-custom-title dark:text-white">
-              Rol
+              Departamento
             </label>
             <Select value={roleId} onValueChange={setRoleId}>
               <SelectTrigger className="p-3 rounded-md shadow w-full mt-1">
@@ -226,7 +225,7 @@ const FormRegister = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Rol</SelectLabel>
+                  <SelectLabel>Departamento</SelectLabel>
                   {result && result.length > 0 ? (
                     result.map((res: TableRolesData) => (
                       <SelectItem key={res.id} value={res.id}>

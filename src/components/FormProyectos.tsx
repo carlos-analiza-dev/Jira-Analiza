@@ -61,8 +61,6 @@ const FormProyectos = ({ proyecto, setCheck, check }: FormProyectos) => {
       setCheck(!check);
       toast({ title: "Proyecto actualizado con éxito" });
     } catch (error) {
-      console.log("ERROR UPDATE", error);
-
       toast({
         title: "Error al actualizar el proyecto",
         variant: "destructive",

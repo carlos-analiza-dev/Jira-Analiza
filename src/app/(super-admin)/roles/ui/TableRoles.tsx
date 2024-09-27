@@ -51,10 +51,10 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
     try {
       await deleteRol(id, user.token);
       setCheck(!check);
-      toast({ title: "Rol eliminado exitosamente" });
+      toast({ title: "Departamento eliminado exitosamente" });
     } catch (error) {
       toast({
-        title: "No es posible eliminar este rol.",
+        title: "No es posible eliminar este departamento.",
         variant: "destructive",
       });
     }
@@ -74,13 +74,12 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
           user.token
         );
         setCheck(!check);
-        toast({ title: "Rol actualizado exitosamente" });
+        toast({ title: "Departamento actualizado exitosamente" });
         setSelectedRol(null);
       }
     } catch (error) {
-      console.log("Error interno", error);
       toast({
-        title: "No se pudo actualizar este rol",
+        title: "No se pudo actualizar este departamento",
         variant: "destructive",
       });
     }
@@ -94,7 +93,7 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
         </div>
         <div className="mt-5">
           <p className="text-center font-bold text-custom-title text-2xl dark:text-white">
-            No se encontraron roles.
+            No se encontraron departamentos.
           </p>
         </div>
       </div>
@@ -105,12 +104,12 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
     <div className="flex mx-auto px-3">
       <Table>
         <TableCaption className="text-custom-title dark:text-white">
-          Lista de roles
+          Lista de departamentos
         </TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead className="text-center text-custom-title dark:text-white">
-              Numero de rol
+              Numero de depto
             </TableHead>
             <TableHead className="text-center text-custom-title dark:text-white">
               Nombre
@@ -138,10 +137,10 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
                     <AlertDialogContent>
                       <AlertDialogHeader>
                         <AlertDialogTitle className="text-custom-title dark:text-white">
-                          ¿Estas seguro de eliminar este rol?
+                          ¿Estas seguro de eliminar este departamento?
                         </AlertDialogTitle>
                         <AlertDialogDescription>
-                          Una vez elimines el rol no podras revertirlo
+                          Una vez elimines el departamento no podras revertirlo
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -178,25 +177,25 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
               </AlertDialogTitle>
               <AlertDialogDescription>
                 Por favor, realiza los cambios necesarios y confirma para
-                actualizar el rol.
+                actualizar el departamento.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <form onSubmit={handleSubmit(handleUpdate)}>
               <div className="mt-5 mb-5">
                 <label className="text-custom-title dark:text-white font-medium">
-                  Nombre del rol
+                  Nombre del departamento
                 </label>
                 <Input
                   autoFocus
                   {...register("nombre", {
-                    required: "El nombre del rol es obligatorio",
+                    required: "El nombre del departamento es obligatorio",
                     pattern: {
                       value: /^[a-zA-Z\s]+$/,
                       message: "Solo se permiten letras y espacios en blanco",
                     },
                   })}
                   className="mt-3"
-                  placeholder="Nombre del Rol"
+                  placeholder="Nombre del departamento"
                 />
                 {errors.nombre && (
                   <p className="text-red-500 mt-2">

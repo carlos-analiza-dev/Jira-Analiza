@@ -8,7 +8,7 @@ export default function UserLayout({ children }: any) {
   const user = useSelector((state: any) => state.auth);
 
   useEffect(() => {
-    if (!user || !user.role || !user.role.nombre || !user.token) {
+    if (!user || !user.rol || !user.token) {
       router.push("/");
     }
   }, [user, router]);

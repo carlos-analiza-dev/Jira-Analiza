@@ -14,7 +14,7 @@ const CrearProyecto = () => {
 
   useEffect(() => {
     if (!hasCheckedAuth) {
-      if (!user || !user.role || !user.token) {
+      if (!user || !user.rol || !user.token) {
         dispatch(clearUser());
         router.push("/unauthorized");
       }

@@ -90,8 +90,6 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
       });
       setCheck(!check);
     } catch (error) {
-      console.log("error user", error);
-
       toast({
         title: "Ocurrio un error al actualizar la actividad.",
         variant: "destructive",
@@ -193,28 +191,28 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
             <TableCell className="font-medium text-custom-title dark:text-white">
               {user.nombre}
             </TableCell>
-            <TableCell className="text-custom-title dark:text-white">
+            <TableCell className="text-custom-title dark:text-white text-center">
               {user.correo}
             </TableCell>
-            <TableCell className="text-custom-title dark:text-white">
+            <TableCell className="text-custom-title dark:text-white text-center">
               {user.sexo}
             </TableCell>
-            <TableCell className="text-custom-title dark:text-white">
+            <TableCell className="text-custom-title dark:text-white text-center">
               {user.edad}
             </TableCell>
-            <TableCell className="text-custom-title dark:text-white">
+            <TableCell className="text-custom-title dark:text-white text-center">
               {user.dni}
             </TableCell>
-            <TableCell className="text-custom-title dark:text-white">
+            <TableCell className="text-custom-title dark:text-white text-center">
               {user.direccion}
             </TableCell>
-            <TableCell className="text-custom-title dark:text-white">
+            <TableCell className="text-custom-title dark:text-white text-center">
               {user.autorizado ? "Autorizado" : "No autorizado"}
             </TableCell>
-            <TableCell className="text-right text-custom-title dark:text-white">
+            <TableCell className=" text-custom-title dark:text-white text-center">
               {`${user.isActive ? "Activo" : "Inactivo"}`}
             </TableCell>
-            <TableCell className="text-right text-custom-title dark:text-white">
+            <TableCell className=" text-custom-title dark:text-white text-center">
               <div className="flex justify-center gap-2">
                 <AlertDialog>
                   <AlertDialogTrigger asChild>

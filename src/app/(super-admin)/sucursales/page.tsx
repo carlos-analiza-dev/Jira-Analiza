@@ -72,7 +72,7 @@ export default function SucursalPage() {
   };
 
   return (
-    <div className="max-w-3xl sm:max-w-6xl mx-auto">
+    <div className="mx-auto px-4 md:px-12">
       <div className="mt-5 text-center">
         <p className="text-custom-title font-bold text-3xl dark:text-white">
           Sucursales

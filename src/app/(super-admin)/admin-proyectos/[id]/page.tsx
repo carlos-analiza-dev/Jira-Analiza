@@ -57,16 +57,6 @@ const PageProyectoId = () => {
       </div>
     );
 
-  const esCreador = result.creador && user.id === result.creador.id;
-  const esResponsable = result.responsable && user.id === result.responsable.id;
-  const esColaborador = result.usuarios.some(
-    (colaborador) => colaborador.id === user.id
-  );
-
-  console.log("creador", esCreador);
-  console.log("responsable", esResponsable);
-  console.log("colaborador", esColaborador);
-
   return (
     <div className="w-full mx-auto mt-5">
       <h1 className="text-xl sm:text-3xl text-custom-title dark:text-white font-bold">
@@ -103,7 +93,7 @@ const PageProyectoId = () => {
           </AlertDialog>
           <Link
             href={
-              user.role && user.role === "Administrador"
+              user && user.rol === "Administrador"
                 ? `/admin-proyectos/${proyectoId}/team`
                 : `/proyectos/${proyectoId}/team-users`
             }

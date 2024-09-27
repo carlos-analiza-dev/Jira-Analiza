@@ -99,7 +99,6 @@ const TableSucursales = ({ resultSucursal, check, setCheck }: dataTable) => {
         toast({ title: "Sucursal actualizada exitosamente" });
       }
     } catch (error) {
-      console.log("ERROR SUCURSAL", error);
       toast({
         title: "No se pudo actualizar la sucursal",
         variant: "destructive",

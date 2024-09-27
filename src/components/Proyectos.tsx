@@ -31,6 +31,7 @@ interface Props {
 }
 const Proyectos = ({ result, setCheck, check }: Props) => {
   const user = useSelector((state: any) => state.auth);
+  console.log("USER ROLL", user.rol);
 
   const router = useRouter();
   const { toast } = useToast();
@@ -104,7 +105,7 @@ const Proyectos = ({ result, setCheck, check }: Props) => {
             <div>
               <Link
                 href={
-                  user.role && user.role.nombre === "Administrador"
+                  user.rol && user.rol === "Administrador"
                     ? `/admin-proyectos/${proyecto.id}`
                     : `/proyectos/${proyecto.id}`
                 }
@@ -140,7 +141,7 @@ const Proyectos = ({ result, setCheck, check }: Props) => {
                       <div className="space-y-2">
                         <Link
                           href={
-                            user.role && user.role.nombre === "Administrador"
+                            user.rol && user.rol === "Administrador"
                               ? `/admin-proyectos/${proyecto.id}`
                               : `/proyectos/${proyecto.id}`
                           }

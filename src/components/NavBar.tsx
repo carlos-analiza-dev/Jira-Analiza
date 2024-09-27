@@ -27,6 +27,7 @@ import { Droplet, FileLock2, LogOut, User } from "lucide-react";
 
 export default function NavBar() {
   const user = useSelector((state: any) => state.auth);
+
   const pathname = usePathname();
 
   const dispatch = useDispatch();
@@ -54,63 +55,51 @@ export default function NavBar() {
           className="h-20 w-20"
         />
       </Link>
-      {user &&
-        user.role &&
-        user.role.nombre !== "Administrador" &&
-        user.token && (
-          <NavigationMenu className="hidden sm:flex">
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuTrigger>Analiza</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                    <li className="row-span-3">
-                      <NavigationMenuLink asChild>
-                        <a
-                          className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                          href="/proyectos"
-                        >
-                          <Droplet className="h-6 w-6 text-custom-second" />
-                          <div className="mb-2 mt-4 text-lg font-medium">
-                            Jira - Analiza
-                          </div>
-                          <p className="text-sm leading-tight text-muted-foreground">
-                            En esta seccion puedes observar todos los proyectos
-                            en los cuales estas incluido, disfruta tu
-                            experiencia y colabora en los proyectos.
-                          </p>
-                        </a>
-                      </NavigationMenuLink>
-                    </li>
-                    <Link href="/docs" title="Introduction">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    </Link>
-                    <Link href="/docs/installation" title="Installation">
-                      How to install dependencies and structure your app.
-                    </Link>
-                    <Link href="/docs/primitives/typography" title="Typography">
-                      Styles for headings, paragraphs, lists...etc
-                    </Link>
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link href="/nuevo-proyecto" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Nuevo Proyecto
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link href="/docs" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Historial
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
-        )}
+      {user && user.rol && user.rol !== "Administrador" && user.token && (
+        <NavigationMenu className="hidden sm:flex">
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>Analiza</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+                  <li className="row-span-3">
+                    <NavigationMenuLink asChild>
+                      <a
+                        className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                        href="/proyectos"
+                      >
+                        <Droplet className="h-6 w-6 text-custom-second" />
+                        <div className="mb-2 mt-4 text-lg font-medium">
+                          Jira - Analiza
+                        </div>
+                        <p className="text-sm leading-tight text-muted-foreground">
+                          En esta seccion puedes observar todos los proyectos en
+                          los cuales estas incluido, disfruta tu experiencia y
+                          colabora en los proyectos.
+                        </p>
+                      </a>
+                    </NavigationMenuLink>
+                  </li>
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link href="/nuevo-proyecto" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  Nuevo Proyecto
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link href="/docs" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  Historial
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
+      )}
 
       {!user?.role && !user?.token ? (
         <div className="justify-between gap-2 hidden sm:flex">
@@ -159,7 +148,11 @@ export default function NavBar() {
             <PopoverContent className="w-80">
               <div
                 className="flex justify-between items-center hover:bg-gray-100 dark:hover:bg-gray-800 p-2 text-custom-title dark:text-white hover:cursor-pointer"
-                onClick={() => handleOptionClick("/perfil")}
+                onClick={() =>
+                  handleOptionClick(
+                    `${user.rol === "Administrador" ? "/perfil" : "/profile"}`
+                  )
+                }
               >
                 Perfil <User />
               </div>
@@ -184,7 +177,7 @@ export default function NavBar() {
       )}
 
       <div className="sm:hidden flex gap-4 items-center">
-        {user && user.role && user.token && <ModeToggle />}
+        {user && user.rol && user.token && <ModeToggle />}
         <MenuMobile />
       </div>
     </div>

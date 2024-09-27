@@ -22,13 +22,10 @@ const FormResetPassword = () => {
   const onSubmit = async (data: sendEmail) => {
     try {
       const response = await resetPassword(data);
-      console.log("RESPONSE", response);
 
       toast({ title: "Solicitud enviada, revisa tu correo electronico" });
       reset();
     } catch (error) {
-      console.log(error);
-
       toast({
         title: "Ocurrio un error al enviar la solicitud de correo",
         variant: "destructive",

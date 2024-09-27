@@ -51,7 +51,7 @@ const MenuMobile = () => {
                 </div>
               </SheetDescription>
             )}
-            {user && user.role && user.role.nombre === "Administrador" && (
+            {user && user.rol && user.rol === "Administrador" && (
               <div>
                 <div
                   onClick={handleLogout}

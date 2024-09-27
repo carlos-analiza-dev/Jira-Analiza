@@ -14,9 +14,6 @@ const useProyectoId = (id: string, token?: string) => {
       try {
         const response = await get<TypeProyectos>(url, "", token);
         setResult(response);
-        console.log("RESPONSE", response);
-        console.log("CREADOR", response.creador.nombre);
-        console.log("RESPONSABLE", response.responsable.nombre);
       } catch (error: any) {
         setError(
           error.message || "Hubo un error al momento de extraer los proyectos"

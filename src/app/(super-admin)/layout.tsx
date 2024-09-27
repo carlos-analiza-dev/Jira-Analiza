@@ -9,12 +9,7 @@ export default function AdminLayout({ children }: any) {
   const user = useSelector((state: any) => state.auth);
 
   useEffect(() => {
-    if (
-      !user ||
-      !user.role ||
-      user.role.nombre !== "Administrador" ||
-      !user.token
-    ) {
+    if (!user || user.rol !== "Administrador" || !user.token) {
       router.push("/");
     }
   }, [user, router]);

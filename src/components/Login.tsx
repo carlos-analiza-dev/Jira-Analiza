@@ -26,9 +26,9 @@ export default function LoginSesion() {
   } = useForm<PostLoginData>();
 
   useEffect(() => {
-    if (user && user.role && user.role.nombre === "Administrador") {
+    if (user && user.rol && user.rol === "Administrador") {
       router.push("/dashboard");
-    } else if (user && user.role && user.role.nombre !== "Administrador") {
+    } else if (user && user.rol && user.rol !== "Administrador") {
       router.push("/proyectos");
     }
   }, [user, router]);

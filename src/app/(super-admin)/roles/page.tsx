@@ -59,11 +59,11 @@ export default function Roles() {
       setCheck(!check);
       reset();
       toast({
-        title: "Rol creado exitosamente",
+        title: "Departamento creado exitosamente",
       });
     } catch (error) {
       toast({
-        title: "Error al crear el nuevo rol.",
+        title: "Error al crear el nuevo departamento.",
         variant: "destructive",
       });
     }
@@ -78,9 +78,9 @@ export default function Roles() {
   };
 
   return (
-    <div className="max-w-3xl sm:max-w-6xl">
+    <div className="mx-auto px-4 md:px-12">
       <div className="flex justify-center mt-5 text-custom-title dark:text-white">
-        <h1 className="text-2xl font-bold">Roles Usuario</h1>
+        <h1 className="text-2xl font-bold">Departamentos</h1>
       </div>
       <div className="flex justify-end mt-5 px-2">
         <AlertDialog>
@@ -92,29 +92,29 @@ export default function Roles() {
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle className="text-custom-title dark:text-white font-bold">
-                Agregar Rol
+                Agregar Departamento
               </AlertDialogTitle>
               <AlertDialogDescription className="text-custom-title dark:text-white">
-                En esta sección puedes agregar nuevos puestos o roles dentro de
-                la empresa.
+                En esta sección puedes agregar nuevos puestos o departamentos
+                dentro de la empresa.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mt-5 mb-5">
                 <label className="text-custom-title dark:text-white font-medium">
-                  Ingrese el nuevo rol
+                  Ingrese el nuevo departamento
                 </label>
                 <Input
                   autoFocus
                   {...register("nombre", {
-                    required: "El nombre de rol es obligatorio",
+                    required: "El nombre de departamento es obligatorio",
                     pattern: {
                       value: /^[a-zA-Z\s]+$/,
                       message: "Solo se permiten letras y espacios en blanco",
                     },
                   })}
                   className="mt-3"
-                  placeholder="Nuevo Rol"
+                  placeholder="Nuevo departamento"
                 />
                 {errors.nombre && (
                   <p className="text-red-500 mt-2">

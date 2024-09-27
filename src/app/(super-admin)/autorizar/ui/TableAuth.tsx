@@ -30,8 +30,6 @@ export interface Props {
   setCheck: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const TableAuth = ({ users, check, setCheck }: Props) => {
-  console.log("USERS AUTH", users);
-
   const { toast } = useToast();
   const [filteredUsers, setFilteredUsers] = useState<UserType[]>([]);
 
@@ -94,7 +92,7 @@ const TableAuth = ({ users, check, setCheck }: Props) => {
             Sexo
           </TableHead>
           <TableHead className="text-center text-custom-title dark:text-white font-bold">
-            Rol
+            Departamento
           </TableHead>
           <TableHead className="text-center text-custom-title dark:text-white font-bold">
             Sucursal
@@ -114,25 +112,25 @@ const TableAuth = ({ users, check, setCheck }: Props) => {
       <TableBody>
         {filteredUsers.map((user: UserType) => (
           <TableRow key={user.id}>
-            <TableCell className="font-medium text-custom-title dark:text-white">
+            <TableCell className="font-medium text-custom-title dark:text-white text-center">
               {user.nombre}
             </TableCell>
-            <TableCell className="text-custom-title dark:text-white">
+            <TableCell className="text-custom-title dark:text-white text-center">
               {user.correo}
             </TableCell>
-            <TableCell className="text-custom-title dark:text-white">
+            <TableCell className="text-custom-title dark:text-white text-center">
               {user.sexo}
             </TableCell>
-            <TableCell className="text-custom-title dark:text-white">
+            <TableCell className="text-custom-title dark:text-white text-center">
               {user.role?.nombre}
             </TableCell>
-            <TableCell className="text-custom-title dark:text-white">
+            <TableCell className="text-custom-title dark:text-white text-center">
               {user.sucursal?.nombre}
             </TableCell>
-            <TableCell className="text-custom-title dark:text-white">
+            <TableCell className="text-custom-title dark:text-white text-center">
               {user.direccion}
             </TableCell>
-            <TableCell className="text-custom-title dark:text-white">
+            <TableCell className="text-custom-title dark:text-white text-center">
               {user.autorizado ? "Autorizado" : "No autorizado"}
             </TableCell>
 

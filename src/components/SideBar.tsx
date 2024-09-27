@@ -5,6 +5,7 @@ import { dataSide } from "../../data/dataSidebar";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSelector } from "react-redux";
+
 const SideBar = () => {
   const path = usePathname();
   const user = useSelector((state: any) => state.auth);
@@ -33,7 +34,11 @@ const SideBar = () => {
       <div className="mt-5 mb-5">
         {dataSide.map((item) => (
           <Link
-            className={`${item.link === path ? "bg-custom-title text-white dark:bg-gray-700" : ""} flex justify-between w-full dark:hover:shadow dark:hover:bg-gray-800 hover:shadow px-5 py-3 text-custom-title dark:text-white font-semibold`}
+            className={`${
+              path.startsWith(item.link)
+                ? "bg-custom-title text-white dark:bg-gray-700"
+                : ""
+            } flex justify-between w-full dark:hover:shadow dark:hover:bg-gray-800 hover:shadow px-5 py-3 text-custom-title dark:text-white font-semibold`}
             key={item.id}
             href={item.link}
           >

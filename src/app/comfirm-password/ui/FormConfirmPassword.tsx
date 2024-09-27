@@ -33,7 +33,6 @@ const FormConfirmPassword = () => {
       reset();
       router.push("/");
     } catch (error) {
-      console.log("error confirm", error);
       toast({
         title: "Ocurrio un error al momento de actualizar su contraseña",
       });

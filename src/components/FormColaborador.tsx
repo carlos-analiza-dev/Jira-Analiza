@@ -33,17 +33,14 @@ const FormColaborador = ({ onSuccess, setCheck, check }: PropsForm) => {
   const onSubmit = async (data: CorreoType) => {
     try {
       const response = await postEmailByUser(data, user.token);
-      reset();
       setUsuario(response as UserType);
     } catch (error: any) {
-      const status = error?.response?.status;
-
-      if (status === 404 || status === 500 || status === 400) {
-        toast({
-          title: `No se encontró el usuario con correo ${data.correo}`,
-          variant: "destructive",
-        });
-      }
+      toast({
+        title:
+          `${error.response.data.message}` ||
+          "Hubo un error al buscar este usuario",
+        variant: "destructive",
+      });
     }
   };
 
@@ -64,6 +61,7 @@ const FormColaborador = ({ onSuccess, setCheck, check }: PropsForm) => {
       );
       setCheck(!check);
       onSuccess();
+      reset();
       toast({ title: "Colaborador agregado exitosamente" });
     } catch (error: any) {
       if (error.response.data.message) {
