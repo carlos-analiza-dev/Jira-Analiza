@@ -40,7 +40,6 @@ const FormProyectos = ({ proyecto, setCheck, check }: FormProyectos) => {
   });
 
   useEffect(() => {
-    reset(proyecto);
     setSelectedEstado(proyecto.estado);
   }, [proyecto, reset]);
 

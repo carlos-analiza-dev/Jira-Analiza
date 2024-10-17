@@ -105,14 +105,20 @@ const TareasCard = ({ tarea, check, setCheck }: Props) => {
             {tarea.titulo}
           </p>
           <p className="text-custom-title text-base font-light dark:text-white ">
-            {tarea.descripcion}
+            <span className="font-bold">Descripcion:</span> {tarea.descripcion}
           </p>
           <p className="text-custom-title text-sm font-light dark:text-white mt-1">
-            actualizada por:{" "}
+            <span className="font-bold">Responsable:</span>{" "}
+            {tarea && tarea.usuarioAsignado
+              ? tarea.usuarioAsignado.nombre
+              : "ND"}
+          </p>
+          <p className="text-custom-title text-sm font-light dark:text-white mt-1">
+            Actualizado por:{" "}
             {tarea.actualizadoPor ? tarea.actualizadoPor.nombre : "N/A"}
           </p>
           <p className="text-custom-title text-sm font-light dark:text-white mt-1">
-            ultima actualizacion: {formatFecha(tarea.updatedAt)}
+            Ultima actualizacion: {formatFecha(tarea.updatedAt)}
           </p>
         </div>
         {user.id === tarea.creador.id && (

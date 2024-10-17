@@ -1,7 +1,7 @@
 "use client";
 import createUsers from "@/api/createUsers";
-import useAllRoles from "@/api/getAllRoles";
-import useAllSucursal from "@/api/getSucursale";
+import useAllDepartamentos from "@/api/getAllDepartamentos";
+import useAllSucursales from "@/api/getSucursalesNotPagination";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -21,8 +21,8 @@ import { useState } from "react";
 
 const FormRegister = () => {
   const router = useRouter();
-  const { result } = useAllRoles();
-  const { resultSucursal } = useAllSucursal();
+  const { result } = useAllDepartamentos();
+  const { resultSucursal } = useAllSucursales();
   const { toast } = useToast();
   const [name, setName] = useState("");
   const [correo, setCorreo] = useState("");
@@ -36,6 +36,9 @@ const FormRegister = () => {
   const [sucursalId, setSucursalId] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [isActiveConfirm, setIsActiveConfirm] = useState(true);
+
+  console.log("result", resultSucursal);
+  console.log("result roles", result);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

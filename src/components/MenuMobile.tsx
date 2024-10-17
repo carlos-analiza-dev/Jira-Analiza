@@ -1,4 +1,13 @@
-import { FileLock2, LogIn, LogOut, Text, UserRoundPlus } from "lucide-react";
+import {
+  FileLock2,
+  LogIn,
+  LogOut,
+  PanelsTopLeft,
+  Presentation,
+  Text,
+  User,
+  UserRoundPlus,
+} from "lucide-react";
 import { Button } from "./ui/button";
 import {
   Sheet,
@@ -15,20 +24,29 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { clearUser } from "@/store/auth/sessionSlice";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const MenuMobile = () => {
   const user = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
   const router = useRouter();
+
+  const [isOpen, setIsOpen] = useState(false);
+
   const handleLogout = () => {
     dispatch(clearUser());
     router.push("/");
+    setIsOpen(false);
   };
+
+  const handleLinkClick = () => {
+    setIsOpen(false);
+  };
+
   return (
     <div>
-      <Sheet>
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetTrigger>
-          {" "}
           <Button variant="outline">
             <Text />
           </Button>
@@ -38,42 +56,125 @@ const MenuMobile = () => {
             <SheetTitle className="text-custom-title font-bold dark:text-white mb-5">
               ¿Donde deseas navegar?
             </SheetTitle>
-            {!user?.role && !user?.token && (
+            {!user?.token && (
               <SheetDescription>
-                <div className="flex justify-around mt-3 items-center text-custom-title  dark:text-white">
-                  <Link href="/">Iniciar Sesion</Link>
-
+                <div className="flex justify-around mt-3 items-center text-custom-title dark:text-white">
+                  <Link href="/" onClick={handleLinkClick}>
+                    {" "}
+                    Iniciar Sesion
+                  </Link>
                   <LogIn />
                 </div>
-                <div className="flex justify-around mt-3 items-centern text-custom-title  dark:text-white">
-                  <Link href="/register">Registrarse</Link>
+                <div className="flex justify-around mt-3 items-center text-custom-title dark:text-white">
+                  <Link href="/register" onClick={handleLinkClick}>
+                    {" "}
+                    Registrarse
+                  </Link>
+                  <UserRoundPlus />
+                </div>
+                <div className="flex justify-around mt-3 items-center text-custom-title dark:text-white">
+                  <Link href="/register" onClick={handleLinkClick}>
+                    {" "}
+                    Cambiar contraseña
+                  </Link>
                   <UserRoundPlus />
                 </div>
               </SheetDescription>
             )}
-            {user && user.rol && user.rol === "Administrador" && (
+            {user && user.token && user.rol === "Administrador" && (
               <div>
-                <div
-                  onClick={handleLogout}
-                  className="flex justify-between items-center text-custom-title  dark:text-white"
-                >
-                  <p className="text-custom-title dark:text-white">
-                    Cerrar Sesion
-                  </p>
-                  <LogOut />
-                </div>
                 <Link
                   href="/reset-password"
-                  className="flex justify-between items-center text-custom-title  dark:text-white mt-4"
+                  className="flex justify-between items-center text-custom-title dark:text-white mt-4"
+                  onClick={handleLinkClick}
                 >
                   <p className="text-custom-title dark:text-white">
                     Cambiar contraseña
                   </p>
                   <FileLock2 />
                 </Link>
+                <Link
+                  href="/perfil"
+                  className="flex justify-between items-center text-custom-title dark:text-white mt-4 mb-4"
+                  onClick={handleLinkClick}
+                >
+                  <p className="text-custom-title dark:text-white">Perfil</p>
+                  <User />
+                </Link>
+                <Separator />
+                <div
+                  onClick={handleLogout}
+                  className="flex justify-between items-center text-custom-title dark:text-white mt-4"
+                >
+                  <p className="text-custom-title dark:text-white">
+                    Cerrar Sesion
+                  </p>
+                  <LogOut />
+                </div>
               </div>
             )}
-            <Separator />
+            {user && user.token && user?.rol !== "Administrador" && (
+              <div>
+                <div>
+                  <Link
+                    href="/proyectos"
+                    className="flex justify-between items-center text-custom-title dark:text-white mt-4"
+                    onClick={handleLinkClick}
+                  >
+                    <p className="text-custom-title dark:text-white">
+                      Analiza proyectos
+                    </p>
+                    <PanelsTopLeft />
+                  </Link>
+                  <Link
+                    href="/nuevo-proyecto"
+                    className="flex justify-between items-center text-custom-title dark:text-white mt-4"
+                    onClick={handleLinkClick}
+                  >
+                    <p className="text-custom-title dark:text-white">
+                      Nuevo proyecto
+                    </p>
+                    <Presentation />
+                  </Link>
+                  <Link
+                    href="/eventos-users"
+                    className="flex justify-between items-center text-custom-title dark:text-white mt-4"
+                    onClick={handleLinkClick}
+                  >
+                    <p className="text-custom-title dark:text-white">Eventos</p>
+                    <Presentation />
+                  </Link>
+                  <Link
+                    href="/profile"
+                    className="flex justify-between items-center text-custom-title dark:text-white mt-4 mb-4"
+                    onClick={handleLinkClick}
+                  >
+                    <p className="text-custom-title dark:text-white">Perfil</p>
+                    <User />
+                  </Link>
+                  <Link
+                    href="/reset-password"
+                    className="flex justify-between items-center text-custom-title dark:text-white mt-4 mb-4"
+                    onClick={handleLinkClick}
+                  >
+                    <p className="text-custom-title dark:text-white">
+                      Cambiar contraseña
+                    </p>
+                    <FileLock2 />
+                  </Link>
+                </div>
+                <Separator />
+                <div
+                  onClick={handleLogout}
+                  className="flex justify-between items-center text-custom-title dark:text-white mt-4"
+                >
+                  <p className="text-custom-title dark:text-white">
+                    Cerrar Sesion
+                  </p>
+                  <LogOut />
+                </div>
+              </div>
+            )}
           </SheetHeader>
         </SheetContent>
       </Sheet>

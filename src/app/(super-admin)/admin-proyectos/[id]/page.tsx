@@ -38,7 +38,7 @@ const PageProyectoId = () => {
   useEffect(() => {
     if (error === "Request failed with status code 401") {
       dispatch(clearUser());
-      router.push("/unauthorized");
+      router.push("/");
     }
   }, [error, dispatch, router]);
 

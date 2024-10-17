@@ -1,7 +1,9 @@
 import React from "react";
 import FormCreateProjectUsers from "./ui/FormCreateProjectUsers";
+import { useSelector } from "react-redux";
 
 const ProyectoNuevo = () => {
+  const user = useSelector((state: any) => state.auth);
   return (
     <div className="px-4 py-4 sm:px-12">
       <div className="mt-4">

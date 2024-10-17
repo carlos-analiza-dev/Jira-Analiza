@@ -2,9 +2,13 @@ import axios from "axios";
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
+  headers: {
+    "Cache-Control": "no-cache, no-store, must-revalidate",
+    Pragma: "no-cache",
+    Expires: "0",
+  },
 });
 
-// Función GET
 export const get = async <T>(
   url: string,
   params?: any,
@@ -12,7 +16,10 @@ export const get = async <T>(
 ): Promise<T> => {
   const response = await axiosInstance.get<T>(url, {
     params,
-    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      "Cache-Control": "no-store",
+    },
   });
   return response.data;
 };

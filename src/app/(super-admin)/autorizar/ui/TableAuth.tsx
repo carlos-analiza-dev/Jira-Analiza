@@ -19,48 +19,35 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { UserType } from "@/types/user.type";
-import { useEffect, useState } from "react";
+import { UserResponse, UserType } from "@/types/user.type";
 import updateUser from "@/api/updateUser";
 import { useToast } from "@/components/ui/use-toast";
 import Image from "next/image";
+import { useSelector } from "react-redux";
 export interface Props {
-  users: UserType[] | null;
+  users: UserResponse | null;
   check: boolean;
   setCheck: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const TableAuth = ({ users, check, setCheck }: Props) => {
+  const user = useSelector((state: any) => state.auth);
   const { toast } = useToast();
-  const [filteredUsers, setFilteredUsers] = useState<UserType[]>([]);
 
-  useEffect(() => {
-    if (users) {
-      const updatedFilteredUsers = users.filter(
-        (user) => user.autorizado === 0
-      );
-      setFilteredUsers(updatedFilteredUsers);
-    }
-  }, [users, check]);
-
-  const handleAuthorize = async (
-    userId: string,
-    currentState: number,
-    token?: string
-  ) => {
+  const handleAuthorize = async (userId: string, currentState: number) => {
     const newState = currentState === 1 ? 0 : 1;
     const updateData = { autorizado: newState };
 
     try {
-      await updateUser(userId, updateData, token);
+      await updateUser(userId, updateData, user.token);
       toast({ title: "Autorización del usuario actualizada exitosamente" });
 
-      window.location.reload();
+      setCheck(!check);
     } catch (error) {
       toast({ title: "Error al autorizar el usuario", variant: "destructive" });
     }
   };
 
-  if (!filteredUsers || filteredUsers.length === 0) {
+  if (!users || users.data.length === 0) {
     return (
       <div className="block">
         <div className="flex justify-center mt-10">
@@ -110,7 +97,7 @@ const TableAuth = ({ users, check, setCheck }: Props) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {filteredUsers.map((user: UserType) => (
+        {users.data.map((user: UserType) => (
           <TableRow key={user.id}>
             <TableCell className="font-medium text-custom-title dark:text-white text-center">
               {user.nombre}

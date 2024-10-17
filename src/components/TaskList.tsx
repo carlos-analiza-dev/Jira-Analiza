@@ -18,6 +18,7 @@ type GroupedTasks = {
 
 const initialStatusGroups: GroupedTasks = {
   Nueva: [],
+  Recibida: [],
   EnProgreso: [],
   Finalizada: [],
 };
@@ -65,13 +66,13 @@ const TaskList = ({ tareas, check, setCheck }: TareaListProps) => {
         Tareas
       </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 pb-32">
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-5 pb-32">
         <DndContext onDragEnd={handleDragEnd}>
           {Object.entries(groupedTasks).map(([estado, tareas]) => (
             <div key={estado} className="w-full">
               <div className="mt-3">
                 <div
-                  className={`block p-1 ${estado === "Nueva" && "bg-green-500"} ${estado === "EnProgreso" && "bg-sky-500"} ${estado === "Finalizada" && "bg-red-600"} `}
+                  className={`block p-1 ${estado === "Nueva" && "bg-green-500"} ${estado === "Recibida" && "bg-amber-600"} ${estado === "EnProgreso" && "bg-sky-500"} ${estado === "Finalizada" && "bg-red-600"} `}
                 />
                 <div className="bg-gray-100 ">
                   <p className="p-2 text-custom-title dark:text-white dark:bg-gray-800">

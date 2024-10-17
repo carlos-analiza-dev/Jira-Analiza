@@ -3,6 +3,7 @@ import useAllProjects from "@/api/getAllProjects";
 import Proyectos from "@/components/Proyectos";
 import SkeletonProyectos from "@/components/SkeletonProyectos";
 import { clearUser } from "@/store/auth/sessionSlice";
+import { TypeProyectos } from "@/types/proyectos.type";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -15,11 +16,18 @@ const ProyectosPage = () => {
   const router = useRouter();
   const [check, setCheck] = useState(false);
   const { result, error, loading } = useAllProjects(user.token, check);
+  const [proyectos, setProyectos] = useState<TypeProyectos[] | []>([]);
+
+  useEffect(() => {
+    if (result) {
+      setProyectos(result);
+    }
+  }, [result, user.token]);
 
   useEffect(() => {
     if (error === "Request failed with status code 401") {
       dispatch(clearUser());
-      router.push("/unauthorized");
+      router.push("/");
     }
   }, [error, dispatch, router]);
   return (
@@ -37,7 +45,13 @@ const ProyectosPage = () => {
         {loading ? (
           <SkeletonProyectos />
         ) : (
-          <Proyectos result={result} check={check} setCheck={setCheck} />
+          <Proyectos
+            setProyectos={setProyectos}
+            proyectos={proyectos}
+            result={result}
+            check={check}
+            setCheck={setCheck}
+          />
         )}
       </div>
     </div>

@@ -5,13 +5,22 @@ export type UserType = {
   sexo: string;
   edad: number;
   dni: string;
+  role: {
+    id: string;
+    nombre: string;
+  };
+  sucursal: {
+    id: string;
+    nombre: string;
+    departamento: string;
+    direccion: string;
+  };
   direccion: string;
   autorizado?: number;
   isActive?: number;
-  role?: {
-    nombre: string;
-  };
-  sucursal?: {
-    nombre: string;
-  };
+};
+
+export type UserResponse = {
+  data: UserType[];
+  total: number;
 };

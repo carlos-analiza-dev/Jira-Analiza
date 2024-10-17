@@ -28,10 +28,17 @@ interface Props {
   result: TypeProyectos[];
   check?: boolean;
   setCheck: React.Dispatch<React.SetStateAction<boolean>>;
+  setProyectos: React.Dispatch<React.SetStateAction<[] | TypeProyectos[]>>;
+  proyectos: [] | TypeProyectos[];
 }
-const Proyectos = ({ result, setCheck, check }: Props) => {
+const Proyectos = ({
+  result,
+  setCheck,
+  check,
+  setProyectos,
+  proyectos,
+}: Props) => {
   const user = useSelector((state: any) => state.auth);
-  console.log("USER ROLL", user.rol);
 
   const router = useRouter();
   const { toast } = useToast();
@@ -41,8 +48,9 @@ const Proyectos = ({ result, setCheck, check }: Props) => {
     setLoading(true);
     try {
       const response = await deleteProyecto(proyectoId, user.token);
-      router.refresh();
-      setCheck(!check);
+      setProyectos((statusProyecto) =>
+        statusProyecto.filter((proyecto) => proyecto.id !== proyectoId)
+      );
       toast({ title: "Proyecto eliminado exitosamente" });
     } catch (error) {
       toast({
@@ -61,7 +69,7 @@ const Proyectos = ({ result, setCheck, check }: Props) => {
           No hay proyectos aun{" "}
           <Link
             className="text-purple-500 dark:text-sky-400 font-bold hover:underline"
-            href="/create"
+            href={user.rol === "Administrador" ? "/create" : "/nuevo-proyecto"}
           >
             Crear proyecto
           </Link>
@@ -71,7 +79,7 @@ const Proyectos = ({ result, setCheck, check }: Props) => {
   }
   return (
     <div className="mx-auto w-full">
-      {result.map((proyecto) => (
+      {proyectos.map((proyecto) => (
         <div
           className="bg-gray-50 p-5 rounded-sm mt-4 dark:bg-gray-900"
           key={proyecto.id}

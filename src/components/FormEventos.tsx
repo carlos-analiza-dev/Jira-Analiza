@@ -1,5 +1,4 @@
-"use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
@@ -25,15 +24,26 @@ import { PostEvento } from "@/types/postEevento";
 import createEvento from "@/api/createEvento";
 import { useSelector } from "react-redux";
 import { useToast } from "@/components/ui/use-toast";
+import { DataEventos } from "@/types/evento.type";
+import updateEvento from "@/api/updateEvento";
+import { UserType } from "@/types/user.type";
+import useGetUsersActivesAndAuth from "@/api/getUserActivesAndAutorizados";
 
 interface Props {
   check: boolean;
   setCheck: React.Dispatch<React.SetStateAction<boolean>>;
   showDialog: boolean;
   setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  evento?: DataEventos;
 }
 
-const FormEventos = ({ check, setCheck, showDialog, setShowDialog }: Props) => {
+const FormEventos = ({
+  check,
+  setCheck,
+  showDialog,
+  setShowDialog,
+  evento,
+}: Props) => {
   const user = useSelector((state: any) => state.auth);
   const { toast } = useToast();
   const {
@@ -42,25 +52,59 @@ const FormEventos = ({ check, setCheck, showDialog, setShowDialog }: Props) => {
     reset,
     formState: { errors },
     setValue,
-  } = useForm<PostEvento>();
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  } = useForm<PostEvento>({
+    defaultValues: evento || {},
+  });
+  const { result, loading, error } = useGetUsersActivesAndAuth(user.token);
+
+  const [usuarios, setUsuarios] = useState<UserType | []>([]);
+  const [responsableId, setResponsableId] = useState<string>("");
+
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    evento?.fechaInicio ? new Date(evento.fechaInicio) : undefined
+  );
   const [selectedDataFinish, setSelectedDataFinish] = useState<
     Date | undefined
-  >(undefined);
-
+  >(evento?.fechaFin ? new Date(evento.fechaFin) : undefined);
   const [selectedTipoEvento, setSelectedTipoEvento] = useState<
     string | undefined
-  >(undefined);
+  >(evento?.tipoEvento || undefined);
+  const [selectedEstado, setSelectedEstado] = useState<string | undefined>(
+    evento?.estado || undefined
+  );
+
+  useEffect(() => {
+    if (evento) {
+      reset({
+        nombre: evento.nombre,
+        descripcion: evento.descripcion,
+        fechaInicio: evento.fechaInicio,
+        fechaFin: evento.fechaFin,
+        tipoEvento: evento.tipoEvento,
+        estado: evento.estado,
+      });
+    }
+  }, [evento, reset]);
+
+  useEffect(() => {
+    setUsuarios(result);
+  }, [result, user.token]);
 
   const onSubmit = async (data: PostEvento) => {
     try {
-      const response = await createEvento(data, user.token);
-      toast({ title: "Evento creado exitosamente." });
-      setCheck(!check);
-      setShowDialog(!showDialog);
+      if (evento) {
+        await updateEvento(evento.id, data, user.token);
+        setCheck(!check);
+        toast({ title: "Evento actualizado exitosamente" });
+        setShowDialog(!showDialog);
+      } else {
+        await createEvento({ ...data, responsableId }, user.token);
+        window.location.reload();
+        toast({ title: "Evento creado exitosamente." });
+        reset();
+        setShowDialog(!showDialog);
+      }
     } catch (error: any) {
-      console.log("ERROR EVENTO", error);
-
       if (Array.isArray(error.response.data.message)) {
         error.response.data.message.forEach((msg: string) => {
           toast({
@@ -97,6 +141,16 @@ const FormEventos = ({ check, setCheck, showDialog, setShowDialog }: Props) => {
     setSelectedTipoEvento(value);
     setValue("tipoEvento", value);
   };
+
+  const handleSelectEstado = (value: string) => {
+    setSelectedEstado(value);
+    setValue("estado", value);
+  };
+
+  const handleValueIdRol = (value: string) => {
+    setResponsableId(value);
+  };
+
   return (
     <form
       className="p-4 shadow-md bg-gray-50 dark:bg-gray-900 rounded-md"
@@ -150,9 +204,14 @@ const FormEventos = ({ check, setCheck, showDialog, setShowDialog }: Props) => {
         <label className="block text-custom-title dark:text-white font-semibold">
           Tipo de evento
         </label>
-        <Select onValueChange={handleSelectTipoEvento}>
+        <Select
+          value={selectedTipoEvento}
+          onValueChange={handleSelectTipoEvento}
+        >
           <SelectTrigger className="w-full mt-2">
-            <SelectValue placeholder="Selecciona el evento" />
+            <SelectValue placeholder="Selecciona el evento">
+              {selectedTipoEvento ? selectedTipoEvento : "Selecciona el evento"}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
@@ -164,12 +223,70 @@ const FormEventos = ({ check, setCheck, showDialog, setShowDialog }: Props) => {
             </SelectGroup>
           </SelectContent>
         </Select>
+
         {errors.tipoEvento && (
           <p className="text-red-500 mt-2">
             {errors.tipoEvento.message?.toString()}
           </p>
         )}
       </div>
+
+      {!evento && (
+        <div className="mt-3">
+          <label className="block text-custom-title dark:text-white font-semibold">
+            Responsable
+          </label>
+          <Select onValueChange={(value) => handleValueIdRol(value)}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="-- Selecciona responsable --" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Responsable</SelectLabel>
+                {Array.isArray(usuarios) && usuarios.length > 0 ? (
+                  usuarios.map((user: UserType) => (
+                    <SelectItem key={user.id} value={user.id}>
+                      {user.nombre}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <p>No hay usuarios disponibles.</p>
+                )}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
+      {/* Campo estado (solo visible al actualizar) */}
+      {evento && (
+        <div className="mt-3">
+          <label className="block text-custom-title dark:text-white font-semibold">
+            Estado del evento
+          </label>
+          <Select value={selectedEstado} onValueChange={handleSelectEstado}>
+            <SelectTrigger className="w-full mt-2">
+              <SelectValue placeholder="Selecciona el estado">
+                {selectedEstado ? selectedEstado : "Selecciona el estado"}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Estado</SelectLabel>
+                <SelectItem value="Activo">Activo</SelectItem>
+                <SelectItem value="Pospuesto">Pospuesto</SelectItem>
+                <SelectItem value="Finalizado">Finalizado</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+
+          {errors.estado && (
+            <p className="text-red-500 mt-2">
+              {errors.estado.message?.toString()}
+            </p>
+          )}
+        </div>
+      )}
 
       <div className="mt-3">
         <label className="block text-custom-title dark:text-white font-semibold">
@@ -188,7 +305,7 @@ const FormEventos = ({ check, setCheck, showDialog, setShowDialog }: Props) => {
               <CalendarDays className="absolute right-2 top-1/2 transform -translate-y-1/2 text-custom-title dark:text-white" />
             </div>
           </PopoverTrigger>
-          <PopoverContent align="start">
+          <PopoverContent className="w-auto p-0">
             <Calendar
               mode="single"
               selected={selectedDate}
@@ -197,13 +314,18 @@ const FormEventos = ({ check, setCheck, showDialog, setShowDialog }: Props) => {
             />
           </PopoverContent>
         </Popover>
+
+        {errors.fechaInicio && (
+          <p className="text-red-500 mt-2">
+            {errors.fechaInicio.message?.toString()}
+          </p>
+        )}
       </div>
 
       <div className="mt-3">
         <label className="block text-custom-title dark:text-white font-semibold">
           Fecha de finalización
         </label>
-
         <Popover>
           <PopoverTrigger asChild>
             <div className="relative">
@@ -218,7 +340,7 @@ const FormEventos = ({ check, setCheck, showDialog, setShowDialog }: Props) => {
               <CalendarDays className="absolute right-2 top-1/2 transform -translate-y-1/2 text-custom-title dark:text-white" />
             </div>
           </PopoverTrigger>
-          <PopoverContent align="start">
+          <PopoverContent className="w-auto p-0">
             <Calendar
               mode="single"
               selected={selectedDataFinish}
@@ -227,16 +349,20 @@ const FormEventos = ({ check, setCheck, showDialog, setShowDialog }: Props) => {
             />
           </PopoverContent>
         </Popover>
+
+        {errors.fechaFin && (
+          <p className="text-red-500 mt-2">
+            {errors.fechaFin.message?.toString()}
+          </p>
+        )}
       </div>
 
-      <div className="mt-4 flex justify-center mb-3">
-        <Button
-          type="submit"
-          className="bg-custom-title dark:bg-white text-white dark:text-custom-title font-semibold w-full"
-        >
-          Agregar Evento
-        </Button>
-      </div>
+      <Button
+        className="w-full mt-6 bg-custom-title text-white dark:bg-white dark:text-custom-title font-bold"
+        type="submit"
+      >
+        {evento ? "Actualizar Evento" : "Crear Evento"}
+      </Button>
     </form>
   );
 };

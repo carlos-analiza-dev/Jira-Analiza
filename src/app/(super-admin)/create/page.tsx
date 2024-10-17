@@ -16,7 +16,7 @@ const CrearProyecto = () => {
     if (!hasCheckedAuth) {
       if (!user || !user.rol || !user.token) {
         dispatch(clearUser());
-        router.push("/unauthorized");
+        router.push("/");
       }
       setHasCheckedAuth(true);
     }

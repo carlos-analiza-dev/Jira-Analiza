@@ -4,22 +4,20 @@ import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import FormColaborador from "@/components/FormColaborador";
 import Colaboradores from "@/components/Colaboradores";
-import useColaboradoresByProjectId from "@/api/getColaboradoresByProjectId";
 import { useSelector } from "react-redux";
 import SkeletonProyectos from "@/components/SkeletonProyectos";
 import { clearUser } from "@/store/auth/sessionSlice";
 import { useDispatch } from "react-redux";
+import useColaboradoresByProyecto from "@/api/getColaboradoresByProyecto";
 const ColaboradoresUsers = () => {
   const user = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
@@ -28,7 +26,7 @@ const ColaboradoresUsers = () => {
   const [isClose, setIsClose] = useState(false);
   const params = useParams();
   const proyectoId = Array.isArray(params.id) ? params.id[0] : params.id;
-  const { error, loading, result } = useColaboradoresByProjectId(
+  const { error, loading, result } = useColaboradoresByProyecto(
     proyectoId,
     user.token,
     check

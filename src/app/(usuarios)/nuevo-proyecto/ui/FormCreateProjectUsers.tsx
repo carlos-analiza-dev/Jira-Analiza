@@ -1,22 +1,36 @@
 "use client";
 import createProjects from "@/api/createProjects";
+import useAllDepartamentos from "@/api/getAllDepartamentos";
 import postEmailByUser from "@/api/postEmailByUser";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { CorreoType } from "@/types/correo.post.type";
 import { DataProject } from "@/types/dataProjects.type";
+import { TableRolesData } from "@/types/table.roles.type";
 import { UserType } from "@/types/user.type";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
 const FormCreateProjectUsers = () => {
   const user = useSelector((state: any) => state.auth);
   const [correo, setCorreo] = useState<string | null>(null);
+  const { error, result } = useAllDepartamentos(user.token);
   const [responsableId, setResponsableId] = useState<UserType | null>(null);
+  const [departamentos, setDepartamentos] = useState<TableRolesData[] | []>([]);
+  const [rolDirigido, setRolDirigido] = useState<string>("");
   const { toast } = useToast();
   const router = useRouter();
 
@@ -27,7 +41,22 @@ const FormCreateProjectUsers = () => {
     formState: { errors },
   } = useForm<DataProject>();
 
+  useEffect(() => {
+    setDepartamentos(result ?? []);
+  }, [result, user.token]);
+
+  const handleValueIdRol = (value: string) => {
+    setRolDirigido(value);
+  };
+
   const onSubmit = async (data: DataProject) => {
+    if (!rolDirigido) {
+      toast({
+        title: "Debe asignar un departamento antes de crear el proyecto.",
+        variant: "destructive",
+      });
+      return;
+    }
     if (!responsableId) {
       toast({
         title: "Debe asignar un responsable antes de crear el proyecto.",
@@ -40,12 +69,15 @@ const FormCreateProjectUsers = () => {
       const projectData = {
         ...data,
         responsableId: responsableId?.id,
+        rolDirigido: rolDirigido,
       };
       await createProjects(projectData, user.token);
       toast({ title: "Proyecto creado exitosamente" });
       router.push("/proyectos");
       reset();
     } catch (error: any) {
+      console.log("ERROR PROYECTO", error);
+
       toast({
         title:
           error?.response?.data?.statusCode === 401
@@ -151,6 +183,31 @@ const FormCreateProjectUsers = () => {
             {errors.descripcion.message?.toString()}
           </p>
         )}
+      </div>
+
+      <div className="mt-3">
+        <label className="text-custom-title dark:text-white">
+          Departamento
+        </label>
+        <Select onValueChange={(value) => handleValueIdRol(value)}>
+          <SelectTrigger className="w-full dark:bg-gray-800">
+            <SelectValue placeholder="-- Selecciona departamemnto --" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Departamento</SelectLabel>
+              {Array.isArray(departamentos) && departamentos.length > 0 ? (
+                departamentos.map((depto: TableRolesData) => (
+                  <SelectItem key={depto.id} value={depto.id}>
+                    {depto.nombre}
+                  </SelectItem>
+                ))
+              ) : (
+                <p>No hay departamentos disponibles.</p>
+              )}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="mt-3">

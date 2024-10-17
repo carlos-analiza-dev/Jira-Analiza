@@ -40,10 +40,12 @@ export default function LoginSesion() {
       reset();
     } catch (error) {
       console.error(error);
-      toast({
-        title: "Credenciales Incorrectas, contactate con el administrador.",
-        variant: "destructive",
-      });
+      if (error) {
+        toast({
+          title: "Credenciales Incorrectas, contactate con el administrador.",
+          variant: "destructive",
+        });
+      }
     }
   };
 

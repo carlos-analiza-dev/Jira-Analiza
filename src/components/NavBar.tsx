@@ -45,23 +45,46 @@ export default function NavBar() {
   };
 
   return (
-    <div className="flex items-center justify-between px-4 py-2 mx-auto cursor-pointer sm:max-w-4xl md:max-w-6xl">
-      <Link href="/">
-        <Image
-          src="/images/Logotipo_principal.png"
-          width={200}
-          height={200}
-          alt="Logo Analiza"
-          className="h-20 w-20"
-        />
-      </Link>
+    <div className="flex items-center justify-between px-4 py-2 mx-auto cursor-pointer sm:w-full md:w-full">
+      {user && user.rol === "Administrador" ? (
+        <Link href="/dashboard">
+          <Image
+            src="/images/Logotipo_principal.png"
+            width={200}
+            height={200}
+            alt="Logo Analiza"
+            className="h-20 w-20"
+          />
+        </Link>
+      ) : (
+        <Link href="/proyectos">
+          <Image
+            src="/images/Logotipo_principal.png"
+            width={200}
+            height={200}
+            alt="Logo Analiza"
+            className="h-20 w-20"
+          />
+        </Link>
+      )}
+      {!user && !user.role && (
+        <Link href="/">
+          <Image
+            src="/images/Logotipo_principal.png"
+            width={200}
+            height={200}
+            alt="Logo Analiza"
+            className="h-20 w-20"
+          />
+        </Link>
+      )}
       {user && user.rol && user.rol !== "Administrador" && user.token && (
         <NavigationMenu className="hidden sm:flex">
           <NavigationMenuList>
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Analiza</NavigationMenuTrigger>
+              <NavigationMenuTrigger>Analiza Proyectos</NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+                <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] ">
                   <li className="row-span-3">
                     <NavigationMenuLink asChild>
                       <a
@@ -91,9 +114,9 @@ export default function NavBar() {
               </Link>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <Link href="/docs" legacyBehavior passHref>
+              <Link href="/eventos-users" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Historial
+                  Eventos
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>

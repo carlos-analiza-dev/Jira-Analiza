@@ -20,7 +20,8 @@ const useColaboradoresByProjectId = (
         setResult(response);
       } catch (error: any) {
         setError(
-          error.message || "Hubo un error al momento de extraer los proyectos"
+          error.message ||
+            "Hubo un error al momento de extraer los colaboradores"
         );
       } finally {
         setLoading(false);

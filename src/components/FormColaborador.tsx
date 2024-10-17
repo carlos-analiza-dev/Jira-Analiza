@@ -1,14 +1,12 @@
 import { useForm } from "react-hook-form";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import postEmailByUser from "@/api/postEmailByUser";
-import { CorreoType } from "@/types/correo.post.type";
-import { UserType } from "@/types/user.type";
 import { useToast } from "./ui/use-toast";
 import addColaborador from "@/api/addColaborador";
 import { useParams } from "next/navigation";
+import useGetUsersByRolesProyectos from "@/api/getUsersByRolProjects";
+import { UserType } from "@/types/user.type";
 
 type PropsForm = {
   onSuccess: () => void;
@@ -22,119 +20,94 @@ const FormColaborador = ({ onSuccess, setCheck, check }: PropsForm) => {
   const params = useParams();
   const proyectoId = Array.isArray(params.id) ? params.id[0] : params.id;
 
-  const {
-    register,
-    reset,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<CorreoType>();
-  const [usuario, setUsuario] = useState<UserType | null>(null);
+  const { result, loading } = useGetUsersByRolesProyectos(
+    proyectoId,
+    user.token
+  );
 
-  const onSubmit = async (data: CorreoType) => {
-    try {
-      const response = await postEmailByUser(data, user.token);
-      setUsuario(response as UserType);
-    } catch (error: any) {
-      toast({
-        title:
-          `${error.response.data.message}` ||
-          "Hubo un error al buscar este usuario",
-        variant: "destructive",
-      });
-    }
-  };
+  const [usuariosSeleccionados, setUsuariosSeleccionados] = useState<
+    UserType[]
+  >([]);
 
   const agregarColaborador = async () => {
-    if (!usuario?.id) {
+    if (usuariosSeleccionados.length === 0) {
       toast({
-        title: "No se ha encontrado un usuario válido para agregar.",
+        title: "No se ha seleccionado ningún usuario.",
         variant: "destructive",
       });
       return;
     }
 
     try {
-      const response = await addColaborador(
-        proyectoId,
-        { userId: usuario.id.toString() },
-        user.token
-      );
+      for (const usuario of usuariosSeleccionados) {
+        await addColaborador(
+          proyectoId,
+          { userId: usuario.id.toString() },
+          user.token
+        );
+      }
+
       setCheck(!check);
       onSuccess();
-      reset();
-      toast({ title: "Colaborador agregado exitosamente" });
+      toast({ title: "Colaborador(es) agregado(s) exitosamente" });
     } catch (error: any) {
-      if (error.response.data.message) {
-        toast({
-          title: `${error.response.data.message}`,
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Ocurrio un error al crear el usuario",
-          variant: "destructive",
-        });
-      }
+      console.log("ERROR AL AGREGAR COLABORADORES", error);
+
+      toast({
+        title: `${error.response.data ? error.response.data.message : "Ocurrió un error al agregar colaboradores"}`,
+        variant: "destructive",
+      });
     }
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-        <div className="mt-4">
-          <label className="mb-3 text-custom-title dark:text-white font-semibold">
-            Correo de integrante
-          </label>
-          <Input
-            {...register("correo", {
-              required: "El correo electrónico es obligatorio",
-              pattern: {
-                value:
-                  /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/,
-                message: "Correo electrónico inválido",
-              },
-            })}
-            type="email"
-            className="mt-3"
-            placeholder="example@gmail.com"
-            autoFocus
-          />
-          {errors.correo && (
-            <p className="text-red-500 mt-2">
-              {errors.correo.message?.toString()}
-            </p>
-          )}
-        </div>
-        <div className="mt-4">
-          <Button
-            type="submit"
-            className="bg-custom-title dark:bg-white text-white dark:text-custom-title w-full"
-          >
-            Buscar Colaborador
-          </Button>
-        </div>
-      </form>
-      {usuario && (
-        <div className="mt-4">
-          <div className="flex justify-center">
-            <p className="text-custom-title font-bold dark:text-white">
-              Resultado:
-            </p>
-          </div>
-          <div className="flex justify-between items-center">
-            <p className="text-custom-title font-bold dark:text-white">
-              {usuario.nombre}
-            </p>
-            <Button
-              onClick={agregarColaborador}
-              className="bg-custom-second hover:bg-red-500 text-white dark:bg-white dark:text-custom-title p-2"
+    <div>
+      <div className="mt-4">
+        <label className="mb-3 text-custom-title dark:text-white font-semibold">
+          Seleccionar colaboradores
+        </label>
+        {!loading ? (
+          result && result.length > 0 ? (
+            <select
+              multiple
+              className="w-full p-2 border rounded dark:bg-gray-800 dark:text-white"
+              onChange={(e) => {
+                const options = e.target.options;
+                const selectedUsers: UserType[] = [];
+                for (let i = 0; i < options.length; i++) {
+                  if (options[i].selected) {
+                    const selectedUser = result.find(
+                      (user: UserType) => user.id === options[i].value
+                    );
+                    if (selectedUser) selectedUsers.push(selectedUser);
+                  }
+                }
+                setUsuariosSeleccionados(selectedUsers);
+              }}
             >
-              Agregar Colaborador
-            </Button>
-          </div>
-        </div>
-      )}
-    </>
+              {result.map((usuario: UserType) => (
+                <option key={usuario.id} value={usuario.id}>
+                  {usuario.nombre}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <p>No se encontraron usuarios disponibles.</p>
+          )
+        ) : (
+          <p>Cargando usuarios...</p>
+        )}
+      </div>
+
+      <div className="mt-4">
+        <Button
+          onClick={agregarColaborador}
+          className="bg-custom-title dark:bg-white text-white dark:text-custom-title w-full"
+        >
+          Agregar Colaborador(es)
+        </Button>
+      </div>
+    </div>
   );
 };
 

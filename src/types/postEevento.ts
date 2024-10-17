@@ -5,4 +5,5 @@ export type PostEvento = {
   fechaFin?: Date;
   tipoEvento?: string;
   estado?: string;
+  responsableId?: string;
 };

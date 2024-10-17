@@ -20,6 +20,7 @@ import { useSelector } from "react-redux";
 import SkeletonProyectos from "@/components/SkeletonProyectos";
 import { clearUser } from "@/store/auth/sessionSlice";
 import { useDispatch } from "react-redux";
+import useColaboradoresByProyecto from "@/api/getColaboradoresByProyecto";
 
 const TeamPage = () => {
   const user = useSelector((state: any) => state.auth);
@@ -29,7 +30,8 @@ const TeamPage = () => {
   const [isClose, setIsClose] = useState(false);
   const params = useParams();
   const proyectoId = Array.isArray(params.id) ? params.id[0] : params.id;
-  const { error, loading, result } = useColaboradoresByProjectId(
+
+  const { error, loading, result } = useColaboradoresByProyecto(
     proyectoId,
     user.token,
     check
@@ -38,7 +40,7 @@ const TeamPage = () => {
   useEffect(() => {
     if (error === "Request failed with status code 401") {
       dispatch(clearUser());
-      router.push("/unauthorized");
+      router.push("/");
     }
   }, [error, dispatch, router]);
 

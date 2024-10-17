@@ -43,14 +43,16 @@ import { TableRolesData } from "@/types/table.roles.type";
 import useAllSucursal from "@/api/getSucursale";
 import { SucursalData } from "@/types/sucursal.type";
 import { useSelector } from "react-redux";
+import { UserType } from "@/types/user.type";
 
 export type UsersTable = {
-  users: UserUpdateType[];
+  users: UserType[];
   check: boolean;
   setCheck: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const TableUsers = ({ users, check, setCheck }: UsersTable) => {
+  const user = useSelector((state: any) => state.auth);
   const { result } = useAllRoles();
   const { resultSucursal } = useAllSucursal();
   const { toast } = useToast();
@@ -60,20 +62,7 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
     handleSubmit,
     formState: { errors },
   } = useForm<UserUpdateType>();
-  const [userUpdate, setUserUpdate] = useState<UserUpdateType | null>(null);
-
-  const [filteredUsers, setFilteredUsers] = useState<UserUpdateType[]>(users);
-
-  const currentUserId = useSelector((state: any) => state.auth.id);
-
-  useEffect(() => {
-    if (users && Array.isArray(users)) {
-      const filtered = users.filter((user) => user.id !== currentUserId);
-      setFilteredUsers(filtered);
-    } else {
-      setFilteredUsers([]);
-    }
-  }, [users, currentUserId]);
+  const [userUpdate, setUserUpdate] = useState<UserType | null>(null);
 
   const handleToggleActive = async (
     userId: string,
@@ -84,7 +73,9 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
     const updateData = { isActive: newState };
 
     try {
-      const response = await updateUser(userId, updateData, token);
+      const response = await updateUser(userId, updateData, user.token);
+      console.log("RESPONSE UPDATE ACTIVIDAD", response);
+
       toast({
         title: "La actividad del usuario ha sido actualizada exitosamente",
       });
@@ -100,10 +91,7 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
   const handleDelete = async (id: string) => {
     try {
       const response = await deleteUser(id);
-
-      const updatedUsers = filteredUsers.filter((user) => user.id !== id);
-      setFilteredUsers(updatedUsers);
-
+      setCheck(!check);
       toast({ title: "Usuario eliminado exitosamente" });
     } catch (error) {
       toast({
@@ -113,20 +101,25 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
     }
   };
 
-  const handleUser = (user: UserUpdateType) => {
+  const handleUser = (user: UserType) => {
     setUserUpdate(user);
     reset(user);
   };
 
   const onSubmit = async (data: UserUpdateType) => {
+    console.log("DATA DE UPDATE", data);
+
     try {
       if (userUpdate) {
-        const response = await updateUser(userUpdate.id, data);
+        const response = await updateUser(userUpdate.id, data, user.token);
+        console.log("response update", response);
 
         setCheck(!check);
         toast({ title: "Usuario actualizado exitosamente" });
       }
     } catch (error) {
+      console.log("ERROR", error);
+
       toast({
         title: "Error al actualizar el usuario",
         variant: "destructive",
@@ -134,7 +127,9 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
     }
   };
 
-  if (!filteredUsers || filteredUsers.length === 0) {
+  console.log("USER UPDATE", userUpdate);
+
+  if (!users || users.length === 0) {
     return (
       <div className="block">
         <div className="flex justify-center mt-10">
@@ -186,7 +181,7 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {filteredUsers.map((user) => (
+        {users.map((user) => (
           <TableRow key={user.id}>
             <TableCell className="font-medium text-custom-title dark:text-white">
               {user.nombre}
@@ -428,7 +423,7 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
                                 <SelectGroup>
                                   <SelectLabel>Rol</SelectLabel>
 
-                                  {result?.map((res: TableRolesData) => (
+                                  {result?.data.map((res: TableRolesData) => (
                                     <SelectItem key={res.id} value={res.id}>
                                       {res.nombre}
                                     </SelectItem>
@@ -459,11 +454,13 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
                                 <SelectGroup>
                                   <SelectLabel>Sucursal</SelectLabel>
 
-                                  {resultSucursal?.map((res: SucursalData) => (
-                                    <SelectItem key={res.id} value={res.id}>
-                                      {res.nombre}
-                                    </SelectItem>
-                                  ))}
+                                  {resultSucursal?.data.map(
+                                    (res: SucursalData) => (
+                                      <SelectItem key={res.id} value={res.id}>
+                                        {res.nombre}
+                                      </SelectItem>
+                                    )
+                                  )}
                                 </SelectGroup>
                               </SelectContent>
                             </Select>

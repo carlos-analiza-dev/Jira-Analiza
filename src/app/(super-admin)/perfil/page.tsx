@@ -1,12 +1,24 @@
 "use client";
 import { Input } from "@/components/ui/input";
+import { clearUser } from "@/store/auth/sessionSlice";
 import { Camera } from "lucide-react";
 import Image from "next/image";
-import { useRef } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
+import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 
 const PerfilPage = () => {
   const user = useSelector((state: any) => state.auth);
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user || !user.rol || !user.token) {
+      dispatch(clearUser());
+      router.push("/");
+    }
+  }, [dispatch, router, user.token]);
 
   return (
     <>

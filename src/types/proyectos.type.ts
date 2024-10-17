@@ -38,4 +38,8 @@ export type TypeProyectos = {
     autorizado: number;
     isActive: number;
   };
+  rolDirigido: {
+    id: string;
+    nombre: string;
+  };
 };

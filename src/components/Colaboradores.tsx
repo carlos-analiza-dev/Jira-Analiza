@@ -53,7 +53,7 @@ const Colaboradores = ({ result, setCheck, check }: ColaboradorType) => {
     return (
       <div className="flex justify-center mx-auto mt-10 p-7 sm:p-0">
         <p className="text-sm sm:text-3xl font-bold text-custom-title dark:text-white">
-          No se encontraron colaboradores en este proyecto
+          No se encontraron colaboradores disponibles
         </p>
       </div>
     );

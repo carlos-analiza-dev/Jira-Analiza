@@ -19,7 +19,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { SucursalData } from "@/types/sucursal.type";
+import { SucursalData, SucursalesResponse } from "@/types/sucursal.type";
 import { Pencil, Trash2 } from "lucide-react";
 import React, { useState } from "react";
 import deleteSucursal from "@/api/deleteSucursal";
@@ -40,7 +40,7 @@ import { departamentosData } from "../../../../../data/departamentos";
 import { useSelector } from "react-redux";
 
 export interface dataTable {
-  resultSucursal: SucursalData[];
+  resultSucursal: SucursalesResponse;
   setCheck: React.Dispatch<React.SetStateAction<boolean>>;
   check: boolean;
 }
@@ -106,7 +106,7 @@ const TableSucursales = ({ resultSucursal, check, setCheck }: dataTable) => {
     }
   };
 
-  if (!resultSucursal || resultSucursal.length === 0) {
+  if (!resultSucursal || resultSucursal.data.length === 0) {
     return (
       <div className="flex justify-center mt-5">
         <p className="text-3xl font-bold text-custom-title dark:text-white">
@@ -139,7 +139,7 @@ const TableSucursales = ({ resultSucursal, check, setCheck }: dataTable) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {resultSucursal.map((sucursal) => (
+          {resultSucursal.data.map((sucursal: SucursalData) => (
             <TableRow key={sucursal.id}>
               <TableCell className="text-custom-title font-medium dark:text-white text-center">
                 {sucursal.nombre}

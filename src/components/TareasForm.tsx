@@ -1,4 +1,6 @@
 import createTarea from "@/api/createTarea";
+import useGetByDepartamento from "@/api/getUserByRol";
+import useGetUsersByRolesProyectos from "@/api/getUsersByRolProjects";
 import updateTarea from "@/api/updateTarea";
 import {
   AlertDialogAction,
@@ -10,9 +12,20 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { PostTarea } from "@/types/postTareas.type";
 import { TareasData } from "@/types/tareas.type";
-import { useEffect } from "react";
+import { UserType } from "@/types/user.type";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import useColaboradoresByProjectId from "@/api/getColaboradoresByProjectId";
 
 interface Props {
   proyectoId: string;
@@ -41,6 +54,24 @@ const TareasForm = ({
     formState: { errors },
   } = useForm<PostTarea>();
 
+  const { result: usersByProjects } = useColaboradoresByProjectId(
+    proyectoId,
+    user.token
+  );
+
+  const [usuariosSeleccionados, setUsuariosSeleccionados] = useState<
+    UserType[]
+  >([]);
+  const [usuarioAsignado, setUsuarioAsignado] = useState("");
+
+  useEffect(() => {
+    if (usersByProjects && usersByProjects) {
+      setUsuariosSeleccionados(usersByProjects);
+    } else {
+      setUsuariosSeleccionados([]);
+    }
+  }, [user.token, usersByProjects]);
+
   useEffect(() => {
     if (tareaUpdate) {
       setValue("titulo", tareaUpdate.titulo);
@@ -58,7 +89,14 @@ const TareasForm = ({
 
         toast({ title: "Tarea actualizada exitosamente" });
       } else {
-        await createTarea({ ...data, proyectoId }, user.token);
+        if (!usuarioAsignado) {
+          toast({
+            title: "Debe asigarse un responsable de esta tarea",
+            variant: "destructive",
+          });
+          return;
+        }
+        await createTarea({ ...data, proyectoId, usuarioAsignado }, user.token);
 
         toast({ title: "Tarea creada exitosamente" });
       }
@@ -66,12 +104,15 @@ const TareasForm = ({
       onClose();
       reset();
     } catch (error) {
-      console.error("Error al procesar la tarea:", error);
       toast({
         title: "Ocurrió un error al momento de procesar la tarea",
         variant: "destructive",
       });
     }
+  };
+
+  const handleUsuarioAsignado = (value: string) => {
+    setUsuarioAsignado(value);
   };
 
   return (
@@ -121,6 +162,33 @@ const TareasForm = ({
           </span>
         )}
       </div>
+
+      {!tareaUpdate && (
+        <div className="mt-3">
+          <label className="text-custom-title dark:text-white font-bold">
+            Responsable de la tarea
+          </label>
+          <Select onValueChange={(value) => handleUsuarioAsignado(value)}>
+            <SelectTrigger className="w-full dark:bg-gray-800">
+              <SelectValue placeholder="Selecciona el responsable" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Responsable</SelectLabel>
+                {usuariosSeleccionados && usuariosSeleccionados.length > 0 ? (
+                  usuariosSeleccionados.map((usuario: UserType) => (
+                    <SelectItem key={usuario.id} value={usuario.id}>
+                      {usuario.nombre}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <p>No se encontraron usuarios colaboradores</p>
+                )}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+      )}
 
       <div className="flex justify-end gap-5 mt-5">
         <AlertDialogCancel>Cancelar</AlertDialogCancel>

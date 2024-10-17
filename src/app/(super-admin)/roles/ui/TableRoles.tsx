@@ -29,9 +29,10 @@ import { Input } from "@/components/ui/input";
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
 import Image from "next/image";
 import { useSelector } from "react-redux";
+import { RolesResponse } from "@/types/dataPost.rol.type";
 
 export interface Props {
-  roles: TableRolesData[];
+  roles: RolesResponse;
   check: boolean;
   setCheck: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -85,7 +86,7 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
     }
   };
 
-  if (!roles || roles.length === 0) {
+  if (!roles || roles.data.length === 0) {
     return (
       <div className="block">
         <div className="flex justify-center mt-10">
@@ -120,7 +121,7 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {roles.map((rol: TableRolesData) => (
+          {roles.data.map((rol: TableRolesData) => (
             <TableRow key={rol.id}>
               <TableCell className="font-medium text-center">
                 {rol.id}

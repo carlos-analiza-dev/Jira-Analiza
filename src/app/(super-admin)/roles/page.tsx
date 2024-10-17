@@ -17,15 +17,15 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-import { DataRol } from "@/types/dataPost.rol.type";
+
 import createRol from "@/api/createRol";
 import { toast } from "@/components/ui/use-toast";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { clearUser } from "@/store/auth/sessionSlice";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { TableRolesData } from "@/types/table.roles.type";
 
 export default function Roles() {
   const user = useSelector((state: any) => state.auth);
@@ -39,21 +39,31 @@ export default function Roles() {
     reset,
     handleSubmit,
     formState: { errors },
-  } = useForm<DataRol>();
-  const {
-    result = [],
-    loading,
-    error,
-  }: ResponseData = useAllRoles(check, offset, limit, user.token);
+  } = useForm<TableRolesData>();
+  const { result, loading, error } = useAllRoles(
+    check,
+    offset,
+    limit,
+    user.token
+  );
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     if (error === "Request failed with status code 401") {
       dispatch(clearUser());
-      router.push("/unauthorized");
+      router.push("/");
     }
   }, [error, dispatch, router]);
 
-  const onSubmit = async (data: DataRol) => {
+  useEffect(() => {
+    if (result) {
+      setTotalPages(Math.ceil(result.total / limit));
+    }
+  }, [result, limit]);
+
+  const onSubmit = async (data: TableRolesData) => {
     try {
       await createRol(data, user.token);
       setCheck(!check);
@@ -69,12 +79,9 @@ export default function Roles() {
     }
   };
 
-  const handleNextPage = () => {
-    setOffset((prevOffset) => prevOffset + limit);
-  };
-
-  const handlePrevPage = () => {
-    setOffset((prevOffset) => Math.max(prevOffset - limit, 0));
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    setOffset((page - 1) * limit);
   };
 
   return (
@@ -140,23 +147,28 @@ export default function Roles() {
         {loading ? (
           <SkeletonTable />
         ) : (
-          <TableRoles roles={result} check={check} setCheck={setCheck} />
+          result && (
+            <TableRoles roles={result} check={check} setCheck={setCheck} />
+          )
         )}
       </div>
-      <div className="flex justify-end gap-3 mt-5">
+      <div className="flex justify-between mt-5">
         <Button
-          onClick={handlePrevPage}
-          disabled={offset === 0}
-          className="bg-custom-title text-white dark:bg-white dark:text-custom-title"
+          className="bg-custom-title text-white dark:bg-white dark:text-custom-title font-bold"
+          disabled={currentPage === 1}
+          onClick={() => handlePageChange(currentPage - 1)}
         >
-          <ChevronLeft />
+          Anterior
         </Button>
+        <span>
+          Página {currentPage} de {totalPages}
+        </span>
         <Button
-          onClick={handleNextPage}
-          disabled={result ? result.length < 5 : true}
-          className="bg-custom-title text-white dark:bg-white dark:text-custom-title"
+          className="bg-custom-title text-white dark:bg-white dark:text-custom-title font-bold"
+          disabled={currentPage === totalPages}
+          onClick={() => handlePageChange(currentPage + 1)}
         >
-          <ChevronRight />
+          Siguiente
         </Button>
       </div>
     </div>

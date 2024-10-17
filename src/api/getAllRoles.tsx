@@ -1,4 +1,5 @@
 import { get } from "@/helpers/axiosInstance";
+import { RolesResponse } from "@/types/dataPost.rol.type";
 import { useEffect, useState } from "react";
 
 const useAllRoles = (
@@ -8,7 +9,8 @@ const useAllRoles = (
   token?: string
 ) => {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/roles?limit=${limit}&offset=${offset}`;
-  const [result, setResult] = useState<any>(null);
+
+  const [result, setResult] = useState<RolesResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
@@ -18,7 +20,8 @@ const useAllRoles = (
       try {
         const response = await get(url, "", token);
 
-        setResult(response);
+        setResult(response as RolesResponse);
+        setError("");
       } catch (error: any) {
         setError(error.message || "Error al obtener los datos");
       } finally {
@@ -27,7 +30,7 @@ const useAllRoles = (
     };
 
     fetchRoles();
-  }, [url, trigger]);
+  }, [url, trigger, error]);
 
   return { result, loading, error };
 };

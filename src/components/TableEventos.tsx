@@ -23,9 +23,11 @@ import { useToast } from "@/components/ui/use-toast";
 import { formatFecha } from "@/helpers/formatDate";
 import { DataEventos } from "@/types/evento.type";
 import { AlertDialog } from "@radix-ui/react-alert-dialog";
-import { Pencil, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { Eye, Pencil, Trash2 } from "lucide-react";
 import { useSelector } from "react-redux";
+import { useState } from "react";
+import FormEventos from "../../../../components/FormEventos";
+import Link from "next/link";
 
 interface Props {
   result: DataEventos[];
@@ -34,22 +36,36 @@ interface Props {
 }
 
 const TableEventos = ({ result, check, setCheck }: Props) => {
+  const [showDialog, setShowDialog] = useState<boolean>(false);
+
   const user = useSelector((state: any) => state.auth);
+  const [isEdit, setIsEdit] = useState<any>(null);
   const { toast } = useToast();
 
   const handleDelete = async (id: string) => {
     try {
-      const response = await removeEvento(id, user.token);
+      await removeEvento(id, user.token);
+
       setCheck(!check);
+
       toast({ title: "Evento eliminado exitosamente" });
-      window.location.reload();
     } catch (error) {
       toast({
-        title: "Ocurrio un error al eliminar el evento",
+        title: "Ocurrió un error al eliminar el evento",
         variant: "destructive",
       });
     }
   };
+
+  const handleEdit = (evento: DataEventos) => {
+    setIsEdit(evento);
+  };
+
+  const handleCloseEdit = () => {
+    setIsEdit(null);
+  };
+
+  console.log("evento edit", isEdit);
 
   if (!result || result.length === 0) {
     return (
@@ -63,7 +79,9 @@ const TableEventos = ({ result, check, setCheck }: Props) => {
 
   return (
     <Table>
-      <TableCaption className="font-bold">Listado de eventos</TableCaption>
+      <TableCaption className="font-bold text-custom-title dark:text-white">
+        Listado de eventos
+      </TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead className="text-center text-custom-title dark:text-white font-bold">
@@ -85,14 +103,19 @@ const TableEventos = ({ result, check, setCheck }: Props) => {
             Fecha de finalizacion
           </TableHead>
           <TableHead className="text-center text-custom-title dark:text-white font-bold">
+            Ver
+          </TableHead>
+          <TableHead className="text-center text-custom-title dark:text-white font-bold">
             Acciones
           </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {result.map((evento) => (
+        {result.map((evento: DataEventos) => (
           <TableRow key={evento.id}>
-            <TableCell className="font-medium">{evento.nombre}</TableCell>
+            <TableCell className="font-medium text-custom-title dark:text-white text-center">
+              {evento.nombre}
+            </TableCell>
             <TableCell className="text-custom-title dark:text-white text-center">
               {evento.descripcion}
             </TableCell>
@@ -103,10 +126,15 @@ const TableEventos = ({ result, check, setCheck }: Props) => {
               {evento.tipoEvento}
             </TableCell>
             <TableCell className="text-custom-title dark:text-white text-center">
-              {formatFecha(evento.fechaInicio)}
+              {formatFecha(evento.fechaInicio.toString())}
             </TableCell>
             <TableCell className="text-custom-title dark:text-white text-center">
-              {formatFecha(evento.fechaFin)}
+              {formatFecha(evento.fechaFin.toString())}
+            </TableCell>
+            <TableCell className="text-custom-title dark:text-white text-center">
+              <Link href={`/eventos/${evento.id}`}>
+                <Eye className="hover:text-sky-500" />
+              </Link>
             </TableCell>
             <TableCell className="text-center">
               <div className="flex justify-around gap-3 ">
@@ -138,9 +166,43 @@ const TableEventos = ({ result, check, setCheck }: Props) => {
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
-                <Button /* onClick={() => handleEdit(rol)} */ variant="outline">
-                  <Pencil size={15} />
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      onClick={() => handleEdit(evento)}
+                      variant="outline"
+                    >
+                      <Pencil size={15} />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <div className="flex justify-end">
+                      <AlertDialogCancel
+                        onClick={handleCloseEdit}
+                        className="text-custom-title dark:text-white"
+                      >
+                        X
+                      </AlertDialogCancel>
+                    </div>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="text-custom-title dark:text-white">
+                        ¿Estas seguro de editar este evento?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription className="font-bold text-custom-title dark:text-white">
+                        Con esta accion actualizaras el evento
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <div>
+                      <FormEventos
+                        setShowDialog={setShowDialog}
+                        showDialog={showDialog}
+                        check={check}
+                        setCheck={setCheck}
+                        evento={isEdit}
+                      />
+                    </div>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </TableCell>
           </TableRow>
