@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/select";
 import { departamentosData } from "../../../../../data/departamentos";
 import { useSelector } from "react-redux";
+import Image from "next/image";
 
 export interface dataTable {
   resultSucursal: SucursalesResponse;
@@ -108,10 +109,20 @@ const TableSucursales = ({ resultSucursal, check, setCheck }: dataTable) => {
 
   if (!resultSucursal || resultSucursal.data.length === 0) {
     return (
-      <div className="flex justify-center mt-5">
-        <p className="text-3xl font-bold text-custom-title dark:text-white">
-          No se encontraron sucursales en la base de datos
-        </p>
+      <div className="block">
+        <div className="flex justify-center mt-10">
+          <Image
+            src="/images/sucursales.png"
+            alt="NotFound"
+            width={400}
+            height={500}
+          />
+        </div>
+        <div className="mt-5">
+          <p className="text-center font-bold text-custom-title text-2xl dark:text-white">
+            No se encontraron sucursales.
+          </p>
+        </div>
       </div>
     );
   }
@@ -151,7 +162,7 @@ const TableSucursales = ({ resultSucursal, check, setCheck }: dataTable) => {
                 {sucursal.departamento}
               </TableCell>
               <TableCell className="text-custom-title font-medium dark:text-white text-center">
-                <div className="flex justify-around gap-3">
+                <div className="flex justify-around gap-3 sm:gap-0">
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button variant="outline">

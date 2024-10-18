@@ -34,6 +34,7 @@ import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { clearUser } from "@/store/auth/sessionSlice";
 import { useSelector } from "react-redux";
+import Image from "next/image";
 
 export default function SucursalPage() {
   const user = useSelector((state: any) => state.auth);
@@ -229,9 +230,6 @@ export default function SucursalPage() {
                   <AlertDialogCancel>Cancelar</AlertDialogCancel>
                   <AlertDialogAction
                     type="submit"
-                    disabled={Boolean(
-                      errors.nombre || errors.direccion || errors.direccion
-                    )}
                     className="bg-custom-title text-white dark:bg-white dark:text-custom-title"
                   >
                     Continuar
@@ -246,9 +244,21 @@ export default function SucursalPage() {
         {loading ? (
           <SkeletonTable />
         ) : error ? (
-          <p className="text-center text-red-500 text-2xl mt-8">
-            No se encontraron sucursales disponibles en este departamento
-          </p>
+          <div className="block mb-20">
+            <div className="flex justify-center mt-10">
+              <Image
+                src="sucursales.svg"
+                alt="NotFound"
+                width={700}
+                height={700}
+              />
+            </div>
+            <div className="mt-5">
+              <p className="text-center font-bold text-custom-title text-2xl dark:text-white">
+                No se encontraron sucursales.
+              </p>
+            </div>
+          </div>
         ) : (
           resultSucursal && (
             <TableSucursales

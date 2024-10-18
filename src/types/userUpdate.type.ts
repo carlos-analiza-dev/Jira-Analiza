@@ -5,12 +5,10 @@ export type UserUpdateType = {
   edad?: number;
   dni?: string;
   rol?: string;
-  role?: {
-    id: string;
-  };
-  sucursal?: {
-    id: string;
-  };
+  roleId?: string;
+
+  sucursalId?: string;
+
   direccion?: string;
   autorizado?: number;
   isActive?: number;

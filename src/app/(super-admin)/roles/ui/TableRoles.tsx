@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import deleteRol from "@/api/deleteRol";
 import { useToast } from "@/components/ui/use-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import updateRol from "@/api/updateRol";
 import { Input } from "@/components/ui/input";
@@ -33,14 +33,14 @@ import { RolesResponse } from "@/types/dataPost.rol.type";
 
 export interface Props {
   roles: RolesResponse;
-  check: boolean;
   setCheck: React.Dispatch<React.SetStateAction<boolean>>;
+  check: boolean;
 }
 
 const TableRoles = ({ roles, check, setCheck }: Props) => {
   const user = useSelector((state: any) => state.auth);
   const { toast } = useToast();
-
+  const [departamentos, setDepartamentos] = useState<TableRolesData[] | []>([]);
   const [selectedRol, setSelectedRol] = useState<TableRolesData | null>(null);
   const {
     register,
@@ -48,10 +48,21 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
     reset,
     formState: { errors },
   } = useForm<TableRolesData>();
+
+  useEffect(() => {
+    if (roles) {
+      setDepartamentos(roles.data);
+    }
+  }, [roles, user.token]);
+
+  console.log("DEPARTAMENTOS", departamentos);
+
   const handleDelete = async (id: string) => {
     try {
       await deleteRol(id, user.token);
-      setCheck(!check);
+      setDepartamentos((prevDepartamentos) =>
+        prevDepartamentos.filter((deptos) => deptos.id !== id)
+      );
       toast({ title: "Departamento eliminado exitosamente" });
     } catch (error) {
       toast({
@@ -86,7 +97,7 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
     }
   };
 
-  if (!roles || roles.data.length === 0) {
+  if (!departamentos || departamentos.length === 0) {
     return (
       <div className="block">
         <div className="flex justify-center mt-10">

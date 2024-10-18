@@ -26,6 +26,7 @@ import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { TableRolesData } from "@/types/table.roles.type";
+import Image from "next/image";
 
 export default function Roles() {
   const user = useSelector((state: any) => state.auth);
@@ -146,6 +147,17 @@ export default function Roles() {
       <div className="mt-5 w-full">
         {loading ? (
           <SkeletonTable />
+        ) : error ? (
+          <div className="block">
+            <div className="flex justify-center mt-10">
+              <Image src="empty.svg" alt="NotFound" width={400} height={500} />
+            </div>
+            <div className="mt-5">
+              <p className="text-center font-bold text-custom-title text-2xl dark:text-white">
+                No se encontraron departamentos.
+              </p>
+            </div>
+          </div>
         ) : (
           result && (
             <TableRoles roles={result} check={check} setCheck={setCheck} />

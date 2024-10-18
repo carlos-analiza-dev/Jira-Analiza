@@ -99,7 +99,7 @@ const FormEventos = ({
         setShowDialog(!showDialog);
       } else {
         await createEvento({ ...data, responsableId }, user.token);
-        window.location.reload();
+        setCheck(!check);
         toast({ title: "Evento creado exitosamente." });
         reset();
         setShowDialog(!showDialog);

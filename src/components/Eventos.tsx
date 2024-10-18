@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { EllipsisVertical } from "lucide-react";
 import {
@@ -29,16 +29,24 @@ interface Props {
 
 const Eventos = ({ result, setCheck, check }: Props) => {
   const [showDialog, setShowDialog] = useState<boolean>(false);
-
+  const [eventos, setEventos] = useState<DataEventos[] | []>([]);
   const user = useSelector((state: any) => state.auth);
   const [isEdit, setIsEdit] = useState<any>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (result) {
+      setEventos(result);
+    }
+  }, [result, user.token]);
 
   const handleDelete = async (id: string) => {
     try {
       await removeEvento(id, user.token);
 
-      setCheck(!check);
+      setEventos((prevEventos) =>
+        prevEventos.filter((eventos) => eventos.id !== id)
+      );
 
       toast({ title: "Evento eliminado exitosamente" });
     } catch (error) {
@@ -57,10 +65,10 @@ const Eventos = ({ result, setCheck, check }: Props) => {
     setIsEdit(null);
   };
 
-  if (!result || result.length === 0) {
+  if (!eventos || eventos.length === 0) {
     return (
       <div className="flex justify-center items-center h-full w-full">
-        <p className="text-custom-title dark:text-white">
+        <p className="text-custom-title dark:text-white text-3xl">
           No hay eventos aun disponibles para ti.
         </p>
       </div>
@@ -69,7 +77,7 @@ const Eventos = ({ result, setCheck, check }: Props) => {
 
   return (
     <div className="mx-auto w-full">
-      {result.map((evento) => (
+      {eventos.map((evento) => (
         <div
           className="bg-gray-50 p-5 rounded-sm mt-4 dark:bg-gray-900"
           key={evento.id}

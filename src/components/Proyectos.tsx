@@ -62,7 +62,7 @@ const Proyectos = ({
     }
   };
 
-  if (!result || result.length === 0) {
+  if (!proyectos || proyectos.length === 0) {
     return (
       <div className="flex justify-center items-center h-full w-full">
         <p className="text-custom-title dark:text-white">

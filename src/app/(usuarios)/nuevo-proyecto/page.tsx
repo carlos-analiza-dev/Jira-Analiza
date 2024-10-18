@@ -1,9 +1,21 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import FormCreateProjectUsers from "./ui/FormCreateProjectUsers";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { clearUser } from "@/store/auth/sessionSlice";
+import { useRouter } from "next/navigation";
 
 const ProyectoNuevo = () => {
   const user = useSelector((state: any) => state.auth);
+  const dispatch = useDispatch();
+  const router = useRouter();
+  useEffect(() => {
+    if (!user.token) {
+      dispatch(clearUser());
+      router.push("/");
+    }
+  }, [dispatch, router]);
   return (
     <div className="px-4 py-4 sm:px-12">
       <div className="mt-4">
