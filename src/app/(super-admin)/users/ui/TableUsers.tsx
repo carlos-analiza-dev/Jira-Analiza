@@ -148,7 +148,7 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
               {user.correo}
             </TableCell>
             <TableCell className="text-custom-title dark:text-white text-center">
-              {user.sexo}
+              {user.sexo === "M" ? "Masculino" : "Femenino"}
             </TableCell>
             <TableCell className="text-custom-title dark:text-white text-center">
               {user.edad}

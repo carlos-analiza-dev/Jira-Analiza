@@ -11,7 +11,11 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
-export default function LoginSesion() {
+interface Props {
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function LoginSesion({ setIsLoading }: Props) {
   const dispatch = useDispatch();
   const router = useRouter();
   const { toast } = useToast();
@@ -25,6 +29,28 @@ export default function LoginSesion() {
     formState: { errors },
   } = useForm<PostLoginData>();
 
+  const onSubmit = async (data: PostLoginData) => {
+    setIsLoading(true);
+
+    setTimeout(async () => {
+      try {
+        const response = await postLoginUser(data);
+        dispatch(setUser(response));
+        reset();
+      } catch (error) {
+        console.error(error);
+        if (error) {
+          toast({
+            title: "Credenciales Incorrectas, contactate con el administrador.",
+            variant: "destructive",
+          });
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    }, 2000);
+  };
+
   useEffect(() => {
     if (user && user.rol && user.rol === "Administrador") {
       router.push("/dashboard");
@@ -32,22 +58,6 @@ export default function LoginSesion() {
       router.push("/proyectos");
     }
   }, [user, router]);
-
-  const onSubmit = async (data: PostLoginData) => {
-    try {
-      const response = await postLoginUser(data);
-      dispatch(setUser(response));
-      reset();
-    } catch (error) {
-      console.error(error);
-      if (error) {
-        toast({
-          title: "Credenciales Incorrectas, contactate con el administrador.",
-          variant: "destructive",
-        });
-      }
-    }
-  };
 
   return (
     <form

@@ -38,6 +38,7 @@ const FormUsers = ({ check, setCheck, userUpdate }: Props) => {
     register,
     reset,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<UserUpdateType>();
   const [sexo, setSexo] = useState("");
@@ -45,11 +46,6 @@ const FormUsers = ({ check, setCheck, userUpdate }: Props) => {
   const { resultSucursal } = useAllSucursales(user.token);
   const [roleId, setRoleId] = useState<string>("");
   const [sucursalId, setSucursalId] = useState<string>("");
-
-  console.log("RESUKT SUC", resultSucursal);
-  console.log("UPDATE USER", userUpdate);
-  console.log("ROLLLIDD", roleId);
-  console.log("SUCURSALLLID", sucursalId);
 
   useEffect(() => {
     if (userUpdate) {
@@ -63,11 +59,16 @@ const FormUsers = ({ check, setCheck, userUpdate }: Props) => {
         roleId: userUpdate.role?.id,
         sucursalId: userUpdate.sucursal?.id,
       });
+      setSexo(userUpdate.sexo);
     }
   }, [userUpdate, reset]);
 
   const onSubmit = async (data: UserUpdateType) => {
     console.log("DATA DE UPDATE", data);
+
+    if (data.edad) {
+      data.edad = Number(data.edad);
+    }
 
     if (!sexo) {
       toast({ title: "El sexo es obligatorio", variant: "destructive" });
@@ -107,6 +108,8 @@ const FormUsers = ({ check, setCheck, userUpdate }: Props) => {
   const handleSucursalId = (value: string) => {
     setSucursalId(value);
   };
+
+  console.log("RESULT SUCURSAL", resultSucursal);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -152,12 +155,15 @@ const FormUsers = ({ check, setCheck, userUpdate }: Props) => {
             {...register("sexo", {
               required: "El sexo es obligatorio",
             })}
-            defaultValue={userUpdate?.sexo}
-            onValueChange={(value) => handleSexo(value)}
+            onValueChange={(value) => {
+              handleSexo(value);
+              // Actualizar el valor en el formulario también
+              setValue("sexo", value); // Asegúrate de importar y usar setValue de useForm
+            }}
           >
             <SelectTrigger className="p-3 rounded-md shadow w-full mt-1">
               <SelectValue
-                placeholder={userUpdate?.sexo || "-- Seleccione una Opción --"}
+                placeholder={sexo === "M" ? "Masculino" : "Femenino"}
               />
             </SelectTrigger>
             <SelectContent>
@@ -168,6 +174,9 @@ const FormUsers = ({ check, setCheck, userUpdate }: Props) => {
               </SelectGroup>
             </SelectContent>
           </Select>
+          {errors.sexo && (
+            <span className="text-red-500">{errors.sexo.message}</span>
+          )}
         </div>
         <div className="mt-2">
           <label className="block font-bold text-lg mb-2 text-custom-title dark:text-white">
@@ -177,10 +186,6 @@ const FormUsers = ({ check, setCheck, userUpdate }: Props) => {
             type="number"
             {...register("edad", {
               required: "La edad es obligatoria",
-              pattern: {
-                value: /^\d+$/,
-                message: "El campo solo acepta numeros.",
-              },
             })}
             placeholder="Edad"
           />
@@ -219,7 +224,7 @@ const FormUsers = ({ check, setCheck, userUpdate }: Props) => {
         </div>
         <div className="mt-2">
           <label className="block font-bold text-lg mb-2 text-custom-title dark:text-white">
-            Rol
+            Departamento
           </label>
           <Select
             {...register("roleId", { required: "El rol es obligatorio" })}
@@ -235,7 +240,7 @@ const FormUsers = ({ check, setCheck, userUpdate }: Props) => {
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectLabel>Rol</SelectLabel>
+                <SelectLabel>Departamento</SelectLabel>
                 {result?.data.map((res: TableRolesData) => (
                   <SelectItem key={res.id} value={res.id}>
                     {res.nombre}
@@ -254,7 +259,7 @@ const FormUsers = ({ check, setCheck, userUpdate }: Props) => {
               required: "La sucursal es obligatoria.",
             })}
             defaultValue={userUpdate?.sucursal?.id}
-            onValueChange={(value) => handleSucursalId(value)} // Aquí asignas el valor seleccionado
+            onValueChange={(value) => handleSucursalId(value)}
           >
             <SelectTrigger className="p-3 rounded-md shadow w-full mt-1">
               <SelectValue
@@ -266,8 +271,8 @@ const FormUsers = ({ check, setCheck, userUpdate }: Props) => {
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Sucursal</SelectLabel>
-                {resultSucursal?.data?.length > 0 ? (
-                  resultSucursal.data.map((res: SucursalData) => (
+                {resultSucursal && resultSucursal.length > 0 ? (
+                  resultSucursal.map((res: SucursalData) => (
                     <SelectItem key={res.id} value={res.id}>
                       {res.nombre}
                     </SelectItem>
