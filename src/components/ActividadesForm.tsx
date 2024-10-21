@@ -104,8 +104,6 @@ const ActividadesForm = ({
 
       reset();
     } catch (error) {
-      console.log("ERROR ACTIVIDAD", error);
-
       toast({
         title: "Ocurrió un error al momento de procesar la actividad",
         variant: "destructive",

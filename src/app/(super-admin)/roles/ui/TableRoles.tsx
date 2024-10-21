@@ -55,8 +55,6 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
     }
   }, [roles, user.token]);
 
-  console.log("DEPARTAMENTOS", departamentos);
-
   const handleDelete = async (id: string) => {
     try {
       await deleteRol(id, user.token);

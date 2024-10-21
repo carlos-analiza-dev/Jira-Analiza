@@ -21,7 +21,6 @@ const useAllSucursal = (
       setLoading(true);
       try {
         const response = await get(url, "", token);
-        console.log("RESPONSE DESDE FUNCION", response);
 
         setResultSucursal(response as SucursalesResponse);
         setError("");

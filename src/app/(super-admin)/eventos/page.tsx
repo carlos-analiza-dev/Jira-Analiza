@@ -14,7 +14,6 @@ import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import SkeletonTable from "@/components/SkeletonTable";
 import { getEventos } from "@/api/getEventos";
-
 import { useDispatch } from "react-redux";
 import { clearUser } from "@/store/auth/sessionSlice";
 import { useRouter } from "next/navigation";
@@ -51,17 +50,12 @@ export default function EventosPage() {
     fetchEventos();
   }, [user.token, check]);
 
-  console.log("EVENTOS ADMIN", result);
-  console.log("error eventos");
-
   useEffect(() => {
     if (error === "Request failed with status code 401") {
       dispatch(clearUser());
       router.push("/");
     }
   }, [error, dispatch, router]);
-
-  console.log("eventos", result);
 
   return (
     <div className="mx-auto px-4 md:px-12">

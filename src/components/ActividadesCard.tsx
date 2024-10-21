@@ -110,15 +110,15 @@ const ActividadesCard = ({
             {actividad.titulo}
           </p>
           <p className="text-custom-title text-base font-light dark:text-white ">
-            <span className="font-bold">Descripcion:</span>{" "}
+            <span className="font-semibold">Descripcion:</span>{" "}
             {actividad.descripcion}
           </p>
           <p className="text-custom-title text-sm font-light dark:text-white mt-1">
-            <span className="font-bold">Responsable:</span>{" "}
+            <span className="font-semibold">Responsable:</span>{" "}
             {actividad.usuarioAsignado.nombre}
           </p>
           <p className="text-custom-title text-sm font-light dark:text-white mt-1">
-            Actualizado por:{" "}
+            <span className="font-semibold">Actualizado:</span>{" "}
             {actividad.actualizadoPor ? actividad.actualizadoPor.nombre : "N/A"}
           </p>
         </div>

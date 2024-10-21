@@ -21,7 +21,7 @@ import { SucursalData } from "@/types/sucursal.type";
 import { TableRolesData } from "@/types/table.roles.type";
 import { UserType } from "@/types/user.type";
 import { UserUpdateType } from "@/types/userUpdate.type";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
@@ -56,16 +56,17 @@ const FormUsers = ({ check, setCheck, userUpdate }: Props) => {
         edad: userUpdate.edad,
         dni: userUpdate.dni,
         direccion: userUpdate.direccion,
-        roleId: userUpdate.role?.id,
-        sucursalId: userUpdate.sucursal?.id,
       });
       setSexo(userUpdate.sexo);
+      setValue("sexo", userUpdate.sexo);
+      setRoleId(userUpdate.role.id);
+      setValue("roleId", userUpdate.role.id);
+      setSucursalId(userUpdate.sucursal.id);
+      setValue("sucursalId", userUpdate.sucursal.id);
     }
   }, [userUpdate, reset]);
 
   const onSubmit = async (data: UserUpdateType) => {
-    console.log("DATA DE UPDATE", data);
-
     if (data.edad) {
       data.edad = Number(data.edad);
     }
@@ -82,14 +83,11 @@ const FormUsers = ({ check, setCheck, userUpdate }: Props) => {
     try {
       if (userUpdate) {
         const response = await updateUser(userUpdate.id, data, user.token);
-        console.log("response update", response);
 
         setCheck(!check);
         toast({ title: "Usuario actualizado exitosamente" });
       }
     } catch (error) {
-      console.log("ERROR", error);
-
       toast({
         title: "Error al actualizar el usuario",
         variant: "destructive",
@@ -108,8 +106,6 @@ const FormUsers = ({ check, setCheck, userUpdate }: Props) => {
   const handleSucursalId = (value: string) => {
     setSucursalId(value);
   };
-
-  console.log("RESULT SUCURSAL", resultSucursal);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -290,10 +286,7 @@ const FormUsers = ({ check, setCheck, userUpdate }: Props) => {
       <div className="mt-3">
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction
-            type="submit"
-            className="bg-custom-title dark:bg-white dark:text-custom-title font-semibold"
-          >
+          <AlertDialogAction className="bg-custom-title dark:bg-white dark:text-custom-title font-semibold">
             Continuar
           </AlertDialogAction>
         </AlertDialogFooter>

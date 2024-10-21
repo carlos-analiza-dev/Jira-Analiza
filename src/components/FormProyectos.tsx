@@ -18,10 +18,16 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 interface FormProyectos {
   proyecto: TypeProyectos;
-  check?: boolean;
+  onSuccess?: () => void;
   setCheck: React.Dispatch<React.SetStateAction<boolean>>;
+  check: boolean;
 }
-const FormProyectos = ({ proyecto, setCheck, check }: FormProyectos) => {
+const FormProyectos = ({
+  proyecto,
+  onSuccess,
+  check,
+  setCheck,
+}: FormProyectos) => {
   const user = useSelector((state: any) => state.auth);
   const { toast } = useToast();
   const [selectedEstado, setSelectedEstado] = useState(proyecto.estado);
@@ -40,6 +46,12 @@ const FormProyectos = ({ proyecto, setCheck, check }: FormProyectos) => {
   });
 
   useEffect(() => {
+    reset({
+      nombre: proyecto.nombre,
+      cliente: proyecto.cliente,
+      descripcion: proyecto.descripcion,
+      estado: proyecto.estado,
+    });
     setSelectedEstado(proyecto.estado);
   }, [proyecto, reset]);
 
@@ -58,6 +70,10 @@ const FormProyectos = ({ proyecto, setCheck, check }: FormProyectos) => {
         user.token
       );
       setCheck(!check);
+      if (onSuccess) {
+        onSuccess();
+      }
+      window.location.reload();
       toast({ title: "Proyecto actualizado con éxito" });
     } catch (error) {
       toast({

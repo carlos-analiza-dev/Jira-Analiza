@@ -8,7 +8,6 @@ import { useDispatch } from "react-redux";
 import { clearUser } from "@/store/auth/sessionSlice";
 import { useRouter } from "next/navigation";
 import Proyectos from "@/components/Proyectos";
-import { TypeProyectos } from "@/types/proyectos.type";
 
 const ProyectosPage = () => {
   const user = useSelector((state: any) => state.auth);
@@ -16,13 +15,6 @@ const ProyectosPage = () => {
   const router = useRouter();
   const [check, setCheck] = useState(false);
   const { result, error, loading } = useAllProjects(user.token, check);
-  const [proyectos, setProyectos] = useState<TypeProyectos[] | []>([]);
-
-  useEffect(() => {
-    if (result) {
-      setProyectos(result);
-    }
-  }, [result, user.token]);
 
   useEffect(() => {
     if (error === "Request failed with status code 401") {
@@ -30,8 +22,6 @@ const ProyectosPage = () => {
       router.push("/");
     }
   }, [error, dispatch, router]);
-
-  console.log("PROYECTOS", result);
 
   return (
     <div className="mx-auto px-4 md:px-12">
@@ -55,13 +45,7 @@ const ProyectosPage = () => {
         {loading ? (
           <SkeletonProyectos />
         ) : (
-          <Proyectos
-            result={proyectos}
-            check={check}
-            setCheck={setCheck}
-            setProyectos={setProyectos}
-            proyectos={proyectos}
-          />
+          <Proyectos setCheck={setCheck} check={check} proyectos={result} />
         )}
       </div>
     </div>

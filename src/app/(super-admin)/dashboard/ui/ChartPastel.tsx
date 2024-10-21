@@ -17,7 +17,7 @@ const ChartPastel = () => {
   useEffect(() => {
     if (error === "Request failed with status code 401") {
       dispatch(clearUser());
-      router.push("/unauthorized");
+      router.push("/");
     }
   }, [error, dispatch, router]);
 
@@ -55,34 +55,41 @@ const ChartPastel = () => {
     },
   };
 
+  // Condición para verificar si los datos son cero
+  const isDataEmpty = resultado.progreso === 0 && resultado.finalizado === 0;
+
   return (
     <div>
-      <p className="text-custom-title font-bold dark:text-white">
+      <p className="text-custom-title text-center font-bold dark:text-white">
         Seguimiento de proyectos
       </p>
 
       <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-        <PieChart>
-          <Pie
-            data={chartData}
-            cx="50%"
-            cy="50%"
-            labelLine={false}
-            label={({ name, percent }) =>
-              `${name} ${(percent * 100).toFixed(0)}%`
-            }
-            outerRadius={80}
-            fill="#8884d8"
-            dataKey="value"
-          >
-            {chartData.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={chartColors[index % chartColors.length]}
-              />
-            ))}
-          </Pie>
-        </PieChart>
+        {isDataEmpty ? (
+          <p className="text-center mt-10 text-xl">No hay datos disponibles</p>
+        ) : (
+          <PieChart>
+            <Pie
+              data={chartData}
+              cx="50%"
+              cy="50%"
+              labelLine={false}
+              label={({ name, percent }) =>
+                `${name} ${(percent * 100).toFixed(0)}%`
+              }
+              outerRadius={80}
+              fill="#8884d8"
+              dataKey="value"
+            >
+              {chartData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={chartColors[index % chartColors.length]}
+                />
+              ))}
+            </Pie>
+          </PieChart>
+        )}
       </ChartContainer>
     </div>
   );

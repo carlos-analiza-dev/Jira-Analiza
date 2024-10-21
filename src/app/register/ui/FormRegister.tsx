@@ -37,9 +37,6 @@ const FormRegister = () => {
   const [isActive, setIsActive] = useState(true);
   const [isActiveConfirm, setIsActiveConfirm] = useState(true);
 
-  console.log("result", resultSucursal);
-  console.log("result roles", result);
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 

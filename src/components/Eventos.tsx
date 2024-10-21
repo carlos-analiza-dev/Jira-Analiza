@@ -14,7 +14,6 @@ import {
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import { useSelector } from "react-redux";
-import { useRouter } from "next/navigation";
 import { useToast } from "./ui/use-toast";
 import { DataEventos } from "@/types/evento.type";
 import { formatFecha } from "@/helpers/formatDate";

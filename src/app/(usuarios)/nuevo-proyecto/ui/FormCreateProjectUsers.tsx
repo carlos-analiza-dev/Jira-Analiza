@@ -76,8 +76,6 @@ const FormCreateProjectUsers = () => {
       router.push("/proyectos");
       reset();
     } catch (error: any) {
-      console.log("ERROR PROYECTO", error);
-
       toast({
         title:
           error?.response?.data?.statusCode === 401

@@ -24,7 +24,6 @@ const EventosIdPage = () => {
   const eventoId = Array.isArray(params.id) ? params.id[0] : params.id;
   const dispatch = useDispatch();
   const router = useRouter();
-  console.log("ID EVENTO", eventoId);
 
   const user = useSelector((state: any) => state.auth);
   const { result, error, loading } = useEventoById(eventoId, user.token);

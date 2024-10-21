@@ -51,8 +51,6 @@ const FormColaborador = ({ onSuccess, setCheck, check }: PropsForm) => {
       onSuccess();
       toast({ title: "Colaborador(es) agregado(s) exitosamente" });
     } catch (error: any) {
-      console.log("ERROR AL AGREGAR COLABORADORES", error);
-
       toast({
         title: `${error.response.data ? error.response.data.message : "Ocurrió un error al agregar colaboradores"}`,
         variant: "destructive",

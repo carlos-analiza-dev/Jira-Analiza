@@ -55,8 +55,6 @@ export default function UsersPage() {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
-  console.log("USUARIOS", result);
-
   useEffect(() => {
     if (error === "Request failed with status code 401") {
       dispatch(clearUser());

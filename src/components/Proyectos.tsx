@@ -19,36 +19,33 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { formatFecha } from "@/helpers/formatDate";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import deleteProyecto from "@/api/deleteProyecto";
 import { useToast } from "@/components/ui/use-toast";
 import FormProyectos from "./FormProyectos";
 interface Props {
-  result: TypeProyectos[];
-  check?: boolean;
-  setCheck: React.Dispatch<React.SetStateAction<boolean>>;
-  setProyectos: React.Dispatch<React.SetStateAction<[] | TypeProyectos[]>>;
   proyectos: [] | TypeProyectos[];
+  setCheck: React.Dispatch<React.SetStateAction<boolean>>;
+  check: boolean;
 }
-const Proyectos = ({
-  result,
-  setCheck,
-  check,
-  setProyectos,
-  proyectos,
-}: Props) => {
+const Proyectos = ({ proyectos, setCheck, check }: Props) => {
   const user = useSelector((state: any) => state.auth);
 
-  const router = useRouter();
+  const [openEditDialog, setOpenEditDialog] = useState(false);
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [proyect, setProyect] = useState<TypeProyectos[] | []>([]);
+
+  useEffect(() => {
+    setProyect(proyectos);
+  }, [proyectos]);
 
   const handleDeleteProyecto = async (proyectoId: string) => {
     setLoading(true);
     try {
       const response = await deleteProyecto(proyectoId, user.token);
-      setProyectos((statusProyecto) =>
+      setProyect((statusProyecto) =>
         statusProyecto.filter((proyecto) => proyecto.id !== proyectoId)
       );
       toast({ title: "Proyecto eliminado exitosamente" });
@@ -62,7 +59,11 @@ const Proyectos = ({
     }
   };
 
-  if (!proyectos || proyectos.length === 0) {
+  const handleUpdateSuccess = () => {
+    setOpenEditDialog(false);
+  };
+
+  if (!proyect || proyect.length === 0) {
     return (
       <div className="flex justify-center items-center h-full w-full">
         <p className="text-custom-title dark:text-white">
@@ -79,7 +80,7 @@ const Proyectos = ({
   }
   return (
     <div className="mx-auto w-full">
-      {proyectos.map((proyecto) => (
+      {proyect.map((proyecto) => (
         <div
           className="bg-gray-50 p-5 rounded-sm mt-4 dark:bg-gray-900"
           key={proyecto.id}
@@ -157,7 +158,10 @@ const Proyectos = ({
                         >
                           Ver Proyecto
                         </Link>
-                        <AlertDialog>
+                        <AlertDialog
+                          open={openEditDialog}
+                          onOpenChange={setOpenEditDialog}
+                        >
                           <AlertDialogTrigger asChild>
                             <p className="text-sm text-custom-title dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 p-2 cursor-pointer">
                               Editar Proyecto
@@ -178,8 +182,9 @@ const Proyectos = ({
                             <div className="w-full flex justify-center">
                               <FormProyectos
                                 proyecto={proyecto}
-                                check={check}
+                                onSuccess={handleUpdateSuccess}
                                 setCheck={setCheck}
+                                check={check}
                               />
                             </div>
                           </AlertDialogContent>

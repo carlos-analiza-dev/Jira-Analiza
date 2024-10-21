@@ -28,7 +28,6 @@ const ColaboradoresEventos = ({ result }: ColaboradorType) => {
   const eventoId = Array.isArray(params.id) ? params.id[0] : params.id;
   const { toast } = useToast();
   const [colaboradores, setColaboradores] = useState<any[]>([]);
-  console.log("COLABORADORES DESDE AQUI", result);
 
   useEffect(() => {
     if (result) {

@@ -38,7 +38,6 @@ export default function LoginSesion({ setIsLoading }: Props) {
         dispatch(setUser(response));
         reset();
       } catch (error) {
-        console.error(error);
         if (error) {
           toast({
             title: "Credenciales Incorrectas, contactate con el administrador.",

@@ -54,7 +54,6 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
 
     try {
       const response = await updateUser(userId, updateData, user.token);
-      console.log("RESPONSE UPDATE ACTIVIDAD", response);
 
       toast({
         title: "La actividad del usuario ha sido actualizada exitosamente",
@@ -84,8 +83,6 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
   const handleUser = (user: UserType) => {
     setUserUpdate(user);
   };
-
-  console.log("USER UPDATE", userUpdate);
 
   if (!users || users.length === 0) {
     return (

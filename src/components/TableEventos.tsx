@@ -26,8 +26,8 @@ import { AlertDialog } from "@radix-ui/react-alert-dialog";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useState } from "react";
-import FormEventos from "../../../../components/FormEventos";
 import Link from "next/link";
+import FormEventos from "./FormEventos";
 
 interface Props {
   result: DataEventos[];
@@ -64,8 +64,6 @@ const TableEventos = ({ result, check, setCheck }: Props) => {
   const handleCloseEdit = () => {
     setIsEdit(null);
   };
-
-  console.log("evento edit", isEdit);
 
   if (!result || result.length === 0) {
     return (

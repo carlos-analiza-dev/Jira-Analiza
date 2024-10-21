@@ -44,8 +44,6 @@ const PageProyectoById = () => {
 
   if (loading) return <SkeletonProyectos />;
 
-  console.log("ACTIVIDADES", resultActividades);
-
   if (!result || !result.nombre)
     return (
       <div className="flex justify-center">

@@ -62,8 +62,6 @@ const FormRegisterAdmin = () => {
         router.push("/");
       }, 3000);
     } catch (error: any) {
-      console.log("ERRRORR", error);
-
       const errorMessage = Array.isArray(error?.response?.data?.message)
         ? error.response.data.message[0]
         : error?.response?.data?.message || "Ocurrió un error inesperado";

@@ -135,16 +135,16 @@ const TableSucursales = ({ resultSucursal, check, setCheck }: dataTable) => {
         </TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="text-custom-title font-semibold dark:text-white text-center">
+            <TableHead className="text-custom-title font-bold dark:text-white text-center">
               Nombre Sucursal
             </TableHead>
-            <TableHead className="text-custom-title font-semibold dark:text-white text-center">
+            <TableHead className="text-custom-title font-bold dark:text-white text-center">
               Dirección
             </TableHead>
-            <TableHead className="text-custom-title font-semibold dark:text-white text-center">
+            <TableHead className="text-custom-title font-bold dark:text-white text-center">
               Departamento
             </TableHead>
-            <TableHead className="text-custom-title font-semibold dark:text-white text-center">
+            <TableHead className="text-custom-title font-bold dark:text-white text-center">
               Acciones
             </TableHead>
           </TableRow>
