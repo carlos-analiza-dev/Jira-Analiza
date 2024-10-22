@@ -18,6 +18,13 @@ import { TableRolesData } from "@/types/table.roles.type";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { PaisesData } from "../../../../data/paisesData";
+import { DataEmpresas } from "../../../../data/empresasData";
+
+interface PaisData {
+  id: number;
+  nombre: string;
+}
 
 const FormRegister = () => {
   const router = useRouter();
@@ -34,6 +41,8 @@ const FormRegister = () => {
   const [direccion, setDireccion] = useState("");
   const [roleId, setRoleId] = useState("");
   const [sucursalId, setSucursalId] = useState("");
+  const [pais, setPais] = useState("");
+  const [empresa, setEmpresa] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [isActiveConfirm, setIsActiveConfirm] = useState(true);
 
@@ -61,6 +70,22 @@ const FormRegister = () => {
       return;
     }
 
+    if (!pais) {
+      toast({
+        title: "El campo 'Pais' es obligatorio",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!empresa) {
+      toast({
+        title: "El campo 'Empresa' es obligatorio",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const response = await createUsers({
         nombre: name,
@@ -72,6 +97,8 @@ const FormRegister = () => {
         sexo: sexo,
         roleId: roleId,
         sucursalId: sucursalId,
+        pais: pais,
+        empresa: empresa,
       });
       setName("");
       setCorreo("");
@@ -83,6 +110,8 @@ const FormRegister = () => {
       setEdad(0);
       setRoleId("");
       setSucursalId("");
+      setPais("");
+      setEmpresa("");
       toast({ title: "Usuario Creado Exitosamente, espera la autorizacion" });
       setTimeout(() => {
         router.push("/");
@@ -264,6 +293,54 @@ const FormRegister = () => {
             </Select>
           </div>
           <div className="mt-1 w-full">
+            <label className="block text-lg font-semibold text-custom-title dark:text-white">
+              Pais
+            </label>
+            <Select value={pais} onValueChange={setPais}>
+              <SelectTrigger className="p-3 rounded-md shadow w-full mt-1">
+                <SelectValue placeholder="-- Seleccione una Opcion --" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Sucursal</SelectLabel>
+                  {PaisesData && PaisesData.length > 0 ? (
+                    PaisesData.map((pais: PaisData) => (
+                      <SelectItem key={pais.id} value={pais.nombre}>
+                        {pais.nombre}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <p>No hay paises disponibles</p>
+                  )}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="mt-1 w-full">
+            <label className="block text-lg font-semibold text-custom-title dark:text-white">
+              Empresa
+            </label>
+            <Select value={empresa} onValueChange={setEmpresa}>
+              <SelectTrigger className="p-3 rounded-md shadow w-full mt-1">
+                <SelectValue placeholder="-- Seleccione una Opcion --" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Empresa</SelectLabel>
+                  {DataEmpresas && DataEmpresas.length > 0 ? (
+                    DataEmpresas.map((empresa: PaisData) => (
+                      <SelectItem key={empresa.id} value={empresa.nombre}>
+                        {empresa.nombre}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <p>No hay empresas disponibles</p>
+                  )}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="mt-1 w-full">
             <label
               htmlFor="edad"
               className="block text-lg font-semibold text-custom-title dark:text-white"
@@ -291,14 +368,14 @@ const FormRegister = () => {
               htmlFor="dni"
               className="block text-lg font-semibold text-custom-title dark:text-white"
             >
-              DNI
+              Numero de identificacion
             </label>
             <Input
               id="dni"
               value={dni}
               onChange={(e) => setDni(e.target.value)}
               type="text"
-              placeholder="DNI"
+              placeholder="xxxx-xxxx-xxxx o xxxxxxxx-x"
               className="p-3 rounded-md shadow w-full mt-1"
             />
           </div>

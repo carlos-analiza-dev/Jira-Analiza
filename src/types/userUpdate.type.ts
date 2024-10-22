@@ -6,10 +6,9 @@ export type UserUpdateType = {
   dni?: string;
   rol?: string;
   roleId?: string;
-
   sucursalId?: string;
-
   direccion?: string;
   autorizado?: number;
   isActive?: number;
+  password?: string;
 };

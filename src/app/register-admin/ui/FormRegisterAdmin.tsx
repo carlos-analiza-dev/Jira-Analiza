@@ -14,6 +14,13 @@ import { useToast } from "@/components/ui/use-toast";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { PaisesData } from "../../../../data/paisesData";
+import { DataEmpresas } from "../../../../data/empresasData";
+
+interface PaisData {
+  id: number;
+  nombre: string;
+}
 
 const FormRegisterAdmin = () => {
   const router = useRouter();
@@ -26,6 +33,8 @@ const FormRegisterAdmin = () => {
   const [edad, setEdad] = useState(0);
   const [dni, setDni] = useState("");
   const [direccion, setDireccion] = useState("");
+  const [pais, setPais] = useState("");
+  const [empresa, setEmpresa] = useState("");
 
   const [isActive, setIsActive] = useState(true);
   const [isActiveConfirm, setIsActiveConfirm] = useState(true);
@@ -47,6 +56,8 @@ const FormRegisterAdmin = () => {
         edad: edad,
         password: contrasena,
         sexo: sexo,
+        pais: pais,
+        empresa: empresa,
       });
       setName("");
       setCorreo("");
@@ -56,7 +67,8 @@ const FormRegisterAdmin = () => {
       setConfirmarContrasena("");
       setSexo("");
       setEdad(0);
-
+      setPais("");
+      setSexo("");
       toast({ title: "Usuario Creado Exitosamente, espera la autorizacion" });
       setTimeout(() => {
         router.push("/");
@@ -219,14 +231,14 @@ const FormRegisterAdmin = () => {
               htmlFor="dni"
               className="block text-lg font-semibold text-custom-title dark:text-white"
             >
-              DNI
+              Numero de identificación
             </label>
             <Input
               id="dni"
               value={dni}
               onChange={(e) => setDni(e.target.value)}
               type="text"
-              placeholder="DNI"
+              placeholder="xxxx-xxxx-xxxx o xxxxxxxx-x"
               className="p-3 rounded-md shadow w-full mt-1"
             />
           </div>
@@ -245,6 +257,54 @@ const FormRegisterAdmin = () => {
               placeholder="Direccion"
               className="p-3 rounded-md shadow w-full mt-1"
             />
+          </div>
+          <div className="mt-1 w-full">
+            <label className="block text-lg font-semibold text-custom-title dark:text-white">
+              Pais
+            </label>
+            <Select value={pais} onValueChange={setPais}>
+              <SelectTrigger className="p-3 rounded-md shadow w-full mt-1">
+                <SelectValue placeholder="-- Seleccione una Opcion --" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Sucursal</SelectLabel>
+                  {PaisesData && PaisesData.length > 0 ? (
+                    PaisesData.map((pais: PaisData) => (
+                      <SelectItem key={pais.id} value={pais.nombre}>
+                        {pais.nombre}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <p>No hay paises disponibles</p>
+                  )}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="mt-1 w-full">
+            <label className="block text-lg font-semibold text-custom-title dark:text-white">
+              Empresa
+            </label>
+            <Select value={empresa} onValueChange={setEmpresa}>
+              <SelectTrigger className="p-3 rounded-md shadow w-full mt-1">
+                <SelectValue placeholder="-- Seleccione una Opcion --" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Empresa</SelectLabel>
+                  {DataEmpresas && DataEmpresas.length > 0 ? (
+                    DataEmpresas.map((empresa: PaisData) => (
+                      <SelectItem key={empresa.id} value={empresa.nombre}>
+                        {empresa.nombre}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <p>No hay empresas disponibles</p>
+                  )}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
         </div>
         <div className="mt-5 w-full flex justify-center">

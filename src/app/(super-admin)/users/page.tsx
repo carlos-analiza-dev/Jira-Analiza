@@ -25,6 +25,8 @@ import useGetAllUsuarios from "@/api/getAllUsuarios";
 
 export default function UsersPage() {
   const user = useSelector((state: any) => state.auth);
+  console.log("USERRRR", user);
+
   const dispatch = useDispatch();
   const router = useRouter();
 

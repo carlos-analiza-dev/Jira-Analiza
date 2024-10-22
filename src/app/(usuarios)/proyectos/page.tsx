@@ -12,6 +12,8 @@ import { useSelector } from "react-redux";
 
 const ProyectosPage = () => {
   const user = useSelector((state: any) => state.auth);
+  console.log("USERRR", user);
+
   const dispatch = useDispatch();
   const router = useRouter();
   const [check, setCheck] = useState(false);
@@ -45,13 +47,7 @@ const ProyectosPage = () => {
         {loading ? (
           <SkeletonProyectos />
         ) : (
-          <Proyectos
-            setProyectos={setProyectos}
-            proyectos={proyectos}
-            result={result}
-            check={check}
-            setCheck={setCheck}
-          />
+          <Proyectos proyectos={proyectos} check={check} setCheck={setCheck} />
         )}
       </div>
     </div>

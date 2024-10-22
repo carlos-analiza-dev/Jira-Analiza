@@ -16,7 +16,7 @@ const ChartActivos = () => {
   useEffect(() => {
     if (error === "Request failed with status code 401") {
       dispatch(clearUser());
-      router.push("/unauthorized");
+      router.push("/");
     }
   }, [error, dispatch, router]);
 
@@ -56,7 +56,7 @@ const ChartActivos = () => {
 
   return (
     <div>
-      <p className="text-custom-title font-bold dark:text-white">
+      <p className="text-custom-title font-bold dark:text-white text-center">
         Actividad de usuarios
       </p>
 

@@ -29,7 +29,7 @@ interface Props {
   setCheck: React.Dispatch<React.SetStateAction<boolean>>;
   check: boolean;
 }
-const Proyectos = ({ proyectos, setCheck, check }: Props) => {
+const Proyectos = ({ proyectos }: Props) => {
   const user = useSelector((state: any) => state.auth);
 
   const [openEditDialog, setOpenEditDialog] = useState(false);
@@ -183,8 +183,6 @@ const Proyectos = ({ proyectos, setCheck, check }: Props) => {
                               <FormProyectos
                                 proyecto={proyecto}
                                 onSuccess={handleUpdateSuccess}
-                                setCheck={setCheck}
-                                check={check}
                               />
                             </div>
                           </AlertDialogContent>

@@ -32,22 +32,20 @@ export default function LoginSesion({ setIsLoading }: Props) {
   const onSubmit = async (data: PostLoginData) => {
     setIsLoading(true);
 
-    setTimeout(async () => {
-      try {
-        const response = await postLoginUser(data);
-        dispatch(setUser(response));
-        reset();
-      } catch (error) {
-        if (error) {
-          toast({
-            title: "Credenciales Incorrectas, contactate con el administrador.",
-            variant: "destructive",
-          });
-        }
-      } finally {
-        setIsLoading(false);
+    try {
+      const response = await postLoginUser(data);
+      dispatch(setUser(response));
+      reset();
+    } catch (error) {
+      if (error) {
+        toast({
+          title: "Credenciales Incorrectas, contactate con el administrador.",
+          variant: "destructive",
+        });
       }
-    }, 2000);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {

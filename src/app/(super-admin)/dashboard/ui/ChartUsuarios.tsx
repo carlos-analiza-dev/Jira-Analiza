@@ -2,7 +2,6 @@
 import { Pie, PieChart, Cell } from "recharts";
 import { ChartContainer, ChartConfig } from "@/components/ui/chart";
 import { useState, useEffect } from "react";
-import { ActiveData } from "@/types/active.type";
 import useGetUsersAutorizados from "@/api/getUsersAutorizados";
 import { AutorizadoData } from "@/types/atorizado.type";
 import { useDispatch } from "react-redux";
@@ -16,7 +15,7 @@ const ChartUsuarios = () => {
   useEffect(() => {
     if (error === "Request failed with status code 401") {
       dispatch(clearUser());
-      router.push("/unauthorized");
+      router.push("/");
     }
   }, [error, dispatch, router]);
 
@@ -56,7 +55,7 @@ const ChartUsuarios = () => {
 
   return (
     <div>
-      <p className="text-custom-title font-bold dark:text-white">
+      <p className="text-custom-title font-bold dark:text-white text-center">
         Actividad de usuarios
       </p>
 

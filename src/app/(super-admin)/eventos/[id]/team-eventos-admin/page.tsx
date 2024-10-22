@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 const PageEventosAdmin = () => {
   const user = useSelector((state: any) => state.auth);
-  const [check2, setCheck2] = useState(false);
+  const [check, setCheck] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
   const [isClose, setIsClose] = useState(false);
@@ -30,7 +30,7 @@ const PageEventosAdmin = () => {
   const { error, loading, result } = useColaboradoresByEventoId(
     eventoId,
     user.token,
-    check2
+    check
   );
 
   useEffect(() => {
@@ -77,8 +77,8 @@ const PageEventosAdmin = () => {
             </AlertDialogHeader>
             <FormColaboradorByEventos
               onSuccess={handleClose}
-              setCheck2={setCheck2}
-              check2={check2}
+              setCheck={setCheck}
+              check={check}
             />
           </AlertDialogContent>
         </AlertDialog>

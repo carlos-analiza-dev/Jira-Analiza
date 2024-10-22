@@ -1,4 +1,4 @@
 export type UserSucursalData = {
   sucursal: string;
-  cantidadUsuarios: string;
+  cantidadUsuarios: number;
 };

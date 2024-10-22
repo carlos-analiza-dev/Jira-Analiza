@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Bar,
   BarChart,
@@ -20,26 +19,27 @@ import { useRouter } from "next/navigation";
 const ChartBarras = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { result: data, loading, error } = useGetUsersBySucursal();
+  const { result, loading, error } = useGetUsersBySucursal();
 
   useEffect(() => {
     if (error === "Request failed with status code 401") {
       dispatch(clearUser());
-      router.push("/unauthorized");
+      router.push("/");
     }
   }, [error, dispatch, router]);
 
+  // Inicializamos el estado como un array vacío
   const [chartData, setChartData] = useState<UserSucursalData[]>([]);
 
   useEffect(() => {
-    if (data) {
-      const transformedData = data.map((item: UserSucursalData) => ({
+    if (result && Array.isArray(result)) {
+      const transformedData = result.map((item: UserSucursalData) => ({
         sucursal: item.sucursal,
         cantidadUsuarios: Number(item.cantidadUsuarios),
       }));
       setChartData(transformedData);
     }
-  }, [data]);
+  }, [result]); // Usamos `result` directamente en lugar de `data`
 
   const chartConfig = {
     cantidadUsuarios: {
@@ -50,7 +50,7 @@ const ChartBarras = () => {
 
   return (
     <div>
-      <p className="text-custom-title font-bold dark:text-white">
+      <p className="text-custom-title font-bold dark:text-white text-center">
         Usuarios por Sucursal
       </p>
 

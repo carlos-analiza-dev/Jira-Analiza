@@ -82,7 +82,9 @@ export default function NavBar() {
         <NavigationMenu className="hidden sm:flex">
           <NavigationMenuList>
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Analiza Proyectos</NavigationMenuTrigger>
+              <NavigationMenuTrigger className="text-custom-title dark:text-white font-bold">
+                Analiza Proyectos
+              </NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] ">
                   <li className="row-span-3">
@@ -92,7 +94,7 @@ export default function NavBar() {
                         href="/proyectos"
                       >
                         <Droplet className="h-6 w-6 text-custom-second" />
-                        <div className="mb-2 mt-4 text-lg font-medium">
+                        <div className="mb-2 mt-4 text-lg font-medium text-custom-title ">
                           Jira - Analiza
                         </div>
                         <p className="text-sm leading-tight text-muted-foreground">

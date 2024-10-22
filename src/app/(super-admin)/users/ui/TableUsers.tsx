@@ -29,8 +29,7 @@ import deleteUser from "@/api/deleteUser";
 
 import { useSelector } from "react-redux";
 import { UserType } from "@/types/user.type";
-import FormEventos from "@/components/FormEventos";
-import FormUsers from "./FormUsers";
+import FormularioUsuarios from "@/components/FormularioUsuarios";
 
 export type UsersTable = {
   users: UserType[];
@@ -42,7 +41,8 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
   const user = useSelector((state: any) => state.auth);
 
   const { toast } = useToast();
-  const [userUpdate, setUserUpdate] = useState<UserType | null>(null);
+
+  const [isEdit, setIsEdit] = useState<any>(null);
 
   const handleToggleActive = async (
     userId: string,
@@ -80,8 +80,12 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
     }
   };
 
-  const handleUser = (user: UserType) => {
-    setUserUpdate(user);
+  const handleEdit = (evento: UserType) => {
+    setIsEdit(evento);
+  };
+
+  const handleCloseEdit = () => {
+    setIsEdit(null);
   };
 
   if (!users || users.length === 0) {
@@ -230,7 +234,7 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
                   <AlertDialogTrigger asChild>
                     <Button
                       size="icon"
-                      onClick={() => handleUser(user)}
+                      onClick={() => handleEdit(user)}
                       variant="outline"
                     >
                       <Pencil />
@@ -249,10 +253,10 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <div className="p-2">
-                      <FormUsers
+                      <FormularioUsuarios
+                        usuario={isEdit}
                         check={check}
                         setCheck={setCheck}
-                        userUpdate={userUpdate}
                       />
                     </div>
                   </AlertDialogContent>

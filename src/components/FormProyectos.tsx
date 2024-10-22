@@ -19,15 +19,8 @@ import { useSelector } from "react-redux";
 interface FormProyectos {
   proyecto: TypeProyectos;
   onSuccess?: () => void;
-  setCheck: React.Dispatch<React.SetStateAction<boolean>>;
-  check: boolean;
 }
-const FormProyectos = ({
-  proyecto,
-  onSuccess,
-  check,
-  setCheck,
-}: FormProyectos) => {
+const FormProyectos = ({ proyecto, onSuccess }: FormProyectos) => {
   const user = useSelector((state: any) => state.auth);
   const { toast } = useToast();
   const [selectedEstado, setSelectedEstado] = useState(proyecto.estado);
@@ -69,7 +62,7 @@ const FormProyectos = ({
         projectData,
         user.token
       );
-      setCheck(!check);
+
       if (onSuccess) {
         onSuccess();
       }

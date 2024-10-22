@@ -7,5 +7,8 @@ export type DataPost = {
   dni: string;
   direccion: string;
   roleId?: string;
+  rol?: string;
   sucursalId?: string;
+  pais?: string;
+  empresa?: string;
 };
