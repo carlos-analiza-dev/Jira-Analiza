@@ -2,22 +2,15 @@
 import { Pie, PieChart, Cell } from "recharts";
 import { ChartContainer, ChartConfig } from "@/components/ui/chart";
 import { useState, useEffect } from "react";
-import useGetUsersAutorizados from "@/api/getUsersAutorizados";
+import useGetUsersAutorizados from "@/api/users/getUsersAutorizados";
 import { AutorizadoData } from "@/types/atorizado.type";
-import { useDispatch } from "react-redux";
-import { useRouter } from "next/navigation";
-import { clearUser } from "@/store/auth/sessionSlice";
-const ChartUsuarios = () => {
-  const dispatch = useDispatch();
-  const router = useRouter();
-  const { result, loading, error } = useGetUsersAutorizados();
+import { useSelector } from "react-redux";
 
-  useEffect(() => {
-    if (error === "Request failed with status code 401") {
-      dispatch(clearUser());
-      router.push("/");
-    }
-  }, [error, dispatch, router]);
+const ChartUsuarios = () => {
+  const user = useSelector((state: any) => state.auth);
+
+  const pais = user.pais;
+  const { result, loading, error } = useGetUsersAutorizados(pais);
 
   const [resultado, setResultado] = useState<AutorizadoData>({
     autorizado: 0,
@@ -56,7 +49,7 @@ const ChartUsuarios = () => {
   return (
     <div>
       <p className="text-custom-title font-bold dark:text-white text-center">
-        Actividad de usuarios
+        Autorizacion de usuarios
       </p>
 
       <ChartContainer config={chartConfig} className="min-h-[200px] w-full">

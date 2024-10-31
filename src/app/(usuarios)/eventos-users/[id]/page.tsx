@@ -1,8 +1,9 @@
 "use client";
-import useGetActividadesByEventoId from "@/api/getActividadesByEventoId";
-import useEventoById from "@/api/getEventoById";
+import useGetActividadesByEventoId from "@/api/actividades/getActividadesByEventoId";
+import useEventoById from "@/api/eventos/getEventoById";
 import ActividadesForm from "@/components/ActividadesForm";
 import ActividadesList from "@/components/ActividadesList";
+import ModalExpired from "@/components/ModalExpired";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -28,6 +29,7 @@ const EventosIdPage = () => {
   const user = useSelector((state: any) => state.auth);
   const { result, error, loading } = useEventoById(eventoId, user.token);
   const [check, setCheck] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const {
     result: resultActividades,
     loading: resultLoading,
@@ -36,10 +38,15 @@ const EventosIdPage = () => {
 
   useEffect(() => {
     if (error === "Request failed with status code 401") {
-      dispatch(clearUser());
-      router.push("/");
+      setShowModal(true);
     }
   }, [error, dispatch, router]);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    dispatch(clearUser());
+    router.push("/");
+  };
 
   if (!result)
     return (
@@ -55,15 +62,24 @@ const EventosIdPage = () => {
       <h1 className="text-xl sm:text-3xl text-custom-title dark:text-white font-bold">
         {result.nombre}
       </h1>
-      <h3 className="text-base sm:text-xl text-custom-title dark:text-white font-semibold mt-5">
+      <h3 className="text-base sm:text-xl text-custom-title dark:text-white font-medium mt-5">
+        <span className="font-bold">Descripcion del evento:</span>{" "}
         {result.descripcion}
       </h3>
+      <div className="mt-3">
+        <Button
+          onClick={() => router.back()}
+          className="bg-custom-title dark:bg-white text-white dark:text-custom-title hover:bg-sky-950 text-base font-bold"
+        >
+          Eventos
+        </Button>
+      </div>
       {user?.id === result?.usuarioCreador?.id ||
       user?.id === result?.responsable?.id ? (
-        <div className="flex justify-around sm:w-2/6 mt-5 gap-3">
+        <div className="flex justify-between sm:w-2/6 mt-5 gap-3">
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button className="bg-custom-title dark:bg-white text-white dark:text-custom-title hover:bg-sky-950 text-base">
+              <Button className="bg-custom-title dark:bg-white text-white dark:text-custom-title hover:bg-sky-950 text-base font-bold">
                 Agregar Actividad
               </Button>
             </AlertDialogTrigger>
@@ -86,7 +102,7 @@ const EventosIdPage = () => {
           </AlertDialog>
           <Link
             href={`/eventos-users/${eventoId}/team-eventos-users`}
-            className="dark:bg-sky-600 dark:text-white bg-custom-title text-white rounded-md p-2 shadow-md"
+            className="dark:bg-sky-600 dark:text-white bg-custom-title text-white rounded-md p-2 shadow-md font-bold"
           >
             Colaboradores
           </Link>
@@ -98,6 +114,7 @@ const EventosIdPage = () => {
         check={check}
         setCheck={setCheck}
       />
+      {showModal && <ModalExpired handleCloseModal={handleCloseModal} />}
     </div>
   );
 };

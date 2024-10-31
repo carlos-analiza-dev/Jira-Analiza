@@ -16,10 +16,10 @@ import { useEffect, useState } from "react";
 import { UserType } from "@/types/user.type";
 import { useSelector } from "react-redux";
 import { useToast } from "./ui/use-toast";
-import createActividad from "@/api/createActividad";
+import createActividad from "@/api/actividades/createActividad";
 import { AlertDialogAction } from "@radix-ui/react-alert-dialog";
-import updateActividad from "@/api/updateActividad";
-import useGetColaboradoresEventos from "@/api/getUserColaboradoresByEvento";
+import updateActividad from "@/api/actividades/updateActividad";
+import useGetColaboradoresEventos from "@/api/eventos/getUserColaboradoresByEvento";
 
 interface Props {
   eventoId: string;

@@ -1,5 +1,5 @@
 "use client";
-import useAllSucursal from "@/api/getSucursale";
+import useAllSucursal from "@/api/sucursal/getSucursale";
 import TableSucursales from "./ui/TableSucursales";
 import SkeletonTable from "@/components/SkeletonTable";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Controller, useForm } from "react-hook-form";
 import { SucursalData } from "@/types/sucursal.type";
-import createSucursal from "@/api/createSucursal";
+import createSucursal from "@/api/sucursal/createSucursal";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect, useState } from "react";
@@ -29,12 +29,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { departamentosData } from "../../../../data/departamentos";
+import {
+  departamentosData,
+  DeptosSalvador,
+  GuatemalaDeptos,
+} from "../../../../data/departamentos";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { clearUser } from "@/store/auth/sessionSlice";
 import { useSelector } from "react-redux";
 import Image from "next/image";
+import { PaisesData } from "../../../../data/paisesData";
+import { PaisData } from "@/types/paits.data.type";
+import ModalExpired from "@/components/ModalExpired";
 
 export default function SucursalPage() {
   const user = useSelector((state: any) => state.auth);
@@ -45,13 +52,17 @@ export default function SucursalPage() {
   const [offset, setOffset] = useState(0);
   const [departamento, setDepartamento] = useState("");
   const { toast } = useToast();
+  const [paisStatus, setPaisStatus] = useState("");
+  const pais = user.pais;
   const { loading, resultSucursal, error } = useAllSucursal(
     check,
     user.token,
     offset,
     limit,
-    departamento
+    departamento,
+    pais
   );
+
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const {
@@ -62,12 +73,19 @@ export default function SucursalPage() {
     formState: { errors },
   } = useForm<SucursalData>();
 
+  const [showModal, setShowModal] = useState(false);
+
   useEffect(() => {
     if (error === "Request failed with status code 401") {
-      dispatch(clearUser());
-      router.push("/");
+      setShowModal(true);
     }
   }, [error, dispatch, router]);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    dispatch(clearUser());
+    router.push("/");
+  };
 
   useEffect(() => {
     if (resultSucursal) {
@@ -81,7 +99,10 @@ export default function SucursalPage() {
 
   const onSubmit = async (data: SucursalData) => {
     try {
-      const response = await createSucursal(data, user.token);
+      const response = await createSucursal(
+        { ...data, pais: paisStatus },
+        user.token
+      );
       setCheck(!check);
       reset();
       toast({ title: "Sucursal creada exitosamente" });
@@ -115,11 +136,24 @@ export default function SucursalPage() {
               <SelectGroup>
                 <SelectLabel>Departamento</SelectLabel>
                 <SelectItem value="all">Todas</SelectItem>
-                {departamentosData.map((depto) => (
-                  <SelectItem key={depto.id} value={depto.nombre}>
-                    {depto.nombre}
-                  </SelectItem>
-                ))}
+                {user.pais === "Honduras" &&
+                  departamentosData.map((dep) => (
+                    <SelectItem key={dep.id} value={dep.nombre}>
+                      {dep.nombre}
+                    </SelectItem>
+                  ))}
+                {user.pais === "El Salvador" &&
+                  DeptosSalvador.map((dep) => (
+                    <SelectItem key={dep.id} value={dep.nombre}>
+                      {dep.nombre}
+                    </SelectItem>
+                  ))}
+                {user.pais === "Guatemala" &&
+                  GuatemalaDeptos.map((dep) => (
+                    <SelectItem key={dep.id} value={dep.nombre}>
+                      {dep.nombre}
+                    </SelectItem>
+                  ))}
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -127,8 +161,8 @@ export default function SucursalPage() {
         <div>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button className="bg-custom-title text-white dark:bg-white dark:text-custom-title">
-                Agregar
+              <Button className="bg-custom-title text-white dark:bg-white dark:text-custom-title font-semibold">
+                Agregar Sucursal
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -166,6 +200,30 @@ export default function SucursalPage() {
                       {errors.nombre.message?.toString()}
                     </p>
                   )}
+                </div>
+                <div className="mt-2 mb-4 w-full">
+                  <label className="block text-lg font-semibold text-custom-title dark:text-white">
+                    Pais
+                  </label>
+                  <Select value={paisStatus} onValueChange={setPaisStatus}>
+                    <SelectTrigger className="p-3 rounded-md shadow w-full mt-1">
+                      <SelectValue placeholder="-- Seleccione una Opcion --" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Pais</SelectLabel>
+                        {PaisesData && PaisesData.length > 0 ? (
+                          PaisesData.map((pais: PaisData) => (
+                            <SelectItem key={pais.id} value={pais.nombre}>
+                              {pais.nombre}
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <p>No hay paises disponibles</p>
+                        )}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="mt-5 mb-5">
                   <label className="text-custom-title dark:text-white font-medium">
@@ -207,11 +265,24 @@ export default function SucursalPage() {
                         <SelectContent>
                           <SelectGroup>
                             <SelectLabel>Departamentos</SelectLabel>
-                            {departamentosData.map((dep) => (
-                              <SelectItem key={dep.id} value={dep.nombre}>
-                                {dep.nombre}
-                              </SelectItem>
-                            ))}
+                            {user.pais === "Honduras" &&
+                              departamentosData.map((dep) => (
+                                <SelectItem key={dep.id} value={dep.nombre}>
+                                  {dep.nombre}
+                                </SelectItem>
+                              ))}
+                            {user.pais === "El Salvador" &&
+                              DeptosSalvador.map((dep) => (
+                                <SelectItem key={dep.id} value={dep.nombre}>
+                                  {dep.nombre}
+                                </SelectItem>
+                              ))}
+                            {user.pais === "Guatemala" &&
+                              GuatemalaDeptos.map((dep) => (
+                                <SelectItem key={dep.id} value={dep.nombre}>
+                                  {dep.nombre}
+                                </SelectItem>
+                              ))}
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -288,6 +359,7 @@ export default function SucursalPage() {
           Siguiente
         </Button>
       </div>
+      {showModal && <ModalExpired handleCloseModal={handleCloseModal} />}
     </div>
   );
 }

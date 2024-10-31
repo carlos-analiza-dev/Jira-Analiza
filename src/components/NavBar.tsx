@@ -35,6 +35,7 @@ export default function NavBar() {
   const [popoverOpen, setPopoverOpen] = useState(false);
 
   const handleLogout = () => {
+    window.location.reload;
     dispatch(clearUser());
     router.push("/");
   };
@@ -100,7 +101,7 @@ export default function NavBar() {
                         <p className="text-sm leading-tight text-muted-foreground">
                           En esta seccion puedes observar todos los proyectos en
                           los cuales estas incluido, disfruta tu experiencia y
-                          colabora en los proyectos.
+                          colabora en tus proyectos.
                         </p>
                       </a>
                     </NavigationMenuLink>

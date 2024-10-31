@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { useForm } from "react-hook-form";
 import { FormDataConfirm } from "@/types/confirm-password.type";
-import confirmPasswordUpdate from "@/api/confirmPassword";
+import confirmPasswordUpdate from "@/api/users/confirmPassword";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";

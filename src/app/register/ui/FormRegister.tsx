@@ -1,7 +1,7 @@
 "use client";
-import createUsers from "@/api/createUsers";
-import useAllDepartamentos from "@/api/getAllDepartamentos";
-import useAllSucursales from "@/api/getSucursalesNotPagination";
+import createUsers from "@/api/users/createUsers";
+import useAllDepartamentos from "@/api/roles/getAllDepartamentos";
+import useAllSucursales from "@/api/sucursal/getSucursalesNotPagination";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -20,16 +20,12 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { PaisesData } from "../../../../data/paisesData";
 import { DataEmpresas } from "../../../../data/empresasData";
-
-interface PaisData {
-  id: number;
-  nombre: string;
-}
+import { PaisData } from "@/types/paits.data.type";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import Image from "next/image";
 
 const FormRegister = () => {
   const router = useRouter();
-  const { result } = useAllDepartamentos();
-  const { resultSucursal } = useAllSucursales();
   const { toast } = useToast();
   const [name, setName] = useState("");
   const [correo, setCorreo] = useState("");
@@ -45,6 +41,8 @@ const FormRegister = () => {
   const [empresa, setEmpresa] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [isActiveConfirm, setIsActiveConfirm] = useState(true);
+  const { result } = useAllDepartamentos("", pais);
+  const { resultSucursal } = useAllSucursales("", pais);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -131,6 +129,33 @@ const FormRegister = () => {
   return (
     <>
       <form onSubmit={handleSubmit}>
+        <div className="flex justify-center">
+          <p className="text-custom-title dark:text-white font-semibold">
+            Elige el pais en el que te encuentras:
+          </p>
+        </div>
+        <div className="mb-4 mt-3 flex justify-center">
+          <RadioGroup
+            value={pais}
+            onValueChange={setPais}
+            className="flex gap-5"
+            defaultValue="comfortable"
+          >
+            {PaisesData.map((pais) => (
+              <div key={pais.id} className="flex items-center space-x-2">
+                <RadioGroupItem value={pais.nombre} id={pais.nombre} />
+                <label htmlFor="r1">
+                  <Image
+                    src={pais.url}
+                    alt={pais.nombre}
+                    width={35}
+                    height={35}
+                  />
+                </label>
+              </div>
+            ))}
+          </RadioGroup>
+        </div>
         <div className="w-full justify-center items-center grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-3">
           <div className="mt-1 w-full">
             <label
@@ -227,6 +252,30 @@ const FormRegister = () => {
               )}
             </div>
           </div>
+          {/* <div className="mt-1 w-full">
+            <label className="block text-lg font-semibold text-custom-title dark:text-white">
+              Pais
+            </label>
+            <Select value={pais} onValueChange={setPais}>
+              <SelectTrigger className="p-3 rounded-md shadow w-full mt-1">
+                <SelectValue placeholder="-- Seleccione una Opcion --" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Pais</SelectLabel>
+                  {PaisesData && PaisesData.length > 0 ? (
+                    PaisesData.map((pais: PaisData) => (
+                      <SelectItem key={pais.id} value={pais.nombre}>
+                        {pais.nombre}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <p>No hay paises disponibles</p>
+                  )}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div> */}
           <div className="mt-1 w-full">
             <label className="block text-lg font-semibold text-custom-title dark:text-white">
               Sexo
@@ -287,30 +336,6 @@ const FormRegister = () => {
                     ))
                   ) : (
                     <p>No hay sucursales disponibles</p>
-                  )}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="mt-1 w-full">
-            <label className="block text-lg font-semibold text-custom-title dark:text-white">
-              Pais
-            </label>
-            <Select value={pais} onValueChange={setPais}>
-              <SelectTrigger className="p-3 rounded-md shadow w-full mt-1">
-                <SelectValue placeholder="-- Seleccione una Opcion --" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Sucursal</SelectLabel>
-                  {PaisesData && PaisesData.length > 0 ? (
-                    PaisesData.map((pais: PaisData) => (
-                      <SelectItem key={pais.id} value={pais.nombre}>
-                        {pais.nombre}
-                      </SelectItem>
-                    ))
-                  ) : (
-                    <p>No hay paises disponibles</p>
                   )}
                 </SelectGroup>
               </SelectContent>

@@ -17,7 +17,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useParams } from "next/navigation";
-import deleteColaboradorProject from "@/api/deleteColaborador";
+import deleteColaboradorProject from "@/api/proyectos/deleteColaborador";
 import { useSelector } from "react-redux";
 import { useToast } from "./ui/use-toast";
 

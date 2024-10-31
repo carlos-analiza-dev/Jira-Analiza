@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { get } from "../helpers/axiosInstance";
+import { get } from "../../helpers/axiosInstance";
 
 const useAllUsers = (
   check?: boolean,
@@ -8,9 +8,10 @@ const useAllUsers = (
   offset: number = 0,
   sexo: string = "",
   sucursal: string = "",
-  correo: string = ""
+  correo: string = "",
+  pais: string = ""
 ) => {
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/users?limit=${limit}&offset=${offset}&sexo=${sexo}&sucursal=${sucursal}&correo=${correo}`;
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/users?limit=${limit}&offset=${offset}&sexo=${sexo}&sucursal=${sucursal}&correo=${correo}&pais=${pais}`;
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");

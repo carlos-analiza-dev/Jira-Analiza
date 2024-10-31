@@ -21,7 +21,7 @@ import {
 import { formatFecha } from "@/helpers/formatDate";
 
 import { useEffect, useState } from "react";
-import deleteProyecto from "@/api/deleteProyecto";
+import deleteProyecto from "@/api/proyectos/deleteProyecto";
 import { useToast } from "@/components/ui/use-toast";
 import FormProyectos from "./FormProyectos";
 interface Props {
@@ -128,6 +128,12 @@ const Proyectos = ({ proyectos }: Props) => {
                   {proyecto.cliente}
                 </span>
               </p>
+              <p className="font-bold text-custom-title dark:text-white text-lg mt-3">
+                Empresa:{" "}
+                <span className="font-medium text-custom-title dark:text-white">
+                  {proyecto.empresa ? proyecto.empresa.nombre : "ND"}
+                </span>
+              </p>
               <p className="text-lg font-semibold text-custom-title dark:text-white mt-3">
                 {proyecto.descripcion}
               </p>
@@ -145,7 +151,7 @@ const Proyectos = ({ proyectos }: Props) => {
                   <EllipsisVertical />
                 </PopoverTrigger>
                 <PopoverContent className="w-80">
-                  {proyecto.creador && user.id === proyecto.creador.id ? (
+                  {proyecto.creador && user.id === proyecto.creador.id && (
                     <div className="grid gap-4">
                       <div className="space-y-2">
                         <Link
@@ -218,14 +224,38 @@ const Proyectos = ({ proyectos }: Props) => {
                         </AlertDialog>
                       </div>
                     </div>
-                  ) : (
+                  )}
+                  {proyecto.responsable &&
+                    user.id === proyecto.responsable.id && (
+                      <div className="grid gap-4">
+                        <div className="space-y-2">
+                          <Link
+                            href={
+                              user.rol && user.rol === "Administrador"
+                                ? `/admin-proyectos/${proyecto.id}`
+                                : `/proyectos/${proyecto.id}`
+                            }
+                            className="text-sm text-custom-title dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 block p-2"
+                          >
+                            Ver Proyecto
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+                  {proyecto.usuarios.some(
+                    (colaborador) => colaborador.id === user.id
+                  ) && (
                     <div className="grid gap-4">
                       <div className="space-y-2">
                         <Link
-                          href={`/proyectos/${proyecto.id}`}
+                          href={
+                            user.rol && user.rol === "Administrador"
+                              ? `/admin-proyectos/${proyecto.id}`
+                              : `/proyectos/${proyecto.id}`
+                          }
                           className="text-sm text-custom-title dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 block p-2"
                         >
-                          Ver Proyecto
+                          Ver evento
                         </Link>
                       </div>
                     </div>

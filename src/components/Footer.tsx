@@ -22,17 +22,17 @@ export default function Footer() {
       </div>
       <div className="">
         <p className="text-custom-title dark:text-white font-bold ">
-          Sucursales
+          Encuentranos
         </p>
         <div className="mt-2">
           <li className="text-custom-title dark:text-white font-medium">
-            Francisco Morazan
+            Honduras
           </li>
           <li className="text-custom-title dark:text-white font-medium">
-            Tegucigalpa
+            El Salvador
           </li>
           <li className="text-custom-title dark:text-white font-medium">
-            San Pedro Sula
+            Guatemala
           </li>
         </div>
       </div>

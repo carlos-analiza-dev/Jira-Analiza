@@ -20,12 +20,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-import updateUser from "@/api/updateUser";
+import updateUser from "@/api/users/updateUser";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import Image from "next/image";
 import { Pencil, Trash2 } from "lucide-react";
-import deleteUser from "@/api/deleteUser";
+import deleteUser from "@/api/users/deleteUser";
 
 import { useSelector } from "react-redux";
 import { UserType } from "@/types/user.type";
@@ -119,15 +119,11 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
           <TableHead className="text-center text-custom-title dark:text-white font-bold">
             Sexo
           </TableHead>
-          <TableHead className="text-center text-custom-title dark:text-white font-bold">
-            Edad
-          </TableHead>
+
           <TableHead className="text-center text-custom-title dark:text-white font-bold">
             DNI
           </TableHead>
-          <TableHead className="text-center text-custom-title dark:text-white font-bold">
-            Dirección
-          </TableHead>
+
           <TableHead className="text-custom-title dark:text-white font-bold">
             Autorizado
           </TableHead>
@@ -151,15 +147,11 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
             <TableCell className="text-custom-title dark:text-white text-center">
               {user.sexo === "M" ? "Masculino" : "Femenino"}
             </TableCell>
-            <TableCell className="text-custom-title dark:text-white text-center">
-              {user.edad}
-            </TableCell>
+
             <TableCell className="text-custom-title dark:text-white text-center">
               {user.dni}
             </TableCell>
-            <TableCell className="text-custom-title dark:text-white text-center">
-              {user.direccion}
-            </TableCell>
+
             <TableCell className="text-custom-title dark:text-white text-center">
               {user.autorizado ? "Autorizado" : "No autorizado"}
             </TableCell>

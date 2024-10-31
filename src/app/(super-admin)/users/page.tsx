@@ -1,5 +1,5 @@
 "use client";
-import useAllUsers from "@/api/getAllUsers";
+import useAllUsers from "@/api/users/getAllUsers";
 import { ResponseData } from "@/types/response.type";
 import TableUsers from "./ui/TableUsers";
 import SkeletonTable from "@/components/SkeletonTable";
@@ -19,13 +19,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SucursalData } from "@/types/sucursal.type";
-import useAllSucursales from "@/api/getSucursalesNotPagination";
-import { Search } from "lucide-react";
-import useGetAllUsuarios from "@/api/getAllUsuarios";
+import useAllSucursales from "@/api/sucursal/getSucursalesNotPagination";
+import { Frown, HeartCrack, Search } from "lucide-react";
+import useGetAllUsuarios from "@/api/users/getAllUsuarios";
+import ModalExpired from "@/components/ModalExpired";
 
 export default function UsersPage() {
   const user = useSelector((state: any) => state.auth);
-  console.log("USERRRR", user);
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -38,6 +38,7 @@ export default function UsersPage() {
   const [correo, setCorreo] = useState("");
   const [searchCorreo, setSearchCorreo] = useState("");
   const token = user.token;
+  const pais = user.pais;
 
   const { result, loading, error }: ResponseData = useAllUsers(
     check,
@@ -46,23 +47,31 @@ export default function UsersPage() {
     offset,
     sexo,
     sucursal,
-    correo
+    correo,
+    pais
   );
-  const { result: resultBusqueda } = useGetAllUsuarios(user.token);
+
+  const { result: resultBusqueda } = useGetAllUsuarios(user.token, pais);
   const [sucursales, setSucursales] = useState<SucursalData[]>([]);
-  const { resultSucursal } = useAllSucursales(token);
+  const { resultSucursal } = useAllSucursales(token, pais);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (error === "Request failed with status code 401") {
-      dispatch(clearUser());
-      router.push("/");
+      setShowModal(true);
     }
   }, [error, dispatch, router]);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    dispatch(clearUser());
+    router.push("/");
+  };
 
   useEffect(() => {
     if (result) {
@@ -239,7 +248,7 @@ export default function UsersPage() {
       ) : error ? (
         <div className="flex justify-center">
           <p className="text-red-500 text-3xl font-bold mt-10">
-            No se encontraron usuarios disponibles
+            No se encontraron usuarios disponibles en este momento
           </p>
         </div>
       ) : (
@@ -266,6 +275,7 @@ export default function UsersPage() {
           Siguiente
         </Button>
       </div>
+      {showModal && <ModalExpired handleCloseModal={handleCloseModal} />}
     </div>
   );
 }

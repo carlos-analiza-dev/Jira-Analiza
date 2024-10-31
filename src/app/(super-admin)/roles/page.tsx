@@ -1,5 +1,5 @@
 "use client";
-import useAllRoles from "@/api/getAllRoles";
+import useAllRoles from "@/api/roles/getAllRoles";
 import SkeletonTable from "@/components/SkeletonTable";
 import { Button } from "@/components/ui/button";
 import { ResponseData } from "@/types/response.type";
@@ -18,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 
-import createRol from "@/api/createRol";
+import createRol from "@/api/roles/createRol";
 import { toast } from "@/components/ui/use-toast";
 import { useEffect, useState } from "react";
 import { clearUser } from "@/store/auth/sessionSlice";
@@ -27,6 +27,18 @@ import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { TableRolesData } from "@/types/table.roles.type";
 import Image from "next/image";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { PaisesDataGenerico } from "../../../../data/paisesData";
+import { PaisData } from "@/types/paits.data.type";
+import ModalExpired from "@/components/ModalExpired";
 
 export default function Roles() {
   const user = useSelector((state: any) => state.auth);
@@ -35,6 +47,8 @@ export default function Roles() {
   const [check, setCheck] = useState(true);
   const [offset, setOffset] = useState(0);
   const [limit, setLimit] = useState(5);
+  const [paisStatus, setPaisStatus] = useState("");
+  const pais = user.pais;
   const {
     register,
     reset,
@@ -45,18 +59,26 @@ export default function Roles() {
     check,
     offset,
     limit,
-    user.token
+    user.token,
+    pais
   );
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
+  const [showModal, setShowModal] = useState(false);
+
   useEffect(() => {
     if (error === "Request failed with status code 401") {
-      dispatch(clearUser());
-      router.push("/");
+      setShowModal(true);
     }
   }, [error, dispatch, router]);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    dispatch(clearUser());
+    router.push("/");
+  };
 
   useEffect(() => {
     if (result) {
@@ -66,7 +88,7 @@ export default function Roles() {
 
   const onSubmit = async (data: TableRolesData) => {
     try {
-      await createRol(data, user.token);
+      await createRol({ ...data, pais: paisStatus }, user.token);
       setCheck(!check);
       reset();
       toast({
@@ -94,7 +116,7 @@ export default function Roles() {
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button className="bg-custom-title text-white dark:bg-white dark:text-custom-title font-semibold">
-              Agregar
+              Agregar Departamento
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
@@ -108,7 +130,7 @@ export default function Roles() {
               </AlertDialogDescription>
             </AlertDialogHeader>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="mt-5 mb-5">
+              <div className="mt-5 mb-2">
                 <label className="text-custom-title dark:text-white font-medium">
                   Ingrese el nuevo departamento
                 </label>
@@ -129,6 +151,30 @@ export default function Roles() {
                     {errors.nombre.message?.toString()}
                   </p>
                 )}
+              </div>
+              <div className="mt-2 mb-4 w-full">
+                <label className="block text-lg font-semibold text-custom-title dark:text-white">
+                  Pais
+                </label>
+                <Select value={paisStatus} onValueChange={setPaisStatus}>
+                  <SelectTrigger className="p-3 rounded-md shadow w-full mt-1">
+                    <SelectValue placeholder="-- Seleccione una Opcion --" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Pais</SelectLabel>
+                      {PaisesDataGenerico && PaisesDataGenerico.length > 0 ? (
+                        PaisesDataGenerico.map((pais: PaisData) => (
+                          <SelectItem key={pais.id} value={pais.nombre}>
+                            {pais.nombre}
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <p>No hay paises disponibles</p>
+                      )}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </div>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancelar</AlertDialogCancel>
@@ -183,6 +229,7 @@ export default function Roles() {
           Siguiente
         </Button>
       </div>
+      {showModal && <ModalExpired handleCloseModal={handleCloseModal} />}
     </div>
   );
 }

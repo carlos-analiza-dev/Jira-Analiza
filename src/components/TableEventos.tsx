@@ -1,4 +1,4 @@
-import removeEvento from "@/api/removeEvento";
+import removeEvento from "@/api/eventos/removeEvento";
 import {
   AlertDialogAction,
   AlertDialogCancel,

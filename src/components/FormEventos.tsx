@@ -21,13 +21,13 @@ import { CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { PostEvento } from "@/types/postEevento";
-import createEvento from "@/api/createEvento";
+import createEvento from "@/api/eventos/createEvento";
 import { useSelector } from "react-redux";
 import { useToast } from "@/components/ui/use-toast";
 import { DataEventos } from "@/types/evento.type";
-import updateEvento from "@/api/updateEvento";
+import updateEvento from "@/api/eventos/updateEvento";
 import { UserType } from "@/types/user.type";
-import useGetUsersActivesAndAuth from "@/api/getUserActivesAndAutorizados";
+import useGetUsersActivesAndAuth from "@/api/users/getUserActivesAndAutorizados";
 
 interface Props {
   check: boolean;
@@ -153,7 +153,7 @@ const FormEventos = ({
 
   return (
     <form
-      className="p-4 shadow-md bg-gray-50 dark:bg-gray-900 rounded-md"
+      className="p-4 shadow-md bg-gray-50 dark:bg-gray-900 rounded-md grid grid-cols-1 sm:grid-cols-2 gap-4"
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className="mt-3">
@@ -190,7 +190,7 @@ const FormEventos = ({
               message: "La descripción del evento es inválida.",
             },
           })}
-          placeholder="Descripción Evento"
+          placeholder="Descripción del evento"
           className="w-full mt-2"
         />
         {errors.descripcion && (
@@ -237,7 +237,7 @@ const FormEventos = ({
             Responsable
           </label>
           <Select onValueChange={(value) => handleValueIdRol(value)}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full mt-2">
               <SelectValue placeholder="-- Selecciona responsable --" />
             </SelectTrigger>
             <SelectContent>
@@ -258,7 +258,6 @@ const FormEventos = ({
         </div>
       )}
 
-      {/* Campo estado (solo visible al actualizar) */}
       {evento && (
         <div className="mt-3">
           <label className="block text-custom-title dark:text-white font-semibold">

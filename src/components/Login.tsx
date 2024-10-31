@@ -2,7 +2,7 @@
 import { PostLoginData } from "@/types/dataPostLogin";
 import { Input } from "./ui/input";
 import { useForm } from "react-hook-form";
-import postLoginUser from "@/api/loginUser";
+import postLoginUser from "@/api/users/loginUser";
 import { useToast } from "./ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";

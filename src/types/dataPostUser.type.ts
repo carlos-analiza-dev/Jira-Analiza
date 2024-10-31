@@ -9,6 +9,7 @@ export type DataPost = {
   roleId?: string;
   rol?: string;
   sucursalId?: string;
+  autorizado?: number;
   pais?: string;
   empresa?: string;
 };

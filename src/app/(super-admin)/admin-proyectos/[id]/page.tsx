@@ -15,9 +15,10 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import TareasForm from "@/components/TareasForm";
 import TaskList from "@/components/TaskList";
-import useProyectoId from "@/api/getProyectoId";
-import useTareasProyectosId from "@/api/getTareasProyectoId";
+import useProyectoId from "@/api/proyectos/getProyectoId";
+import useTareasProyectosId from "@/api/tareas/getTareasProyectoId";
 import { clearUser } from "@/store/auth/sessionSlice";
+import ModalExpired from "@/components/ModalExpired";
 
 const PageProyectoId = () => {
   const user = useSelector((state: any) => state.auth);
@@ -35,12 +36,19 @@ const PageProyectoId = () => {
     error: resultError,
   } = useTareasProyectosId(proyectoId, user.token, check);
 
+  const [showModal, setShowModal] = useState(false);
+
   useEffect(() => {
     if (error === "Request failed with status code 401") {
-      dispatch(clearUser());
-      router.push("/");
+      setShowModal(true);
     }
   }, [error, dispatch, router]);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    dispatch(clearUser());
+    router.push("/");
+  };
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
@@ -65,12 +73,20 @@ const PageProyectoId = () => {
       <h3 className="text-base sm:text-xl text-custom-title dark:text-white font-semibold mt-5">
         {result.descripcion}
       </h3>
+      <div className="mt-3">
+        <Button
+          onClick={() => router.back()}
+          className="bg-custom-title dark:bg-white text-white dark:text-custom-title hover:bg-sky-950 text-base font-bold"
+        >
+          Proyectos
+        </Button>
+      </div>
 
-      {user.id === result.creador.id ? (
-        <div className="flex justify-around sm:w-2/6 mt-5 gap-3">
+      {user.id === result.creador.id || user.id === result.responsable.id ? (
+        <div className="flex justify-between sm:w-2/6 mt-5 gap-3">
           <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <AlertDialogTrigger asChild>
-              <Button className="bg-custom-title dark:bg-white text-white dark:text-custom-title hover:bg-sky-950 text-base">
+              <Button className="bg-custom-title dark:bg-white text-white dark:text-custom-title hover:bg-sky-950 text-base font-bold">
                 Agregar Tarea
               </Button>
             </AlertDialogTrigger>
@@ -97,7 +113,7 @@ const PageProyectoId = () => {
                 ? `/admin-proyectos/${proyectoId}/team`
                 : `/proyectos/${proyectoId}/team-users`
             }
-            className="dark:bg-sky-600 dark:text-white bg-custom-title text-white rounded-md p-2 shadow-md"
+            className="dark:bg-sky-600 dark:text-white bg-custom-title text-white rounded-md p-2 shadow-md font-bold"
           >
             Colaboradores
           </Link>
@@ -106,6 +122,7 @@ const PageProyectoId = () => {
         ""
       )}
       <TaskList tareas={resultTareas} check={check} setCheck={setCheck} />
+      {showModal && <ModalExpired handleCloseModal={handleCloseModal} />}
     </div>
   );
 };

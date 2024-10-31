@@ -1,4 +1,5 @@
 import {
+  Building2,
   CalendarClock,
   CalendarPlus,
   ChartColumnBig,
@@ -55,12 +56,18 @@ export const dataSide = [
   },
   {
     id: 8,
+    title: "Empresas",
+    link: "/empresas",
+    icon: Building2,
+  },
+  {
+    id: 9,
     title: "Sucursales",
     link: "/sucursales",
     icon: HousePlus,
   },
   {
-    id: 9,
+    id: 10,
     title: "Perfil",
     link: "/perfil",
     icon: User,

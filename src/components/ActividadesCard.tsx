@@ -18,7 +18,7 @@ import {
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import ActividadesForm from "./ActividadesForm";
-import deleteActividad from "@/api/deleteActividad";
+import deleteActividad from "@/api/actividades/deleteActividad";
 
 interface Props {
   actividad: ActividadesType;

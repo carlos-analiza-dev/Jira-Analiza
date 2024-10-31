@@ -17,13 +17,15 @@ import { useSelector } from "react-redux";
 import SkeletonProyectos from "@/components/SkeletonProyectos";
 import { clearUser } from "@/store/auth/sessionSlice";
 import { useDispatch } from "react-redux";
-import useColaboradoresByProyecto from "@/api/getColaboradoresByProyecto";
+import useColaboradoresByProyecto from "@/api/proyectos/getColaboradoresByProyecto";
+import ModalExpired from "@/components/ModalExpired";
 const ColaboradoresUsers = () => {
   const user = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
   const router = useRouter();
   const [check, setCheck] = useState(false);
   const [isClose, setIsClose] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const params = useParams();
   const proyectoId = Array.isArray(params.id) ? params.id[0] : params.id;
   const { error, loading, result } = useColaboradoresByProyecto(
@@ -34,10 +36,15 @@ const ColaboradoresUsers = () => {
 
   useEffect(() => {
     if (error === "Request failed with status code 401") {
-      dispatch(clearUser());
-      router.push("/");
+      setShowModal(true);
     }
   }, [error, dispatch, router]);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    dispatch(clearUser());
+    router.push("/");
+  };
 
   const handleClose = () => {
     setIsClose(false);
@@ -101,6 +108,7 @@ const ColaboradoresUsers = () => {
           <Colaboradores result={result} setCheck={setCheck} check={check} />
         )}
       </div>
+      {showModal && <ModalExpired handleCloseModal={handleCloseModal} />}
     </div>
   );
 };

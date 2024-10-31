@@ -22,11 +22,11 @@ import {
 import { SucursalData, SucursalesResponse } from "@/types/sucursal.type";
 import { Pencil, Trash2 } from "lucide-react";
 import React, { useState } from "react";
-import deleteSucursal from "@/api/deleteSucursal";
+import deleteSucursal from "@/api/sucursal/deleteSucursal";
 import { useToast } from "@/components/ui/use-toast";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import updateSucursal from "@/api/updateSucursal";
+import updateSucursal from "@/api/sucursal/updateSucursal";
 import {
   Select,
   SelectContent,
@@ -36,7 +36,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { departamentosData } from "../../../../../data/departamentos";
+import {
+  departamentosData,
+  DeptosSalvador,
+  GuatemalaDeptos,
+} from "../../../../../data/departamentos";
 import { useSelector } from "react-redux";
 import Image from "next/image";
 
@@ -162,7 +166,7 @@ const TableSucursales = ({ resultSucursal, check, setCheck }: dataTable) => {
                 {sucursal.departamento}
               </TableCell>
               <TableCell className="text-custom-title font-medium dark:text-white text-center">
-                <div className="flex justify-around gap-3 sm:gap-0">
+                <div className="flex justify-around gap-3 sm:gap-2 md:gap-3">
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button variant="outline">
@@ -277,11 +281,24 @@ const TableSucursales = ({ resultSucursal, check, setCheck }: dataTable) => {
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Departamentos</SelectLabel>
-                      {departamentosData.map((dep) => (
-                        <SelectItem key={dep.id} value={dep.nombre}>
-                          {dep.nombre}
-                        </SelectItem>
-                      ))}
+                      {user.pais === "Honduras" &&
+                        departamentosData.map((dep) => (
+                          <SelectItem key={dep.id} value={dep.nombre}>
+                            {dep.nombre}
+                          </SelectItem>
+                        ))}
+                      {user.pais === "El Salvador" &&
+                        DeptosSalvador.map((dep) => (
+                          <SelectItem key={dep.id} value={dep.nombre}>
+                            {dep.nombre}
+                          </SelectItem>
+                        ))}
+                      {user.pais === "Guatemala" &&
+                        GuatemalaDeptos.map((dep) => (
+                          <SelectItem key={dep.id} value={dep.nombre}>
+                            {dep.nombre}
+                          </SelectItem>
+                        ))}
                     </SelectGroup>
                   </SelectContent>
                 </Select>

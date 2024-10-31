@@ -20,7 +20,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { UserResponse, UserType } from "@/types/user.type";
-import updateUser from "@/api/updateUser";
+import updateUser from "@/api/users/updateUser";
 import { useToast } from "@/components/ui/use-toast";
 import Image from "next/image";
 import { useSelector } from "react-redux";
@@ -109,10 +109,10 @@ const TableAuth = ({ users, check, setCheck }: Props) => {
               {user.sexo}
             </TableCell>
             <TableCell className="text-custom-title dark:text-white text-center">
-              {user.role?.nombre}
+              {user.role === null ? "Administrador" : user.role.nombre}
             </TableCell>
             <TableCell className="text-custom-title dark:text-white text-center">
-              {user.sucursal?.nombre}
+              {user.sucursal === null ? "Administrador" : user.sucursal.nombre}
             </TableCell>
             <TableCell className="text-custom-title dark:text-white text-center">
               {user.direccion}

@@ -13,12 +13,13 @@ import { Button } from "@/components/ui/button";
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import SkeletonTable from "@/components/SkeletonTable";
-import { getEventos } from "@/api/getEventos";
+import { getEventos } from "@/api/eventos/getEventos";
 import { useDispatch } from "react-redux";
 import { clearUser } from "@/store/auth/sessionSlice";
 import { useRouter } from "next/navigation";
 import Eventos from "@/components/Eventos";
 import FormEventos from "@/components/FormEventos";
+import ModalExpired from "@/components/ModalExpired";
 
 export const dynamic = "force-dynamic";
 
@@ -30,7 +31,7 @@ export default function EventosPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string>("");
-
+  const [showModal, setShowModal] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -52,10 +53,15 @@ export default function EventosPage() {
 
   useEffect(() => {
     if (error === "Request failed with status code 401") {
-      dispatch(clearUser());
-      router.push("/");
+      setShowModal(true);
     }
   }, [error, dispatch, router]);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    dispatch(clearUser());
+    router.push("/");
+  };
 
   return (
     <div className="mx-auto px-4 md:px-12">
@@ -80,7 +86,7 @@ export default function EventosPage() {
                 Agregar Evento
               </Button>
             </AlertDialogTrigger>
-            <AlertDialogContent>
+            <AlertDialogContent className="max-w-screen-lg p-6">
               <div className="flex justify-end">
                 <AlertDialogCancel>X</AlertDialogCancel>
               </div>
@@ -118,6 +124,7 @@ export default function EventosPage() {
           <Eventos check={check} setCheck={setCheck} result={result} />
         )}
       </div>
+      {showModal && <ModalExpired handleCloseModal={handleCloseModal} />}
     </div>
   );
 }

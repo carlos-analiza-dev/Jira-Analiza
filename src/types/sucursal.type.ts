@@ -3,6 +3,7 @@ export interface SucursalData {
   nombre: string;
   departamento: string;
   direccion: string;
+  pais: string;
 }
 
 export interface SucursalesResponse {

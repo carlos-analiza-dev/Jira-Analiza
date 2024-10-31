@@ -7,9 +7,10 @@ const useAllSucursal = (
   token?: string,
   offset: number = 0,
   limit: number = 5,
-  departamento: string = ""
+  departamento: string = "",
+  pais: string = ""
 ) => {
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/sucursal?limit=${limit}&offset=${offset}&departamento=${departamento}`;
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/sucursal?limit=${limit}&offset=${offset}&departamento=${departamento}&pais=${pais}`;
 
   const [resultSucursal, setResultSucursal] =
     useState<SucursalesResponse | null>(null);

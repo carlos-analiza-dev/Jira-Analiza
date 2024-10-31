@@ -42,4 +42,10 @@ export type TypeProyectos = {
     id: string;
     nombre: string;
   };
+  empresa: {
+    id: string;
+    nombre: string;
+    descripcion: string;
+    estado: string;
+  };
 };

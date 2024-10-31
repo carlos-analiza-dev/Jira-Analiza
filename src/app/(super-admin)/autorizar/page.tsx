@@ -1,7 +1,7 @@
 "use client";
 import SkeletonTable from "@/components/SkeletonTable";
 import TableAuth from "./ui/TableAuth";
-import useGetUserAuth from "@/api/getUserAuth";
+import useGetUserAuth from "@/api/users/getUserAuth";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { clearUser } from "@/store/auth/sessionSlice";
@@ -19,8 +19,9 @@ import {
 import { SucursalData } from "@/types/sucursal.type";
 import { TableRolesData } from "@/types/table.roles.type";
 import { Button } from "@/components/ui/button";
-import useAllSucursales from "@/api/getSucursalesNotPagination";
-import useAllDepartamentos from "@/api/getAllDepartamentos";
+import useAllSucursales from "@/api/sucursal/getSucursalesNotPagination";
+import useAllDepartamentos from "@/api/roles/getAllDepartamentos";
+import ModalExpired from "@/components/ModalExpired";
 
 const AutorizarPage = () => {
   const user = useSelector((state: any) => state.auth);
@@ -33,6 +34,7 @@ const AutorizarPage = () => {
   const [sucursal, setSucursal] = useState("");
   const [sexo, setSexo] = useState("");
   const token = user.token;
+  const pais = user.pais;
   const { loading, result, error } = useGetUserAuth(
     check,
     user.token,
@@ -40,15 +42,18 @@ const AutorizarPage = () => {
     offset,
     sucursal,
     departamento,
-    sexo
+    sexo,
+    pais
   );
-  const { resultSucursal } = useAllSucursales(token);
+
+  const { resultSucursal } = useAllSucursales(token, pais);
   const [sucursales, setSucursales] = useState<SucursalData[]>([]);
 
-  const { result: rolesResult } = useAllDepartamentos(token);
+  const { result: rolesResult } = useAllDepartamentos(token, pais);
   const [roles, setRoles] = useState<TableRolesData[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (resultSucursal) {
@@ -64,10 +69,15 @@ const AutorizarPage = () => {
 
   useEffect(() => {
     if (error === "Request failed with status code 401") {
-      dispatch(clearUser());
-      router.push("/");
+      setShowModal(true);
     }
   }, [error, dispatch, router]);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    dispatch(clearUser());
+    router.push("/");
+  };
 
   useEffect(() => {
     if (result) {
@@ -164,7 +174,7 @@ const AutorizarPage = () => {
       {loading ? (
         <SkeletonTable />
       ) : error ? (
-        <p className="text-center text-red-500 text-2xl mt-8">
+        <p className="text-red-500 text-3xl font-bold mt-10 text-center">
           No se encontraron usuarios disponibles en este momento
         </p>
       ) : (
@@ -189,6 +199,7 @@ const AutorizarPage = () => {
           Siguiente
         </Button>
       </div>
+      {showModal && <ModalExpired handleCloseModal={handleCloseModal} />}
     </div>
   );
 };

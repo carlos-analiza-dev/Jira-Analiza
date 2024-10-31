@@ -16,15 +16,15 @@ import {
 } from "./ui/select";
 import { useForm } from "react-hook-form";
 import { useToast } from "./ui/use-toast";
-import useAllRoles from "@/api/getAllRoles";
-import useAllSucursales from "@/api/getSucursalesNotPagination";
+import useAllSucursales from "@/api/sucursal/getSucursalesNotPagination";
 import { TableRolesData } from "@/types/table.roles.type";
 import { SucursalData } from "@/types/sucursal.type";
 import { UserUpdateType } from "@/types/userUpdate.type";
 import { UserType } from "@/types/user.type";
 import { useEffect, useState } from "react";
-import updateUser from "@/api/updateUser";
+import updateUser from "@/api/users/updateUser";
 import { Button } from "./ui/button";
+import useAllDepartamentos from "@/api/roles/getAllDepartamentos";
 
 interface Props {
   check: boolean;
@@ -36,7 +36,8 @@ interface Props {
 const FormularioUsuarios = ({ usuario, check, setCheck }: Props) => {
   const user = useSelector((state: any) => state.auth);
   const { toast } = useToast();
-  const { result } = useAllRoles();
+  const { result } = useAllDepartamentos(user.token, user.pais);
+
   const { resultSucursal } = useAllSucursales(user.token);
   const {
     register,
@@ -49,10 +50,10 @@ const FormularioUsuarios = ({ usuario, check, setCheck }: Props) => {
     usuario?.sexo || undefined
   );
   const [tipoRol, setTipoRol] = useState<string | undefined>(
-    usuario?.role.id || undefined
+    usuario?.role?.id || undefined
   );
   const [tipoSucursal, setTipoSucursal] = useState<string | undefined>(
-    usuario?.sucursal.id || undefined
+    usuario?.sucursal?.id || undefined
   );
 
   useEffect(() => {
@@ -62,10 +63,10 @@ const FormularioUsuarios = ({ usuario, check, setCheck }: Props) => {
         correo: usuario.correo,
         direccion: usuario.direccion,
         sexo: usuario.sexo,
-        edad: usuario.edad,
+        edad: Number(usuario.edad),
         dni: usuario.dni,
-        roleId: usuario.role.id,
-        sucursalId: usuario.sucursal.id,
+        roleId: usuario.role?.id,
+        sucursalId: usuario.sucursal?.id,
       });
     }
   }, [usuario, reset]);
@@ -189,6 +190,7 @@ const FormularioUsuarios = ({ usuario, check, setCheck }: Props) => {
             type="number"
             {...register("edad", {
               required: "La edad es obligatoria",
+              valueAsNumber: true,
             })}
             placeholder="Edad"
           />
@@ -224,7 +226,7 @@ const FormularioUsuarios = ({ usuario, check, setCheck }: Props) => {
             {...register("direccion", {
               required: "La dirección es obligatoria",
               pattern: {
-                value: /^[A-Za-zÀ-ÿ\s]+$/,
+                value: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s.,;:()\-]+$/,
                 message: "El campo solo acepta letras y espacios en blanco.",
               },
             })}
@@ -234,76 +236,82 @@ const FormularioUsuarios = ({ usuario, check, setCheck }: Props) => {
             <span className="text-red-500">{errors.direccion.message}</span>
           )}
         </div>
-        <div className="mt-2">
-          <label className="block font-bold text-lg mb-2 text-custom-title dark:text-white">
-            Departamento
-          </label>
-          <Select
-            {...register("roleId", { required: "El rol es obligatorio" })}
-            value={tipoRol}
-            onValueChange={handleSelectTipoRol}
-          >
-            <SelectTrigger className="p-3 rounded-md shadow w-full mt-1">
-              <SelectValue placeholder="Selecciona un Rol">
-                {result?.data.find((rol) => rol.id === tipoRol)?.nombre ||
-                  "Selecciona un Rol"}
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Departamento</SelectLabel>
-                {result?.data.map((res: TableRolesData) => (
-                  <SelectItem key={res.id} value={res.id}>
-                    {res.nombre}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          {errors.roleId && (
-            <span className="text-red-500">{errors.roleId.message}</span>
-          )}
-        </div>
-        <div className="mt-2">
-          <label className="block font-bold text-lg mb-2 text-custom-title dark:text-white">
-            Sucursal
-          </label>
-          <Select
-            {...register("sucursalId", {
-              required: "La sucursal es obligatoria.",
-            })}
-            value={tipoSucursal}
-            onValueChange={handleSelectTipoSucursal}
-          >
-            <SelectTrigger className="p-3 rounded-md shadow w-full mt-1">
-              <SelectValue placeholder="Sucursal">
-                {resultSucursal?.find(
-                  (sucursal: { id: string | undefined }) =>
-                    sucursal.id === tipoSucursal
-                )?.nombre || "Selecciona la sucursal"}
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Sucursal</SelectLabel>
-                {resultSucursal && resultSucursal.length > 0 ? (
-                  resultSucursal.map((res: SucursalData) => (
-                    <SelectItem key={res.id} value={res.id}>
-                      {res.nombre}
-                    </SelectItem>
-                  ))
-                ) : (
-                  <SelectItem disabled value="no-sucursales">
-                    No hay sucursales disponibles
-                  </SelectItem>
-                )}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          {errors.sucursalId && (
-            <span className="text-red-500">{errors.sucursalId.message}</span>
-          )}
-        </div>
+        {usuario?.rol !== "Administrador" && (
+          <>
+            <div className="mt-2">
+              <label className="block font-bold text-lg mb-2 text-custom-title dark:text-white">
+                Departamento
+              </label>
+              <Select
+                {...register("roleId", { required: "El rol es obligatorio" })}
+                value={tipoRol}
+                onValueChange={handleSelectTipoRol}
+              >
+                <SelectTrigger className="p-3 rounded-md shadow w-full mt-1">
+                  <SelectValue placeholder="Selecciona un Rol">
+                    {result?.find((rol: TableRolesData) => rol.id === tipoRol)
+                      ?.nombre || "Selecciona un Rol"}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Departamento</SelectLabel>
+                    {result?.map((res: TableRolesData) => (
+                      <SelectItem key={res.id} value={res.id}>
+                        {res.nombre}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              {errors.roleId && (
+                <span className="text-red-500">{errors.roleId.message}</span>
+              )}
+            </div>
+            <div className="mt-2">
+              <label className="block font-bold text-lg mb-2 text-custom-title dark:text-white">
+                Sucursal
+              </label>
+              <Select
+                {...register("sucursalId", {
+                  required: "La sucursal es obligatoria.",
+                })}
+                value={tipoSucursal}
+                onValueChange={handleSelectTipoSucursal}
+              >
+                <SelectTrigger className="p-3 rounded-md shadow w-full mt-1">
+                  <SelectValue placeholder="Sucursal">
+                    {resultSucursal?.find(
+                      (sucursal: { id: string | undefined }) =>
+                        sucursal.id === tipoSucursal
+                    )?.nombre || "Selecciona la sucursal"}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Sucursal</SelectLabel>
+                    {resultSucursal && resultSucursal.length > 0 ? (
+                      resultSucursal.map((res: SucursalData) => (
+                        <SelectItem key={res.id} value={res.id}>
+                          {res.nombre}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem disabled value="no-sucursales">
+                        No hay sucursales disponibles
+                      </SelectItem>
+                    )}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              {errors.sucursalId && (
+                <span className="text-red-500">
+                  {errors.sucursalId.message}
+                </span>
+              )}
+            </div>
+          </>
+        )}
       </div>
       <div className="mt-3">
         <AlertDialogFooter>

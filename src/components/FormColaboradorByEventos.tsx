@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useToast } from "./ui/use-toast";
 import { useParams } from "next/navigation";
-import useGetUsersByEventoId from "@/api/getUsersByEventoId";
+import useGetUsersByEventoId from "@/api/users/getUsersByEventoId";
 import { UserType } from "@/types/user.type";
 import { Button } from "./ui/button";
-import addColaboradorByEvento from "@/api/addColaboradorByEvento";
+import addColaboradorByEvento from "@/api/eventos/addColaboradorByEvento";
 
 type PropsForm = {
   onSuccess: () => void;

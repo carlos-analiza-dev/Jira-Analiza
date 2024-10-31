@@ -9,9 +9,10 @@ const useGetUserAuth = (
   offset: number = 0,
   sucursal: string = "",
   departamento: string = "",
-  sexo: string = ""
+  sexo: string = "",
+  pais: string = ""
 ) => {
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/autorizar?limit=${limit}&offset=${offset}&sucursal=${sucursal}&departamento=${departamento}&sexo=${sexo}`;
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/autorizar?limit=${limit}&offset=${offset}&sucursal=${sucursal}&departamento=${departamento}&sexo=${sexo}&pais=${pais}`;
 
   const [result, setResult] = useState<UserResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);

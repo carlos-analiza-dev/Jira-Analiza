@@ -4,8 +4,8 @@ import { useSelector } from "react-redux";
 
 const fetcher = (url: string, token?: string) => get(url, "", token);
 
-const useGetActiveUsers = () => {
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/active-users`;
+const useGetActiveUsers = (pais: string = "") => {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/active-users?pais=${pais}`;
 
   const token = useSelector((state: any) => state.auth.token);
 

@@ -1,7 +1,7 @@
 import { TareasData } from "@/types/tareas.type";
 import DropTask from "@/components/DropTask";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
-import updateStatusTarea from "@/api/updateStatusTarea";
+import updateStatusTarea from "@/api/tareas/updateStatusTarea";
 import { useSelector } from "react-redux";
 import { useToast } from "@/components/ui/use-toast";
 import TareasCard from "./TareasCard";
@@ -62,7 +62,7 @@ const TaskList = ({ tareas, check, setCheck }: TareaListProps) => {
 
   return (
     <div>
-      <h2 className="text-custom-title dark:text-white font-bold text-xl sm:text-3xl mt-5">
+      <h2 className="text-custom-title dark:text-white font-bold text-xl sm:text-3xl mt-5 text-center">
         Tareas
       </h2>
 

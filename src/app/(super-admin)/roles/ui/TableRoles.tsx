@@ -20,11 +20,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import deleteRol from "@/api/deleteRol";
+import deleteRol from "@/api/roles/deleteRol";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import updateRol from "@/api/updateRol";
+import updateRol from "@/api/roles/updateRol";
 import { Input } from "@/components/ui/input";
 import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
 import Image from "next/image";
@@ -130,14 +130,14 @@ const TableRoles = ({ roles, check, setCheck }: Props) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {roles.data.map((rol: TableRolesData) => (
+          {departamentos.map((rol: TableRolesData) => (
             <TableRow key={rol.id}>
               <TableCell className="font-medium text-center">
                 {rol.id}
               </TableCell>
               <TableCell className="text-center">{rol.nombre}</TableCell>
               <TableCell className="text-center">
-                <div className="flex justify-around gap-3 sm:gap-0">
+                <div className="flex justify-around gap-3 sm:gap-2 md:gap-3">
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button variant="outline">

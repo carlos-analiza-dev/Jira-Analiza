@@ -1,7 +1,8 @@
 "use client";
-import useColaboradoresByEventoId from "@/api/getColaboradoresByEventotId";
+import useColaboradoresByEventoId from "@/api/eventos/getColaboradoresByEventotId";
 import ColaboradoresEventos from "@/components/ColaboradoresEventos";
 import FormColaboradorByEventos from "@/components/FormColaboradorByEventos";
+import ModalExpired from "@/components/ModalExpired";
 import SkeletonProyectos from "@/components/SkeletonProyectos";
 import {
   AlertDialog,
@@ -25,6 +26,7 @@ const TeamUsers = () => {
   const router = useRouter();
   const [check, setCheck] = useState(false);
   const [isClose, setIsClose] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const params = useParams();
 
   const eventoId = Array.isArray(params.id) ? params.id[0] : params.id;
@@ -37,10 +39,15 @@ const TeamUsers = () => {
 
   useEffect(() => {
     if (error === "Request failed with status code 401") {
-      dispatch(clearUser());
-      router.push("/");
+      setShowModal(true);
     }
   }, [error, dispatch, router]);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    dispatch(clearUser());
+    router.push("/");
+  };
 
   const handleClose = () => {
     setIsClose(false);
@@ -104,6 +111,7 @@ const TeamUsers = () => {
           <ColaboradoresEventos result={result} />
         )}
       </div>
+      {showModal && <ModalExpired handleCloseModal={handleCloseModal} />}
     </div>
   );
 };

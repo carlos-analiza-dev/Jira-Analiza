@@ -1,7 +1,8 @@
 "use client";
-import createProjects from "@/api/createProjects";
-import useAllDepartamentos from "@/api/getAllDepartamentos";
-import postEmailByUser from "@/api/postEmailByUser";
+import useGetEmpresas from "@/api/empresas/getEmpresasNotPagination";
+import createProjects from "@/api/proyectos/createProjects";
+import useAllDepartamentos from "@/api/roles/getAllDepartamentos";
+import postEmailByUser from "@/api/users/postEmailByUser";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,6 +17,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { CorreoType } from "@/types/correo.post.type";
 import { DataProject } from "@/types/dataProjects.type";
+import { DataEmpresa } from "@/types/empresa.type";
 import { TableRolesData } from "@/types/table.roles.type";
 import { UserType } from "@/types/user.type";
 import { Search } from "lucide-react";
@@ -30,6 +32,9 @@ const FormCreateProjectUsers = () => {
   const { error, result } = useAllDepartamentos(user.token);
   const [responsableId, setResponsableId] = useState<UserType | null>(null);
   const [departamentos, setDepartamentos] = useState<TableRolesData[] | []>([]);
+  const [empresaId, setEmpresaId] = useState<string>("");
+  const { result: resultEmpresas } = useGetEmpresas(user.token);
+  const [empresas, setEmpresas] = useState<DataEmpresa[] | []>(resultEmpresas);
   const [rolDirigido, setRolDirigido] = useState<string>("");
   const { toast } = useToast();
   const router = useRouter();
@@ -44,6 +49,10 @@ const FormCreateProjectUsers = () => {
   useEffect(() => {
     setDepartamentos(result ?? []);
   }, [result, user.token]);
+
+  useEffect(() => {
+    setEmpresas(resultEmpresas ?? []);
+  }, [resultEmpresas, user.token]);
 
   const handleValueIdRol = (value: string) => {
     setRolDirigido(value);
@@ -65,11 +74,20 @@ const FormCreateProjectUsers = () => {
       return;
     }
 
+    if (!empresaId) {
+      toast({
+        title: "Debe asignar una empresa antes de crear el proyecto.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const projectData = {
         ...data,
         responsableId: responsableId?.id,
         rolDirigido: rolDirigido,
+        empresaId: empresaId,
       };
       await createProjects(projectData, user.token);
       toast({ title: "Proyecto creado exitosamente" });
@@ -114,6 +132,10 @@ const FormCreateProjectUsers = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const handleValueIdEmpresa = (value: string) => {
+    setEmpresaId(value);
   };
 
   return (
@@ -202,6 +224,29 @@ const FormCreateProjectUsers = () => {
                 ))
               ) : (
                 <p>No hay departamentos disponibles.</p>
+              )}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="mt-3">
+        <label className="text-custom-title dark:text-white">Empresa</label>
+        <Select onValueChange={(value) => handleValueIdEmpresa(value)}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="-- Selecciona empresa --" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Empresas</SelectLabel>
+              {Array.isArray(empresas) && empresas.length > 0 ? (
+                empresas.map((empresa: DataEmpresa) => (
+                  <SelectItem key={empresa.id} value={empresa.id}>
+                    {empresa.nombre}
+                  </SelectItem>
+                ))
+              ) : (
+                <p>No hay empresas disponibles.</p>
               )}
             </SelectGroup>
           </SelectContent>

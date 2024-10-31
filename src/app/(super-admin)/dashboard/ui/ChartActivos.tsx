@@ -1,24 +1,16 @@
 "use client";
 import { Pie, PieChart, Cell } from "recharts";
 import { ChartContainer, ChartConfig } from "@/components/ui/chart";
-import useGetActiveUsers from "@/api/getActiveUsers";
+import useGetActiveUsers from "@/api/users/getActiveUsers";
 import { useState, useEffect } from "react";
 import { ActiveData } from "@/types/active.type";
-import { useDispatch } from "react-redux";
-import { useRouter } from "next/navigation";
-import { clearUser } from "@/store/auth/sessionSlice";
+
+import { useSelector } from "react-redux";
 
 const ChartActivos = () => {
-  const dispatch = useDispatch();
-  const router = useRouter();
-  const { result, loading, error } = useGetActiveUsers();
-
-  useEffect(() => {
-    if (error === "Request failed with status code 401") {
-      dispatch(clearUser());
-      router.push("/");
-    }
-  }, [error, dispatch, router]);
+  const user = useSelector((state: any) => state.auth);
+  const pais = user.pais;
+  const { result, loading, error } = useGetActiveUsers(pais);
 
   const [resultado, setResultado] = useState<ActiveData>({
     activos: 0,

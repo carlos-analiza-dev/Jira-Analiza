@@ -1,8 +1,8 @@
 import { get } from "@/helpers/axiosInstance";
 import { useEffect, useState } from "react";
 
-const useAllSucursales = (token?: string) => {
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/sucursal/sucursales`;
+const useAllSucursales = (token?: string, pais: string = "") => {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/sucursal/sucursales?pais=${pais}`;
 
   const [resultSucursal, setResultSucursal] = useState<any>(null);
   const [error, setError] = useState<string>("");

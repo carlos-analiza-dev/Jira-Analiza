@@ -1,6 +1,7 @@
 "use client";
-import { getEventos } from "@/api/getEventos";
+import { getEventos } from "@/api/eventos/getEventos";
 import Eventos from "@/components/Eventos";
+import ModalExpired from "@/components/ModalExpired";
 import SkeletonProyectos from "@/components/SkeletonProyectos";
 import { clearUser } from "@/store/auth/sessionSlice";
 import { useRouter } from "next/navigation";
@@ -16,6 +17,7 @@ const EventosUsersPage = () => {
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [check, setCheck] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   useEffect(() => {
     const fetchEventos = async () => {
       setLoading(true);
@@ -35,10 +37,15 @@ const EventosUsersPage = () => {
 
   useEffect(() => {
     if (error === "Request failed with status code 401") {
-      dispatch(clearUser());
-      router.push("/");
+      setShowModal(true);
     }
   }, [error, dispatch, router]);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    dispatch(clearUser());
+    router.push("/");
+  };
 
   return (
     <div className="w-full px-5 py-4 md:px-16 md:py-12">
@@ -58,6 +65,7 @@ const EventosUsersPage = () => {
           <Eventos result={result} check={check} setCheck={setCheck} />
         )}
       </div>
+      {showModal && <ModalExpired handleCloseModal={handleCloseModal} />}
     </div>
   );
 };

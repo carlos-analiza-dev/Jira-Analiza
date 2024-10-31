@@ -4,7 +4,7 @@ import { ActividadesType } from "@/types/actividades.type";
 import ActividadesCard from "./ActividadesCard";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import DropActividad from "./DropActividad";
-import updateActividad from "@/api/updateActividad";
+import updateActividad from "@/api/actividades/updateActividad";
 import { useEffect, useState } from "react";
 
 type ActividadesListProps = {
@@ -78,7 +78,7 @@ const ActividadesList = ({
   };
   return (
     <div>
-      <h2 className="text-custom-title dark:text-white font-bold text-xl sm:text-3xl mt-5">
+      <h2 className="text-custom-title dark:text-white font-bold text-xl sm:text-3xl mt-5 text-center">
         Actividades
       </h2>
 

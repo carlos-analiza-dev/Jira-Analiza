@@ -1,7 +1,7 @@
-import createTarea from "@/api/createTarea";
-import useGetByDepartamento from "@/api/getUserByRol";
-import useGetUsersByRolesProyectos from "@/api/getUsersByRolProjects";
-import updateTarea from "@/api/updateTarea";
+import createTarea from "@/api/tareas/createTarea";
+import useGetByDepartamento from "@/api/users/getUserByRol";
+import useGetUsersByRolesProyectos from "@/api/users/getUsersByRolProjects";
+import updateTarea from "@/api/tareas/updateTarea";
 import {
   AlertDialogAction,
   AlertDialogCancel,
@@ -25,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import useColaboradoresByProjectId from "@/api/getColaboradoresByProjectId";
+import useColaboradoresByProjectId from "@/api/proyectos/getColaboradoresByProjectId";
 
 interface Props {
   proyectoId: string;

@@ -4,22 +4,10 @@ import { Pie, PieChart, Cell } from "recharts";
 import { ChartContainer, ChartConfig } from "@/components/ui/chart";
 import { useEffect, useState } from "react";
 import { StatusProyectos } from "@/types/proyectos-status.type";
-import useGetStatusProyectos from "@/api/getStatusProyectos";
-import { useDispatch } from "react-redux";
-import { useRouter } from "next/navigation";
-import { clearUser } from "@/store/auth/sessionSlice";
+import useGetStatusProyectos from "@/api/proyectos/getStatusProyectos";
 
 const ChartPastel = () => {
-  const dispatch = useDispatch();
-  const router = useRouter();
   const { result, loading, error } = useGetStatusProyectos();
-
-  useEffect(() => {
-    if (error === "Request failed with status code 401") {
-      dispatch(clearUser());
-      router.push("/");
-    }
-  }, [error, dispatch, router]);
 
   const [resultado, setResultado] = useState<StatusProyectos>({
     progreso: 0,

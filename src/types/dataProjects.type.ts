@@ -4,5 +4,6 @@ export type DataProject = {
   descripcion: string;
   rolDirigido?: string;
   responsableId?: string;
+  empresaId?: string;
   estado?: string;
 };

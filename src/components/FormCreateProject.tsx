@@ -1,8 +1,8 @@
 "use client";
 
-import createProjects from "@/api/createProjects";
-import useAllDepartamentos from "@/api/getAllDepartamentos";
-import postEmailByUser from "@/api/postEmailByUser";
+import createProjects from "@/api/proyectos/createProjects";
+import useAllDepartamentos from "@/api/roles/getAllDepartamentos";
+import postEmailByUser from "@/api/users/postEmailByUser";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
@@ -24,16 +24,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { DataEmpresa } from "@/types/empresa.type";
+import useGetEmpresas from "@/api/empresas/getEmpresasNotPagination";
 
 const FormCreateProject = () => {
   const user = useSelector((state: any) => state.auth);
-  const { error, result } = useAllDepartamentos(user.token);
+  const pais = user.pais;
+  const { error, result } = useAllDepartamentos(user.token, pais);
+  const { result: resultEmpresas } = useGetEmpresas(user.token);
   const [correo, setCorreo] = useState<string | null>(null);
   const [responsableId, setResponsableId] = useState<UserType | null>(null);
   const [departamentos, setDepartamentos] = useState<TableRolesData[] | []>(
     result
   );
+  const [empresas, setEmpresas] = useState<DataEmpresa[] | []>(resultEmpresas);
   const [rolDirigido, setRolDirigido] = useState<string>("");
+  const [empresaId, setEmpresaId] = useState<string>("");
   const { toast } = useToast();
   const router = useRouter();
 
@@ -48,8 +54,16 @@ const FormCreateProject = () => {
     setDepartamentos(result ?? []);
   }, [result, user.token]);
 
+  useEffect(() => {
+    setEmpresas(resultEmpresas ?? []);
+  }, [resultEmpresas, user.token]);
+
   const handleValueIdRol = (value: string) => {
     setRolDirigido(value);
+  };
+
+  const handleValueIdEmpresa = (value: string) => {
+    setEmpresaId(value);
   };
 
   const onSubmit = async (data: DataProject) => {
@@ -69,11 +83,20 @@ const FormCreateProject = () => {
       return;
     }
 
+    if (!empresaId) {
+      toast({
+        title: "Debe asignar una empresa antes de crear el proyecto.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const projectData = {
         ...data,
         responsableId: responsableId?.id,
         rolDirigido: rolDirigido,
+        empresaId: empresaId,
       };
       await createProjects(projectData, user.token);
       toast({ title: "Proyecto creado exitosamente" });
@@ -204,6 +227,28 @@ const FormCreateProject = () => {
                 ))
               ) : (
                 <p>No hay departamentos disponibles.</p>
+              )}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="mt-3">
+        <label className="text-custom-title dark:text-white">Empresa</label>
+        <Select onValueChange={(value) => handleValueIdEmpresa(value)}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="-- Selecciona empresa --" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Empresas</SelectLabel>
+              {Array.isArray(empresas) && empresas.length > 0 ? (
+                empresas.map((empresa: DataEmpresa) => (
+                  <SelectItem key={empresa.id} value={empresa.id}>
+                    {empresa.nombre}
+                  </SelectItem>
+                ))
+              ) : (
+                <p>No hay empresas disponibles.</p>
               )}
             </SelectGroup>
           </SelectContent>

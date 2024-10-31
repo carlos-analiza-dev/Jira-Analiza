@@ -1,18 +1,11 @@
 import { get } from "@/helpers/axiosInstance";
-import { RolesResponse } from "@/types/dataPost.rol.type";
 import { useEffect, useState } from "react";
 
-const useAllRoles = (
-  trigger?: boolean,
-  offset: number = 0,
-  limit: number = 5,
-  token?: string
-) => {
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/roles?limit=${limit}&offset=${offset}`;
-
-  const [result, setResult] = useState<RolesResponse | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+const useGetEmpresas = (token?: string, check?: boolean) => {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/empresa/empresas`;
+  const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -20,7 +13,7 @@ const useAllRoles = (
       try {
         const response = await get(url, "", token);
 
-        setResult(response as RolesResponse);
+        setResult(response);
         setError("");
       } catch (error: any) {
         setError(error.message || "Error al obtener los datos");
@@ -30,9 +23,9 @@ const useAllRoles = (
     };
 
     fetchRoles();
-  }, [url, trigger, error]);
+  }, [url, error, check]);
 
   return { result, loading, error };
 };
 
-export default useAllRoles;
+export default useGetEmpresas;

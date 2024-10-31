@@ -17,7 +17,7 @@ import { useSelector } from "react-redux";
 import { useToast } from "./ui/use-toast";
 import { DataEventos } from "@/types/evento.type";
 import { formatFecha } from "@/helpers/formatDate";
-import removeEvento from "@/api/removeEvento";
+import removeEvento from "@/api/eventos/removeEvento";
 import FormEventos from "./FormEventos";
 
 interface Props {
@@ -134,6 +134,12 @@ const Eventos = ({ result, setCheck, check }: Props) => {
                 </span>
               </p>
               <p className="text-sm font-medium text-custom-title dark:text-white mt-3">
+                Fecha de Fin:{" "}
+                <span className="">
+                  {formatFecha(evento.fechaFin.toString())}
+                </span>
+              </p>
+              <p className="text-sm font-medium text-custom-title dark:text-white mt-3">
                 Estado: <span className="">{evento.estado}</span>
               </p>
             </div>
@@ -144,7 +150,83 @@ const Eventos = ({ result, setCheck, check }: Props) => {
                 </PopoverTrigger>
                 <PopoverContent className="w-80">
                   {evento.usuarioCreador &&
-                  user.id === evento.usuarioCreador.id ? (
+                    user.id === evento.usuarioCreador.id && (
+                      <div className="grid gap-4">
+                        <div className="space-y-2">
+                          <Link
+                            href={
+                              user.rol && user.rol === "Administrador"
+                                ? `/eventos/${evento.id}`
+                                : `/eventos-users/${evento.id}`
+                            }
+                            className="text-sm text-custom-title dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 block p-2"
+                          >
+                            Ver evento
+                          </Link>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <p
+                                onClick={() => handleEdit(evento)}
+                                className="text-sm text-custom-title dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 p-2 cursor-pointer"
+                              >
+                                Editar evento
+                              </p>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <div className="flex justify-end">
+                                  <AlertDialogCancel onClick={handleCloseEdit}>
+                                    X
+                                  </AlertDialogCancel>
+                                </div>
+                                <AlertDialogTitle className="text-custom-title font-bold dark:text-white">
+                                  ¿Estas seguro que deseas editar este evento?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription className="text-custom-title font-semibold dark:text-white">
+                                  Debes estar seguro de realizar esta accion.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <div className="w-full ">
+                                <FormEventos
+                                  check={check ?? true}
+                                  setCheck={setCheck}
+                                  setShowDialog={setShowDialog}
+                                  showDialog={showDialog}
+                                  evento={isEdit}
+                                />
+                              </div>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <p className="text-sm text-red-500  hover:bg-gray-100 dark:hover:bg-gray-900 p-2 cursor-pointer">
+                                Eliminar evento
+                              </p>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle className="text-custom-title font-bold dark:text-white">
+                                  ¿Estas seguro que deseas eliminar este evento?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription className="text-custom-title font-semibold dark:text-white">
+                                  Debes estar seguro de realizar esta accion.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => handleDelete(evento.id)}
+                                  className="bg-custom-title text-white dark:bg-white dark:text-custom-title"
+                                >
+                                  Eliminar
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
+                      </div>
+                    )}
+                  {evento.responsable && user.id === evento.responsable.id && (
                     <div className="grid gap-4">
                       <div className="space-y-2">
                         <Link
@@ -157,73 +239,20 @@ const Eventos = ({ result, setCheck, check }: Props) => {
                         >
                           Ver evento
                         </Link>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <p
-                              onClick={() => handleEdit(evento)}
-                              className="text-sm text-custom-title dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 p-2 cursor-pointer"
-                            >
-                              Editar evento
-                            </p>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <div className="flex justify-end">
-                                <AlertDialogCancel onClick={handleCloseEdit}>
-                                  X
-                                </AlertDialogCancel>
-                              </div>
-                              <AlertDialogTitle className="text-custom-title font-bold dark:text-white">
-                                ¿Estas seguro que deseas editar este evento?
-                              </AlertDialogTitle>
-                              <AlertDialogDescription className="text-custom-title font-semibold dark:text-white">
-                                Debes estar seguro de realizar esta accion.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <div className="w-full ">
-                              <FormEventos
-                                check={check ?? true}
-                                setCheck={setCheck}
-                                setShowDialog={setShowDialog}
-                                showDialog={showDialog}
-                                evento={isEdit}
-                              />
-                            </div>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <p className="text-sm text-red-500  hover:bg-gray-100 dark:hover:bg-gray-900 p-2 cursor-pointer">
-                              Eliminar evento
-                            </p>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle className="text-custom-title font-bold dark:text-white">
-                                ¿Estas seguro que deseas eliminar este evento?
-                              </AlertDialogTitle>
-                              <AlertDialogDescription className="text-custom-title font-semibold dark:text-white">
-                                Debes estar seguro de realizar esta accion.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={() => handleDelete(evento.id)}
-                                className="bg-custom-title text-white dark:bg-white dark:text-custom-title"
-                              >
-                                Eliminar
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
                       </div>
                     </div>
-                  ) : (
+                  )}
+                  {evento.usuarios.some(
+                    (colaborador) => colaborador.id === user.id
+                  ) && (
                     <div className="grid gap-4">
                       <div className="space-y-2">
                         <Link
-                          href={`/eventos-users/${evento.id}`}
+                          href={
+                            user.rol && user.rol === "Administrador"
+                              ? `/eventos/${evento.id}`
+                              : `/eventos-users/${evento.id}`
+                          }
                           className="text-sm text-custom-title dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 block p-2"
                         >
                           Ver evento

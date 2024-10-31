@@ -15,12 +15,13 @@ import {
 } from "@/components/ui/alert-dialog";
 import FormColaborador from "@/components/FormColaborador";
 import Colaboradores from "@/components/Colaboradores";
-import useColaboradoresByProjectId from "@/api/getColaboradoresByProjectId";
+import useColaboradoresByProjectId from "@/api/proyectos/getColaboradoresByProjectId";
 import { useSelector } from "react-redux";
 import SkeletonProyectos from "@/components/SkeletonProyectos";
 import { clearUser } from "@/store/auth/sessionSlice";
 import { useDispatch } from "react-redux";
-import useColaboradoresByProyecto from "@/api/getColaboradoresByProyecto";
+import useColaboradoresByProyecto from "@/api/proyectos/getColaboradoresByProyecto";
+import ModalExpired from "@/components/ModalExpired";
 
 const TeamPage = () => {
   const user = useSelector((state: any) => state.auth);
@@ -37,19 +38,26 @@ const TeamPage = () => {
     check
   );
 
+  const [showModal, setShowModal] = useState(false);
+
   useEffect(() => {
     if (error === "Request failed with status code 401") {
-      dispatch(clearUser());
-      router.push("/");
+      setShowModal(true);
     }
   }, [error, dispatch, router]);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    dispatch(clearUser());
+    router.push("/");
+  };
 
   const handleClose = () => {
     setIsClose(false);
   };
 
   return (
-    <div className="max-w-3xl sm:max-w-6xl px-4">
+    <div className="w-full px-4">
       <div className="mt-5">
         <h1 className="text-3xl text-custom-title font-bold dark:text-white">
           Administrar Equipos
@@ -106,6 +114,7 @@ const TeamPage = () => {
           <Colaboradores result={result} setCheck={setCheck} check={check} />
         )}
       </div>
+      {showModal && <ModalExpired handleCloseModal={handleCloseModal} />}
     </div>
   );
 };

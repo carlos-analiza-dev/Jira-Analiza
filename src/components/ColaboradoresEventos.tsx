@@ -15,7 +15,7 @@ import {
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import { UserType } from "@/types/user.type";
-import deleteColaboradorByEvento from "@/api/deleteColaboradorByEvento";
+import deleteColaboradorByEvento from "@/api/eventos/deleteColaboradorByEvento";
 import { useEffect, useState } from "react";
 
 type ColaboradorType = {

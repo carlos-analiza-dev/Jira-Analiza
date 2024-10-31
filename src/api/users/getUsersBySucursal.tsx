@@ -4,8 +4,8 @@ import { useSelector } from "react-redux";
 
 const fetcher = (url: string, token?: string) => get(url, "", token);
 
-const useGetUsersAutorizados = () => {
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/autorizado`;
+const useGetUsersBySucursal = (pais: string = "") => {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/users-sucursal?pais=${pais}`;
 
   const token = useSelector((state: any) => state.auth.token);
 
@@ -24,4 +24,4 @@ const useGetUsersAutorizados = () => {
   };
 };
 
-export default useGetUsersAutorizados;
+export default useGetUsersBySucursal;

@@ -1,32 +1,31 @@
 import { get } from "@/helpers/axiosInstance";
 import { useEffect, useState } from "react";
 
-const useGetAllUsuarios = (token?: string) => {
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/Allusers`;
+const useAllDepartamentos = (token?: string, pais: string = "") => {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/roles/departamentos?pais=${pais}`;
 
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    const getAuthUsers = async () => {
+    const fetchRoles = async () => {
       setLoading(true);
       try {
         const response = await get(url, "", token);
-
         setResult(response);
         setError("");
       } catch (error: any) {
-        setError(error.message || "Ocurrió un error en la petición");
+        setError(error.message || "Error al obtener los datos");
       } finally {
         setLoading(false);
       }
     };
 
-    getAuthUsers();
-  }, [url, token]);
+    fetchRoles();
+  }, [url, error]);
 
   return { result, loading, error };
 };
 
-export default useGetAllUsuarios;
+export default useAllDepartamentos;

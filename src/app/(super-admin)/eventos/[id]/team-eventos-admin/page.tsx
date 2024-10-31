@@ -1,7 +1,8 @@
 "use client";
-import useColaboradoresByEventoId from "@/api/getColaboradoresByEventotId";
+import useColaboradoresByEventoId from "@/api/eventos/getColaboradoresByEventotId";
 import ColaboradoresEventos from "@/components/ColaboradoresEventos";
 import FormColaboradorByEventos from "@/components/FormColaboradorByEventos";
+import ModalExpired from "@/components/ModalExpired";
 import SkeletonProyectos from "@/components/SkeletonProyectos";
 import {
   AlertDialog,
@@ -33,19 +34,26 @@ const PageEventosAdmin = () => {
     check
   );
 
+  const [showModal, setShowModal] = useState(false);
+
   useEffect(() => {
     if (error === "Request failed with status code 401") {
-      dispatch(clearUser());
-      router.push("/");
+      setShowModal(true);
     }
   }, [error, dispatch, router]);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    dispatch(clearUser());
+    router.push("/");
+  };
 
   const handleClose = () => {
     setIsClose(false);
   };
 
   return (
-    <div className="max-w-3xl sm:max-w-6xl px-4">
+    <div className="w-full px-4">
       <div className="mt-5">
         <h1 className="text-3xl text-custom-title font-bold dark:text-white">
           Administrar Equipos
@@ -102,6 +110,7 @@ const PageEventosAdmin = () => {
           <ColaboradoresEventos result={result} />
         )}
       </div>
+      {showModal && <ModalExpired handleCloseModal={handleCloseModal} />}
     </div>
   );
 };

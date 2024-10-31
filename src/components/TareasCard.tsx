@@ -20,7 +20,7 @@ import { useState } from "react";
 import TareasForm from "./TareasForm";
 import { useParams } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
-import deleteTarea from "@/api/deleteTarea";
+import deleteTarea from "@/api/tareas/deleteTarea";
 import { useSelector } from "react-redux";
 import { useDraggable } from "@dnd-kit/core";
 import { formatFecha } from "@/helpers/formatDate";

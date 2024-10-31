@@ -3,9 +3,9 @@ import { Button } from "./ui/button";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useToast } from "./ui/use-toast";
-import addColaborador from "@/api/addColaborador";
+import addColaborador from "@/api/proyectos/addColaborador";
 import { useParams } from "next/navigation";
-import useGetUsersByRolesProyectos from "@/api/getUsersByRolProjects";
+import useGetUsersByRolesProyectos from "@/api/users/getUsersByRolProjects";
 import { UserType } from "@/types/user.type";
 
 type PropsForm = {

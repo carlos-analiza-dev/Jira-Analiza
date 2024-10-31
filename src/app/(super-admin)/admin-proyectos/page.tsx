@@ -1,5 +1,5 @@
 "use client";
-import useAllProjects from "@/api/getAllProjects";
+import useAllProjects from "@/api/proyectos/getAllProjects";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import SkeletonProyectos from "@/components/SkeletonProyectos";
@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { clearUser } from "@/store/auth/sessionSlice";
 import { useRouter } from "next/navigation";
 import Proyectos from "@/components/Proyectos";
+import ModalExpired from "@/components/ModalExpired";
 
 const ProyectosPage = () => {
   const user = useSelector((state: any) => state.auth);
@@ -16,12 +17,19 @@ const ProyectosPage = () => {
   const [check, setCheck] = useState(false);
   const { result, error, loading } = useAllProjects(user.token, check);
 
+  const [showModal, setShowModal] = useState(false);
+
   useEffect(() => {
     if (error === "Request failed with status code 401") {
-      dispatch(clearUser());
-      router.push("/");
+      setShowModal(true);
     }
-  }, [error, dispatch, router]);
+  }, [error, dispatch]);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    dispatch(clearUser());
+    router.push("/");
+  };
 
   return (
     <div className="mx-auto px-4 md:px-12">
@@ -48,6 +56,8 @@ const ProyectosPage = () => {
           <Proyectos setCheck={setCheck} check={check} proyectos={result} />
         )}
       </div>
+
+      {showModal && <ModalExpired handleCloseModal={handleCloseModal} />}
     </div>
   );
 };
