@@ -24,6 +24,7 @@ import { useEffect, useState } from "react";
 import deleteProyecto from "@/api/proyectos/deleteProyecto";
 import { useToast } from "@/components/ui/use-toast";
 import FormProyectos from "./FormProyectos";
+import Image from "next/image";
 interface Props {
   proyectos: [] | TypeProyectos[];
   setCheck: React.Dispatch<React.SetStateAction<boolean>>;
@@ -65,16 +66,15 @@ const Proyectos = ({ proyectos }: Props) => {
 
   if (!proyect || proyect.length === 0) {
     return (
-      <div className="flex justify-center items-center h-full w-full">
-        <p className="text-custom-title dark:text-white">
-          No hay proyectos aun{" "}
-          <Link
-            className="text-purple-500 dark:text-sky-400 font-bold hover:underline"
-            href={user.rol === "Administrador" ? "/create" : "/nuevo-proyecto"}
-          >
-            Crear proyecto
-          </Link>
-        </p>
+      <div className="block mb-20">
+        <div className="flex justify-center mt-10">
+          <Image src="proyectos.svg" alt="NotFound" width={500} height={500} />
+        </div>
+        <div className="mt-5">
+          <p className="text-center font-bold text-custom-title text-2xl dark:text-white">
+            No se encontraron proyectos disponibles.
+          </p>
+        </div>
       </div>
     );
   }

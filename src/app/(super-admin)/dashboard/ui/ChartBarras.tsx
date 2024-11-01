@@ -28,9 +28,13 @@ const ChartBarras = () => {
 
   useEffect(() => {
     if (error === "Request failed with status code 401") {
-      setShowModal(true);
+      const timer = setTimeout(() => {
+        setShowModal(true);
+      }, 3000);
+
+      return () => clearTimeout(timer);
     }
-  }, [error, dispatch, router]);
+  }, [error]);
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -63,7 +67,6 @@ const ChartBarras = () => {
       <p className="text-custom-title font-bold dark:text-white text-center">
         Usuarios por Sucursal
       </p>
-
       {chartData.length === 0 ? ( // Verificamos si no hay datos
         <p className="text-center text-custom-title dark:text-white font-semibold mt-5">
           No hay sucursales disponibles.

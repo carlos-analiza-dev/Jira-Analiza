@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import useAllSucursales from "@/api/sucursal/getSucursalesNotPagination";
 import useAllDepartamentos from "@/api/roles/getAllDepartamentos";
 import ModalExpired from "@/components/ModalExpired";
+import Image from "next/image";
 
 const AutorizarPage = () => {
   const user = useSelector((state: any) => state.auth);
@@ -69,9 +70,13 @@ const AutorizarPage = () => {
 
   useEffect(() => {
     if (error === "Request failed with status code 401") {
-      setShowModal(true);
+      const timer = setTimeout(() => {
+        setShowModal(true);
+      }, 3000);
+
+      return () => clearTimeout(timer);
     }
-  }, [error, dispatch, router]);
+  }, [error]);
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -174,9 +179,16 @@ const AutorizarPage = () => {
       {loading ? (
         <SkeletonTable />
       ) : error ? (
-        <p className="text-red-500 text-3xl font-bold mt-10 text-center">
-          No se encontraron usuarios disponibles en este momento
-        </p>
+        <div className="block mb-20">
+          <div className="flex justify-center mt-10">
+            <Image src="nousers.svg" alt="NotFound" width={500} height={500} />
+          </div>
+          <div className="mt-5">
+            <p className="text-center font-bold text-custom-title text-2xl dark:text-white">
+              No se encontraron usuarios disponibles para autorizar.
+            </p>
+          </div>
+        </div>
       ) : (
         result && <TableAuth users={result} check={check} setCheck={setCheck} />
       )}

@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import Eventos from "@/components/Eventos";
 import FormEventos from "@/components/FormEventos";
 import ModalExpired from "@/components/ModalExpired";
+import Image from "next/image";
 
 export const dynamic = "force-dynamic";
 
@@ -53,9 +54,13 @@ export default function EventosPage() {
 
   useEffect(() => {
     if (error === "Request failed with status code 401") {
-      setShowModal(true);
+      const timer = setTimeout(() => {
+        setShowModal(true);
+      }, 3000);
+
+      return () => clearTimeout(timer);
     }
-  }, [error, dispatch, router]);
+  }, [error]);
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -115,10 +120,20 @@ export default function EventosPage() {
         {loading ? (
           <SkeletonTable />
         ) : error ? (
-          <div className="flex justify-center">
-            <p className="text-red-500 text-3xl font-bold mt-10">
-              No se encontraron eventos
-            </p>
+          <div className="block mb-20">
+            <div className="flex justify-center mt-10">
+              <Image
+                src="eventos.svg"
+                alt="NotFound"
+                width={500}
+                height={500}
+              />
+            </div>
+            <div className="mt-5">
+              <p className="text-center font-bold text-custom-title text-2xl dark:text-white">
+                No se encontraron eventos disponibles.
+              </p>
+            </div>
           </div>
         ) : (
           <Eventos check={check} setCheck={setCheck} result={result} />

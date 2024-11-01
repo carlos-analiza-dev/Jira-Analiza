@@ -38,9 +38,13 @@ const PageProyectoId = () => {
 
   useEffect(() => {
     if (error === "Request failed with status code 401") {
-      setShowModal(true);
+      const timer = setTimeout(() => {
+        setShowModal(true);
+      }, 3000);
+
+      return () => clearTimeout(timer);
     }
-  }, [error, dispatch, router]);
+  }, [error]);
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -114,7 +118,6 @@ const PageProyectoId = () => {
           </Link>
         </div>
       ) : null}
-
       <TaskList tareas={resultTareas} check={check} setCheck={setCheck} />
       {showModal && <ModalExpired handleCloseModal={handleCloseModal} />}
     </div>

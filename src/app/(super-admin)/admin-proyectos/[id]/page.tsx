@@ -40,9 +40,13 @@ const PageProyectoId = () => {
 
   useEffect(() => {
     if (error === "Request failed with status code 401") {
-      setShowModal(true);
+      const timer = setTimeout(() => {
+        setShowModal(true);
+      }, 3000);
+
+      return () => clearTimeout(timer);
     }
-  }, [error, dispatch, router]);
+  }, [error]);
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -81,7 +85,6 @@ const PageProyectoId = () => {
           Proyectos
         </Button>
       </div>
-
       {user.id === result.creador.id || user.id === result.responsable.id ? (
         <div className="flex justify-between sm:w-2/6 mt-5 gap-3">
           <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -113,7 +116,7 @@ const PageProyectoId = () => {
                 ? `/admin-proyectos/${proyectoId}/team`
                 : `/proyectos/${proyectoId}/team-users`
             }
-            className="dark:bg-sky-600 dark:text-white bg-custom-title text-white rounded-md p-2 shadow-md font-bold"
+            className="dark:bg-sky-600 dark:text-white bg-custom-title hover:bg-sky-950 text-white rounded-md p-2 shadow-md font-bold"
           >
             Colaboradores
           </Link>

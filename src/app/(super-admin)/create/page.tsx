@@ -35,7 +35,7 @@ const CrearProyecto = () => {
       <div className="mt-5">
         <Link
           href="/admin-proyectos"
-          className="py-3 px-5 bg-custom-title text-white shadow-md rounded-md dark:bg-white dark:text-custom-title font-bold"
+          className="py-2 px-2 bg-custom-title text-white shadow-md rounded-md dark:bg-white dark:text-custom-title font-medium"
         >
           Volver a proyectos
         </Link>

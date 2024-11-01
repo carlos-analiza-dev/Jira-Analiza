@@ -37,9 +37,13 @@ const EventosUsersPage = () => {
 
   useEffect(() => {
     if (error === "Request failed with status code 401") {
-      setShowModal(true);
+      const timer = setTimeout(() => {
+        setShowModal(true);
+      }, 3000);
+
+      return () => clearTimeout(timer);
     }
-  }, [error, dispatch, router]);
+  }, [error]);
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -57,7 +61,6 @@ const EventosUsersPage = () => {
           Maneja y administra tus eventos.
         </h2>
       </div>
-
       <div className="mt-5 max-h-[500px] overflow-y-scroll">
         {loading ? (
           <SkeletonProyectos />

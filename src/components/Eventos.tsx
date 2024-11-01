@@ -19,6 +19,7 @@ import { DataEventos } from "@/types/evento.type";
 import { formatFecha } from "@/helpers/formatDate";
 import removeEvento from "@/api/eventos/removeEvento";
 import FormEventos from "./FormEventos";
+import Image from "next/image";
 
 interface Props {
   result: DataEventos[];
@@ -66,10 +67,15 @@ const Eventos = ({ result, setCheck, check }: Props) => {
 
   if (!eventos || eventos.length === 0) {
     return (
-      <div className="flex justify-center items-center h-full w-full">
-        <p className="text-custom-title dark:text-white text-3xl">
-          No hay eventos aun disponibles para ti.
-        </p>
+      <div className="block mb-20">
+        <div className="flex justify-center mt-10">
+          <Image src="eventos.svg" alt="NotFound" width={500} height={500} />
+        </div>
+        <div className="mt-5">
+          <p className="text-center font-bold text-custom-title text-2xl dark:text-white">
+            No se encontraron eventos disponibles.
+          </p>
+        </div>
       </div>
     );
   }

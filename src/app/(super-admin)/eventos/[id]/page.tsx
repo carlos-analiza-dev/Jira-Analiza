@@ -40,9 +40,13 @@ const PageProyectoById = () => {
 
   useEffect(() => {
     if (error === "Request failed with status code 401") {
-      setShowModal(true);
+      const timer = setTimeout(() => {
+        setShowModal(true);
+      }, 3000);
+
+      return () => clearTimeout(timer);
     }
-  }, [error, dispatch, router]);
+  }, [error]);
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -66,7 +70,6 @@ const PageProyectoById = () => {
       <h1 className="text-xl sm:text-3xl text-custom-title dark:text-white font-bold">
         {result.nombre}
       </h1>
-
       <h3 className="text-base sm:text-xl text-custom-title dark:text-white font-medium  mt-5">
         <span className="font-bold">Descripcion del evento:</span>{" "}
         {result.descripcion}
@@ -79,7 +82,6 @@ const PageProyectoById = () => {
           Eventos
         </Button>
       </div>
-
       {user.id === result.usuarioCreador.id ||
       user.id === result.responsable.id ? (
         <div className="flex justify-between sm:w-2/6 mt-5 gap-3">

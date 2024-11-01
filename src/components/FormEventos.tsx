@@ -356,12 +356,14 @@ const FormEventos = ({
         )}
       </div>
 
-      <Button
-        className="w-full mt-6 bg-custom-title text-white dark:bg-white dark:text-custom-title font-bold"
-        type="submit"
-      >
-        {evento ? "Actualizar Evento" : "Crear Evento"}
-      </Button>
+      <div className="sm:col-span-2">
+        <Button
+          className="w-full mt-6 bg-custom-title text-white dark:bg-white dark:text-custom-title font-bold"
+          type="submit"
+        >
+          {evento ? "Actualizar Evento" : "Crear Evento"}
+        </Button>
+      </div>
     </form>
   );
 };

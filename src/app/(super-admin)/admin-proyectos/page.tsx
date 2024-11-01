@@ -21,9 +21,13 @@ const ProyectosPage = () => {
 
   useEffect(() => {
     if (error === "Request failed with status code 401") {
-      setShowModal(true);
+      const timer = setTimeout(() => {
+        setShowModal(true);
+      }, 3000);
+
+      return () => clearTimeout(timer);
     }
-  }, [error, dispatch]);
+  }, [error]);
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -44,7 +48,7 @@ const ProyectosPage = () => {
       <div className="mt-5">
         <Link
           href="/create"
-          className="py-3 px-5 bg-custom-title text-white shadow-md rounded-md dark:bg-white dark:text-custom-title font-bold"
+          className="py-2 px-2 bg-custom-title text-white shadow-md rounded-md dark:bg-white dark:text-custom-title font-medium"
         >
           Nuevo Proyecto
         </Link>
@@ -56,7 +60,6 @@ const ProyectosPage = () => {
           <Proyectos setCheck={setCheck} check={check} proyectos={result} />
         )}
       </div>
-
       {showModal && <ModalExpired handleCloseModal={handleCloseModal} />}
     </div>
   );

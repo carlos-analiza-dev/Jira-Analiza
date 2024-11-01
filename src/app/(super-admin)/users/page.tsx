@@ -63,9 +63,13 @@ export default function UsersPage() {
 
   useEffect(() => {
     if (error === "Request failed with status code 401") {
-      setShowModal(true);
+      const timer = setTimeout(() => {
+        setShowModal(true);
+      }, 3000);
+
+      return () => clearTimeout(timer);
     }
-  }, [error, dispatch, router]);
+  }, [error]);
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -220,14 +224,14 @@ export default function UsersPage() {
                 className="absolute text-custom-title dark:text-white top-1/2 -translate-y-3 transform right-1 cursor-pointer"
               />
               {suggestions.length > 0 && (
-                <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1">
+                <ul className="absolute z-10 w-full bg-white dark:bg-gray-900 border border-gray-300 rounded-md mt-1">
                   {suggestions.map((correo, index) => (
                     <li
                       key={index}
                       className={`p-2 cursor-pointer ${
                         index === highlightedIndex
-                          ? "bg-gray-200"
-                          : "hover:bg-gray-100"
+                          ? "bg-gray-200 dark:bg-gray-700"
+                          : "hover:bg-gray-100 dark:hover:bg-gray-700"
                       }`}
                       onClick={() => {
                         setSearchCorreo(correo);
