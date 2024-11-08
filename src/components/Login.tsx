@@ -34,6 +34,7 @@ export default function LoginSesion({ setIsLoading }: Props) {
 
     try {
       const response = await postLoginUser(data);
+
       dispatch(setUser(response));
       reset();
     } catch (error) {
@@ -51,6 +52,8 @@ export default function LoginSesion({ setIsLoading }: Props) {
   useEffect(() => {
     if (user && user.rol && user.rol === "Administrador") {
       router.push("/dashboard");
+    } else if (user && user.rol && user.rol === "Manager") {
+      router.push("/manager-dashboard");
     } else if (user && user.rol && user.rol !== "Administrador") {
       router.push("/proyectos");
     }

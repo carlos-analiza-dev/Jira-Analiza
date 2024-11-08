@@ -49,3 +49,8 @@ export type TypeProyectos = {
     estado: string;
   };
 };
+
+export type ResponseProyectos = {
+  proyectos: TypeProyectos[];
+  total: number;
+};

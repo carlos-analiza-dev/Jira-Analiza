@@ -6,6 +6,7 @@ export type UserType = {
   edad: number;
   dni: string;
   rol: string;
+  empresa: string;
   role: {
     id: string;
     nombre: string;

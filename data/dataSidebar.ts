@@ -73,3 +73,61 @@ export const dataSide = [
     icon: User,
   },
 ];
+
+export const dataSideManager = [
+  {
+    id: 1,
+    title: "Dashboard",
+    link: "/manager-dashboard",
+    icon: ChartColumnBig,
+  },
+  {
+    id: 2,
+    title: "Usuarios",
+    link: "/users-manager",
+    icon: Users,
+  },
+  {
+    id: 3,
+    title: "Autorizar",
+    link: "/autorizar-manager",
+    icon: UserCog,
+  },
+  {
+    id: 4,
+    title: "Eventos",
+    link: "/eventos-manager",
+    icon: CalendarPlus,
+  },
+  {
+    id: 5,
+    title: "Proyectos",
+    link: "/proyectos-manager",
+    icon: CalendarClock,
+  },
+
+  {
+    id: 6,
+    title: "Departamentos",
+    link: "/departamentos-manager",
+    icon: Shield,
+  },
+  {
+    id: 7,
+    title: "Empresas",
+    link: "/empresas-manager",
+    icon: Building2,
+  },
+  {
+    id: 8,
+    title: "Sucursales",
+    link: "/sucursales-manager",
+    icon: HousePlus,
+  },
+  {
+    id: 9,
+    title: "Perfil",
+    link: "/perfil-manager",
+    icon: User,
+  },
+];

@@ -89,7 +89,7 @@ const MenuMobile = () => {
                         {" "}
                         Cambiar contraseña
                       </Link>
-                      <UserRoundPlus />
+                      <FileLock2 />
                     </div>
                   </SheetDescription>
                 )}

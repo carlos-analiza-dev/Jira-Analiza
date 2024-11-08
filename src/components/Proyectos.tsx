@@ -255,7 +255,7 @@ const Proyectos = ({ proyectos }: Props) => {
                           }
                           className="text-sm text-custom-title dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 block p-2"
                         >
-                          Ver evento
+                          Ver proyecto
                         </Link>
                       </div>
                     </div>

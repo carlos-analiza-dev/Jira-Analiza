@@ -213,7 +213,7 @@ const FormCreateProject = () => {
           Departamento
         </label>
         <Select onValueChange={(value) => handleValueIdRol(value)}>
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full dark:bg-gray-800">
             <SelectValue placeholder="-- Selecciona departamemnto --" />
           </SelectTrigger>
           <SelectContent>
@@ -235,7 +235,7 @@ const FormCreateProject = () => {
       <div className="mt-3">
         <label className="text-custom-title dark:text-white">Empresa</label>
         <Select onValueChange={(value) => handleValueIdEmpresa(value)}>
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full dark:bg-gray-800">
             <SelectValue placeholder="-- Selecciona empresa --" />
           </SelectTrigger>
           <SelectContent>

@@ -29,7 +29,7 @@ import deleteUser from "@/api/users/deleteUser";
 
 import { useSelector } from "react-redux";
 import { UserType } from "@/types/user.type";
-import FormularioUsuarios from "@/components/FormularioUsuarios";
+import FormularioUsuarios from "./FormularioUsuarios";
 
 export type UsersTable = {
   users: UserType[];

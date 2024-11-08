@@ -1,10 +1,23 @@
 "use client";
-import useGetEmpresas from "@/api/empresas/getEmpresasNotPagination";
+
 import createProjects from "@/api/proyectos/createProjects";
 import useAllDepartamentos from "@/api/roles/getAllDepartamentos";
 import postEmailByUser from "@/api/users/postEmailByUser";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
+import { CorreoType } from "@/types/correo.post.type";
+import { DataProject } from "@/types/dataProjects.type";
+import { TableRolesData } from "@/types/table.roles.type";
+import { UserType } from "@/types/user.type";
+import { Search } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+
+import { DataEmpresa } from "@/types/empresa.type";
+import useGetEmpresas from "@/api/empresas/getEmpresasNotPagination";
 import {
   Select,
   SelectContent,
@@ -14,28 +27,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/components/ui/use-toast";
-import { CorreoType } from "@/types/correo.post.type";
-import { DataProject } from "@/types/dataProjects.type";
-import { DataEmpresa } from "@/types/empresa.type";
-import { TableRolesData } from "@/types/table.roles.type";
-import { UserType } from "@/types/user.type";
-import { Search } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
 
-const FormCreateProjectUsers = () => {
+interface Props {
+  check: boolean;
+  setCheck: React.Dispatch<React.SetStateAction<boolean>>;
+  onSuccess: () => void;
+}
+
+const FormCreateProject = ({ check, setCheck, onSuccess }: Props) => {
   const user = useSelector((state: any) => state.auth);
-  const [correo, setCorreo] = useState<string | null>(null);
-  const { error, result } = useAllDepartamentos(user.token);
-  const [responsableId, setResponsableId] = useState<UserType | null>(null);
-  const [departamentos, setDepartamentos] = useState<TableRolesData[] | []>([]);
-  const [empresaId, setEmpresaId] = useState<string>("");
+  const pais = useSelector((state: any) => state.country.selectedCountry);
+  const { error, result } = useAllDepartamentos(user.token, pais);
   const { result: resultEmpresas } = useGetEmpresas(user.token);
+  const [correo, setCorreo] = useState<string | null>(null);
+  const [responsableId, setResponsableId] = useState<UserType | null>(null);
+  const [departamentos, setDepartamentos] = useState<TableRolesData[] | []>(
+    result
+  );
   const [empresas, setEmpresas] = useState<DataEmpresa[] | []>(resultEmpresas);
   const [rolDirigido, setRolDirigido] = useState<string>("");
+  const [empresaId, setEmpresaId] = useState<string>("");
   const { toast } = useToast();
   const router = useRouter();
 
@@ -58,6 +69,10 @@ const FormCreateProjectUsers = () => {
     setRolDirigido(value);
   };
 
+  const handleValueIdEmpresa = (value: string) => {
+    setEmpresaId(value);
+  };
+
   const onSubmit = async (data: DataProject) => {
     if (!rolDirigido) {
       toast({
@@ -66,6 +81,7 @@ const FormCreateProjectUsers = () => {
       });
       return;
     }
+
     if (!responsableId) {
       toast({
         title: "Debe asignar un responsable antes de crear el proyecto.",
@@ -91,7 +107,10 @@ const FormCreateProjectUsers = () => {
       };
       await createProjects(projectData, user.token);
       toast({ title: "Proyecto creado exitosamente" });
-      router.push("/proyectos");
+      setCheck(!check);
+      if (onSuccess) {
+        onSuccess();
+      }
       reset();
     } catch (error: any) {
       toast({
@@ -125,23 +144,18 @@ const FormCreateProjectUsers = () => {
           variant: "destructive",
         });
       }
-    } catch (error: any) {
+    } catch (error) {
       toast({
-        title:
-          `${error.response.data.message}` || "Error al encontrar el usuario.",
+        title: "Error al encontrar el usuario.",
         variant: "destructive",
       });
     }
   };
 
-  const handleValueIdEmpresa = (value: string) => {
-    setEmpresaId(value);
-  };
-
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="bg-gray-100 w-full sm:w-3/5 p-4 rounded-md shadow dark:bg-gray-900"
+      className="bg-gray-100 w-full p-4 rounded-md shadow dark:bg-gray-900"
     >
       <div className="mt-3">
         <label className="text-custom-title dark:text-white">
@@ -186,16 +200,16 @@ const FormCreateProjectUsers = () => {
         )}
       </div>
       <div className="mt-3">
-        <label className="text-custom-title dark:text-white">Descripcion</label>
+        <label className="text-custom-title dark:text-white">Descripción</label>
         <Input
           {...register("descripcion", {
-            required: "El campo 'Descripcion' es obligatorio",
+            required: "El campo 'Descripción' es obligatorio",
             pattern: {
               value: /^[a-zA-Z\s\W]+$/,
               message: "El campo solo acepta letras",
             },
           })}
-          placeholder="Descripcion del proyecto"
+          placeholder="Descripción del proyecto"
           className="dark:bg-gray-800"
         />
         {errors.descripcion && (
@@ -204,7 +218,6 @@ const FormCreateProjectUsers = () => {
           </p>
         )}
       </div>
-
       <div className="mt-3">
         <label className="text-custom-title dark:text-white">
           Departamento
@@ -229,7 +242,6 @@ const FormCreateProjectUsers = () => {
           </SelectContent>
         </Select>
       </div>
-
       <div className="mt-3">
         <label className="text-custom-title dark:text-white">Empresa</label>
         <Select onValueChange={(value) => handleValueIdEmpresa(value)}>
@@ -252,7 +264,6 @@ const FormCreateProjectUsers = () => {
           </SelectContent>
         </Select>
       </div>
-
       <div className="mt-3">
         <label className="text-custom-title dark:text-white">Responsable</label>
         <div className="relative">
@@ -277,7 +288,6 @@ const FormCreateProjectUsers = () => {
           )}
         </div>
       </div>
-
       <div className="mt-3 w-full">
         <Button
           type="submit"
@@ -290,4 +300,4 @@ const FormCreateProjectUsers = () => {
   );
 };
 
-export default FormCreateProjectUsers;
+export default FormCreateProject;

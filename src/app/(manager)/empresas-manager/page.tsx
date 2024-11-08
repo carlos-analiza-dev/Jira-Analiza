@@ -1,29 +1,27 @@
 "use client";
-import TableEmpresas from "./ui/TableEmpresas";
+import SkeletonProyectos from "@/components/SkeletonProyectos";
 import {
   AlertDialog,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import FormEmpresas from "./ui/FormEmpresas";
-import useGetAllEmpresas from "@/api/empresas/getAllEmpresas";
-import { useSelector } from "react-redux";
-import SkeletonProyectos from "@/components/SkeletonProyectos";
+import React, { useEffect, useState } from "react";
+import TableEmpresas from "./ui/TableEmpresas";
 import Image from "next/image";
+import FormEmpresas from "./ui/FormEmpresas";
 import { Frown } from "lucide-react";
-import { useEffect, useState } from "react";
-import { clearUser } from "@/store/auth/sessionSlice";
+import { useDispatch, useSelector } from "react-redux";
+import useGetAllEmpresas from "@/api/empresas/getAllEmpresas";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
+import { clearUser } from "@/store/auth/sessionSlice";
 import ModalExpired from "@/components/ModalExpired";
 
-const EmpresasPage = () => {
+const Empresas = () => {
   const user = useSelector((state: any) => state.auth);
   const [check, setCheck] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -41,8 +39,6 @@ const EmpresasPage = () => {
     limit
   );
 
-  const handleCloseModal = () => setIsModalOpen(false);
-
   useEffect(() => {
     if (error === "Request failed with status code 401") {
       const timer = setTimeout(() => {
@@ -58,6 +54,8 @@ const EmpresasPage = () => {
     dispatch(clearUser());
     router.push("/");
   };
+
+  const handleCloseModal = () => setIsModalOpen(false);
 
   useEffect(() => {
     if (result?.total) {
@@ -163,4 +161,4 @@ const EmpresasPage = () => {
   );
 };
 
-export default EmpresasPage;
+export default Empresas;

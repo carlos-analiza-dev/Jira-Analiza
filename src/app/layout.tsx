@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Toaster } from "@/components/ui/toaster";
 import Providers from "@/components/Providers";
+import Snowfall from "@/components/Snowfall";
 
 const poppins = Raleway({
   subsets: ["latin"],
@@ -32,6 +33,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            {/* <Snowfall /> */}
             <NavBar />
             {children}
             <Toaster />

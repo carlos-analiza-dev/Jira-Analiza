@@ -37,3 +37,8 @@ export type DataEventos = {
     };
   };
 };
+
+export type ResponseEvento = {
+  data: DataEventos[];
+  total: number;
+};

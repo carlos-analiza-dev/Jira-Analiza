@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes snow {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  50% { transform: translateY(50vh) rotate(180deg); opacity: 0.6; }
+  100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+}
+
+.snowflake {
+  position: fixed;
+  top: -10px;
+  font-size: 1.5rem;
+  color: #FFFFFF;
+  opacity: 0.8;
+  animation: snow 10s linear infinite;
+  pointer-events: none;
+}
+
+
 @layer base {
   :root {
     --background: 0 0% 100%;

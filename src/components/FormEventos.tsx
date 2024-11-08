@@ -153,7 +153,7 @@ const FormEventos = ({
 
   return (
     <form
-      className="p-4 shadow-md bg-gray-50 dark:bg-gray-900 rounded-md grid grid-cols-1 sm:grid-cols-2 gap-4"
+      className="p-4 shadow-md bg-gray-50 dark:bg-gray-900 rounded-md grid grid-cols-1 sm:grid-cols-2 gap-4 w-full"
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className="mt-3">

@@ -25,15 +25,36 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Droplet, FileLock2, LogOut, User } from "lucide-react";
 import Spinner from "./Spinner";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import { PaisesData } from "../../data/paisesData";
+import { PaisData } from "@/types/paits.data.type";
+import { setCountry } from "@/store/pais/paiseSlice";
 
 export default function NavBar() {
   const user = useSelector((state: any) => state.auth);
+
+  const selectedCountry = useSelector(
+    (state: any) => state.country.selectedCountry
+  );
+
   const [loading, setLoading] = useState(false);
   const pathname = usePathname();
 
   const dispatch = useDispatch();
   const router = useRouter();
   const [popoverOpen, setPopoverOpen] = useState(false);
+
+  const handleCountryChange = (value: string) => {
+    dispatch(setCountry(value));
+  };
 
   const handleLogout = () => {
     setLoading(true);
@@ -57,7 +78,18 @@ export default function NavBar() {
         </div>
       ) : (
         <>
-          {user && user.rol === "Administrador" ? (
+          {user && user.rol === "Manager" && (
+            <Link href="/manager-dashboard">
+              <Image
+                src="/images/Logotipo_principal.png"
+                width={200}
+                height={200}
+                alt="Logo Analiza"
+                className="h-20 w-20"
+              />
+            </Link>
+          )}
+          {user && user.rol === "Administrador" && (
             <Link href="/dashboard">
               <Image
                 src="/images/Logotipo_principal.png"
@@ -67,7 +99,8 @@ export default function NavBar() {
                 className="h-20 w-20"
               />
             </Link>
-          ) : (
+          )}{" "}
+          {user && user.rol === "User" && (
             <Link href="/proyectos">
               <Image
                 src="/images/Logotipo_principal.png"
@@ -78,7 +111,7 @@ export default function NavBar() {
               />
             </Link>
           )}
-          {!user && !user.role && (
+          {user.length === 0 && (
             <Link href="/">
               <Image
                 src="/images/Logotipo_principal.png"
@@ -89,7 +122,7 @@ export default function NavBar() {
               />
             </Link>
           )}
-          {user && user.rol && user.rol !== "Administrador" && user.token && (
+          {user && user.rol && user.rol === "User" && user.token && (
             <NavigationMenu className="hidden sm:flex">
               <NavigationMenuList>
                 <NavigationMenuItem>
@@ -105,10 +138,10 @@ export default function NavBar() {
                             href="/proyectos"
                           >
                             <Droplet className="h-6 w-6 text-custom-second" />
-                            <div className="mb-2 mt-4 text-lg font-medium text-custom-title ">
+                            <div className="mb-2 mt-4 text-lg font-medium text-custom-title dark:text-white">
                               Jira - Analiza
                             </div>
-                            <p className="text-sm leading-tight text-muted-foreground">
+                            <p className="text-sm leading-tight text-muted-foreground dark:text-white">
                               En esta seccion puedes observar todos los
                               proyectos en los cuales estas incluido, disfruta
                               tu experiencia y colabora en tus proyectos.
@@ -140,18 +173,17 @@ export default function NavBar() {
               </NavigationMenuList>
             </NavigationMenu>
           )}
-
           {!user?.role && !user?.token ? (
-            <div className="justify-between gap-2 hidden sm:flex">
+            <div className="ml-auto justify-between gap-2 hidden sm:flex">
               <Link
-                className="text-custom-title dark:text-white font-light text-base hover:text-sky-900 hover:underline"
+                className="text-custom-title font-semibold dark:text-white  text-base hover:text-sky-900 hover:underline"
                 href="/"
               >
                 Iniciar Sesion
               </Link>
               <p className="text-custom-title dark:text-white">|</p>
               <Link
-                className="text-custom-title dark:text-white font-light text-base hover:text-sky-900 hover:underline"
+                className="text-custom-title dark:text-white font-semibold text-base hover:text-sky-900 hover:underline"
                 href="register"
               >
                 Registrarse
@@ -171,6 +203,33 @@ export default function NavBar() {
               <div className="hidden sm:block">
                 <ModeToggle />
               </div>
+              {user.rol === "Manager" && (
+                <div>
+                  <Select
+                    onValueChange={handleCountryChange}
+                    defaultValue={selectedCountry || ""}
+                  >
+                    <SelectTrigger className="w-[70px]">
+                      <SelectValue placeholder="pais" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Pais</SelectLabel>
+                        {PaisesData.map((pais: PaisData) => (
+                          <SelectItem key={pais.id} value={pais.nombre}>
+                            <Image
+                              src={pais.url}
+                              alt={pais.nombre}
+                              width={25}
+                              height={25}
+                            />
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
               <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
                 <PopoverTrigger asChild>
                   <Avatar>
@@ -190,7 +249,7 @@ export default function NavBar() {
                     className="flex justify-between items-center hover:bg-gray-100 dark:hover:bg-gray-800 p-2 text-custom-title dark:text-white hover:cursor-pointer"
                     onClick={() =>
                       handleOptionClick(
-                        `${user.rol === "Administrador" ? "/perfil" : "/profile"}`
+                        `${user.rol === "Administrador" ? "/perfil" : user.rol === "Manager" ? "/perfil-manager" : "/profile"}`
                       )
                     }
                   >
@@ -215,7 +274,6 @@ export default function NavBar() {
               </Popover>
             </div>
           )}
-
           <div className="sm:hidden flex gap-4 items-center">
             {user && user.rol && user.token && <ModeToggle />}
             <MenuMobile />

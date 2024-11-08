@@ -9,10 +9,13 @@ export default function Footer() {
           Redes Sociales
         </p>
         <div className="flex justify-start gap-2 mt-2">
-          <Link href="/">
+          <Link href="https://www.instagram.com/analiza.hn/" target="_blank">
             <Instagram className="text-custom-title dark:text-white" />
           </Link>
-          <Link href="/">
+          <Link
+            href="https://www.facebook.com/analizahn/?locale=es_LA"
+            target="_blank"
+          >
             <Facebook className="text-custom-title dark:text-white" />
           </Link>
           <Link href="/">
@@ -25,15 +28,27 @@ export default function Footer() {
           Encuentranos
         </p>
         <div className="mt-2">
-          <li className="text-custom-title dark:text-white font-medium">
+          <Link
+            href="https://linktr.ee/lab.analiza"
+            target="_blank"
+            className="text-custom-title dark:text-white font-medium hover:underline block"
+          >
             Honduras
-          </li>
-          <li className="text-custom-title dark:text-white font-medium">
+          </Link>
+          <Link
+            href="https://linktr.ee/lab.analiza"
+            target="_blank"
+            className="text-custom-title dark:text-white font-medium hover:underline block"
+          >
             El Salvador
-          </li>
-          <li className="text-custom-title dark:text-white font-medium">
+          </Link>
+          <Link
+            href="https://linktr.ee/lab.analiza"
+            target="_blank"
+            className="text-custom-title dark:text-white font-medium hover:underline block"
+          >
             Guatemala
-          </li>
+          </Link>
         </div>
       </div>
       <div className="">
@@ -42,7 +57,7 @@ export default function Footer() {
         </p>
         <div className="mt-2">
           <p className="text-custom-title dark:text-white font-medium">
-            +504 8878-9909
+            2276-1800
           </p>
           <p className="text-custom-title dark:text-white font-medium">
             +504 9978-9909
