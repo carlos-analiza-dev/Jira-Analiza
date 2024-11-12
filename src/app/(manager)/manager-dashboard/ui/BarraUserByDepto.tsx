@@ -46,7 +46,11 @@ const BarraUserByDepto = ({ data }: Props) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="role" />
             <YAxis />
-            <Tooltip />
+            <Tooltip
+              formatter={(value, name, props) => {
+                return [`${value} - ${props.payload.role}`, name];
+              }}
+            />
             <Legend />
             <Bar dataKey="count" fill="#8884d8" />
           </BarChart>

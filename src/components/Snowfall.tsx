@@ -9,7 +9,7 @@ const Snowfall = () => {
           className="snowflake"
           style={{
             left: `${Math.random() * 100}vw`,
-            animationDuration: `${Math.random() * 3 + 8}s`,
+            animationDuration: `${Math.random() * 3 + 10}s`,
           }}
         >
           ❄️
