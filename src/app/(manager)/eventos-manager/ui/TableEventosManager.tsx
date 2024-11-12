@@ -96,7 +96,7 @@ const TableEventosManager = ({ result, setCheck, check }: Props) => {
             Nombre Evento
           </TableHead>
           <TableHead className="text-custom-title dark:text-white font-bold text-center">
-            Descripcion
+            Descripción
           </TableHead>
           <TableHead className="text-custom-title dark:text-white font-bold text-center">
             Estado

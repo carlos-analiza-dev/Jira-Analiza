@@ -47,12 +47,12 @@ const ChartActivos = () => {
   };
 
   return (
-    <div>
+    <div className="h-full w-full">
       <p className="text-custom-title font-bold dark:text-white text-center">
         Actividad de usuarios
       </p>
 
-      <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <ChartContainer config={chartConfig} className="min-h-full w-full">
         <PieChart>
           <Pie
             data={chartData}

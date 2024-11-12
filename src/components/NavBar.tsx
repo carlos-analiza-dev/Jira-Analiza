@@ -37,6 +37,7 @@ import {
 import { PaisesData } from "../../data/paisesData";
 import { PaisData } from "@/types/paits.data.type";
 import { setCountry } from "@/store/pais/paiseSlice";
+import { Separator } from "./ui/separator";
 
 export default function NavBar() {
   const user = useSelector((state: any) => state.auth);
@@ -142,8 +143,8 @@ export default function NavBar() {
                               Jira - Analiza
                             </div>
                             <p className="text-sm leading-tight text-muted-foreground dark:text-white">
-                              En esta seccion puedes observar todos los
-                              proyectos en los cuales estas incluido, disfruta
+                              En esta sección puedes observar todos los
+                              proyectos en los cuales estás incluido. Disfruta
                               tu experiencia y colabora en tus proyectos.
                             </p>
                           </a>
@@ -179,7 +180,7 @@ export default function NavBar() {
                 className="text-custom-title font-semibold dark:text-white  text-base hover:text-sky-900 hover:underline"
                 href="/"
               >
-                Iniciar Sesion
+                Iniciar Sesión
               </Link>
               <p className="text-custom-title dark:text-white">|</p>
               <Link
@@ -261,6 +262,7 @@ export default function NavBar() {
                   >
                     Cambiar contraseña <FileLock2 />
                   </div>
+                  <Separator className="mt-3 mb-3" />
                   <p
                     onClick={() => {
                       handleLogout();
@@ -268,7 +270,7 @@ export default function NavBar() {
                     }}
                     className="flex justify-between items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 p-2 text-custom-title dark:text-white"
                   >
-                    Cerrar Sesion <LogOut />
+                    Cerrar Sesión <LogOut />
                   </p>
                 </PopoverContent>
               </Popover>
@@ -276,6 +278,33 @@ export default function NavBar() {
           )}
           <div className="sm:hidden flex gap-4 items-center">
             {user && user.rol && user.token && <ModeToggle />}
+            {user && user.rol === "Manager" && (
+              <div>
+                <Select
+                  onValueChange={handleCountryChange}
+                  defaultValue={selectedCountry || ""}
+                >
+                  <SelectTrigger className="w-[70px]">
+                    <SelectValue placeholder="pais" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Pais</SelectLabel>
+                      {PaisesData.map((pais: PaisData) => (
+                        <SelectItem key={pais.id} value={pais.nombre}>
+                          <Image
+                            src={pais.url}
+                            alt={pais.nombre}
+                            width={25}
+                            height={25}
+                          />
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
             <MenuMobile />
           </div>
         </>

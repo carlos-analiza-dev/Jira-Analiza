@@ -93,14 +93,16 @@ const TableProyectosManager = ({ result }: Props) => {
 
   return (
     <Table className="mt-5 mb-5 px-10">
-      <TableCaption>Lista de proyectos analiza.</TableCaption>
+      <TableCaption className="text-custom-title dark:text-white">
+        Lista de proyectos analiza.
+      </TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead className="text-custom-title dark:text-white font-bold text-center">
             Nombre
           </TableHead>
           <TableHead className="text-custom-title dark:text-white font-bold text-center">
-            Descripcion
+            Descripción
           </TableHead>
           <TableHead className="text-custom-title dark:text-white font-bold text-center">
             Estado

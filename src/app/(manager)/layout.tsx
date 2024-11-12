@@ -17,7 +17,7 @@ export default function AdminLayout({ children }: any) {
   return (
     <div className="h-full">
       <div className="mt-10 md:mt-16 w-full block sm:flex">
-        <div className="w-full sm:w-1/5">
+        <div className="w-full sm:w-1/5 hidden sm:block">
           <SideBar />
         </div>
         <main className="mt-5 p-2 md:w-4/5">{children}</main>

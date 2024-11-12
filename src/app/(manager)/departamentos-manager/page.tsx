@@ -119,7 +119,7 @@ const DeptosManager = () => {
   return (
     <div className="mx-auto px-4 md:px-12">
       <div className="flex justify-center mt-5 text-custom-title dark:text-white">
-        <h1 className="text-2xl font-bold">Departamentos</h1>
+        <h1 className="text-2xl font-bold">Departamentos - {pais}</h1>
       </div>
       <div className="flex justify-end mt-5 px-2">
         <AlertDialog>

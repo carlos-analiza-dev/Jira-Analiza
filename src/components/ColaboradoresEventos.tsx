@@ -57,17 +57,19 @@ const ColaboradoresEventos = ({ result }: ColaboradorType) => {
       });
     }
   };
+
   if (!colaboradores || colaboradores.length === 0) {
     return (
-      <div className="flex justify-center mx-auto mt-10 p-7 sm:p-0">
+      <div className="flex justify-center items-center mx-auto mt-10 p-7 sm:p-0">
         <p className="text-sm sm:text-3xl font-bold text-custom-title dark:text-white">
           No se encontraron colaboradores disponibles
         </p>
       </div>
     );
   }
+
   return (
-    <div className="mt-5 w-full">
+    <div className="mt-5 w-full grid grid-cols-1 sm:grid-cols-2 gap-5 overflow-y-auto max-h-96">
       {colaboradores.map((colaborador) => (
         <div
           key={colaborador.id}
@@ -96,12 +98,12 @@ const ColaboradoresEventos = ({ result }: ColaboradorType) => {
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle className="text-custom-title dark:text-white font-bolq">
-                        ¿Estas seguro de eliminar este colaborador del proyecto?
+                      <AlertDialogTitle className="text-custom-title dark:text-white font-bold">
+                        ¿Estás seguro de eliminar este colaborador del evento?
                       </AlertDialogTitle>
-                      <AlertDialogDescription>
+                      <AlertDialogDescription className="text-custom-title dark:text-white">
                         Debes estar completamente seguro antes de realizar esta
-                        accion.
+                        acción.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>

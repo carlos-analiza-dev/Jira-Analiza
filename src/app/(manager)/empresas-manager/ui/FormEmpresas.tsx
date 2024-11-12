@@ -104,17 +104,17 @@ const FormEmpresas = ({ check, setCheck, onClose, isEdit }: Props) => {
       </div>
       <div className="mt-3">
         <label className="block text-custom-title dark:text-white font-semibold">
-          Descripcion de la empresa
+          Descripción de la empresa
         </label>
         <Textarea
           {...register("descripcion", {
-            required: "El campo 'Descripcion de empresa' es requerido.",
+            required: "El campo 'Descripción de empresa' es requerido.",
             pattern: {
               value: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s.,;:()\-]+$/,
-              message: "Descripcion de la empresa inválido.",
+              message: "Descripción de la empresa inválido.",
             },
           })}
-          placeholder="Descripcion Empresa"
+          placeholder="Descripción Empresa"
           className="w-full mt-2"
         />
         {errors.descripcion && (

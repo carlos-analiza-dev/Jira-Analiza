@@ -26,6 +26,7 @@ import { clearUser } from "@/store/auth/sessionSlice";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Spinner from "./Spinner";
+import { dataSide, dataSideManager } from "../../data/dataSidebar";
 
 const MenuMobile = () => {
   const user = useSelector((state: any) => state.auth);
@@ -73,7 +74,7 @@ const MenuMobile = () => {
                     <div className="flex justify-around mt-3 items-center text-custom-title dark:text-white">
                       <Link href="/" onClick={handleLinkClick}>
                         {" "}
-                        Iniciar Sesion
+                        Iniciar Sesión
                       </Link>
                       <LogIn />
                     </div>
@@ -95,6 +96,19 @@ const MenuMobile = () => {
                 )}
                 {user && user.token && user.rol === "Administrador" && (
                   <div>
+                    {dataSide.map((item) => (
+                      <Link
+                        key={item.id}
+                        href={item.link}
+                        className="flex justify-between items-center text-custom-title dark:text-white mt-4"
+                        onClick={handleLinkClick}
+                      >
+                        <p className="text-custom-title dark:text-white">
+                          {item.title}
+                        </p>
+                        <item.icon />
+                      </Link>
+                    ))}
                     <Link
                       href="/reset-password"
                       className="flex justify-between items-center text-custom-title dark:text-white mt-4"
@@ -105,29 +119,57 @@ const MenuMobile = () => {
                       </p>
                       <FileLock2 />
                     </Link>
-                    <Link
-                      href="/perfil"
-                      className="flex justify-between items-center text-custom-title dark:text-white mt-4 mb-4"
-                      onClick={handleLinkClick}
-                    >
-                      <p className="text-custom-title dark:text-white">
-                        Perfil
-                      </p>
-                      <User />
-                    </Link>
-                    <Separator />
+                    <Separator className="mt-5 mb-5" />
                     <div
                       onClick={handleLogout}
                       className="flex justify-between items-center text-custom-title dark:text-white mt-4"
                     >
                       <p className="text-custom-title dark:text-white">
-                        Cerrar Sesion
+                        Cerrar Sesión
                       </p>
                       <LogOut />
                     </div>
                   </div>
                 )}
-                {user && user.token && user?.rol !== "Administrador" && (
+                {user && user.token && user.rol === "Manager" && (
+                  <div>
+                    {dataSideManager.map((item) => (
+                      <Link
+                        key={item.id}
+                        href={item.link}
+                        className="flex justify-between items-center text-custom-title dark:text-white mt-4"
+                        onClick={handleLinkClick}
+                      >
+                        <p className="text-custom-title dark:text-white">
+                          {item.title}
+                        </p>
+                        <item.icon />
+                      </Link>
+                    ))}
+                    <Link
+                      href="/reset-password"
+                      className="flex justify-between items-center text-custom-title dark:text-white mt-4"
+                      onClick={handleLinkClick}
+                    >
+                      <p className="text-custom-title dark:text-white">
+                        Cambiar contraseña
+                      </p>
+                      <FileLock2 />
+                    </Link>
+
+                    <Separator className="mt-5 mb-5" />
+                    <div
+                      onClick={handleLogout}
+                      className="flex justify-between items-center text-custom-title dark:text-white mt-4"
+                    >
+                      <p className="text-custom-title dark:text-white">
+                        Cerrar Sesión
+                      </p>
+                      <LogOut />
+                    </div>
+                  </div>
+                )}
+                {user?.rol === "User" && (
                   <div>
                     <div>
                       <Link
@@ -187,7 +229,7 @@ const MenuMobile = () => {
                       className="flex justify-between items-center text-custom-title dark:text-white mt-4"
                     >
                       <p className="text-custom-title dark:text-white">
-                        Cerrar Sesion
+                        Cerrar Sesión
                       </p>
                       <LogOut />
                     </div>

@@ -294,14 +294,14 @@ const FormEventos = ({
 
         <Popover>
           <PopoverTrigger asChild>
-            <div className="relative">
+            <div className="relative cursor-pointer">
               <Input
                 placeholder="Selecciona una fecha"
                 value={selectedDate ? format(selectedDate, "PPP") : ""}
                 readOnly
                 className="w-full mt-2 cursor-pointer"
               />
-              <CalendarDays className="absolute right-2 top-1/2 transform -translate-y-1/2 text-custom-title dark:text-white" />
+              <CalendarDays className="absolute right-2 top-1/2 transform -translate-y-1/2 text-custom-title dark:text-white cursor-pointer" />
             </div>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">
@@ -336,7 +336,7 @@ const FormEventos = ({
                 readOnly
                 className="w-full mt-2 cursor-pointer"
               />
-              <CalendarDays className="absolute right-2 top-1/2 transform -translate-y-1/2 text-custom-title dark:text-white" />
+              <CalendarDays className="absolute right-2 top-1/2 transform -translate-y-1/2 text-custom-title dark:text-white cursor-pointer" />
             </div>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">

@@ -19,6 +19,7 @@ import { PaisData } from "@/types/paits.data.type";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import Image from "next/image";
 import { PaisesData } from "../../../../data/paisesData";
+import useGetEmpresas from "@/api/empresas/getEmpresasNotPagination";
 
 const FormRegisterAdmin = () => {
   const router = useRouter();
@@ -33,6 +34,7 @@ const FormRegisterAdmin = () => {
   const [direccion, setDireccion] = useState("");
   const [pais, setPais] = useState("");
   const [empresa, setEmpresa] = useState("");
+  const { result } = useGetEmpresas();
 
   const [isActive, setIsActive] = useState(true);
   const [isActiveConfirm, setIsActiveConfirm] = useState(true);
@@ -285,30 +287,7 @@ const FormRegisterAdmin = () => {
               className="p-3 rounded-md shadow w-full mt-1"
             />
           </div>
-          {/*   <div className="mt-1 w-full">
-            <label className="block text-lg font-semibold text-custom-title dark:text-white">
-              Pais
-            </label>
-            <Select value={pais} onValueChange={setPais}>
-              <SelectTrigger className="p-3 rounded-md shadow w-full mt-1">
-                <SelectValue placeholder="-- Seleccione una Opcion --" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Pais</SelectLabel>
-                  {PaisesData && PaisesData.length > 0 ? (
-                    PaisesData.map((pais: PaisData) => (
-                      <SelectItem key={pais.id} value={pais.nombre}>
-                        {pais.nombre}
-                      </SelectItem>
-                    ))
-                  ) : (
-                    <p>No hay paises disponibles</p>
-                  )}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div> */}
+
           <div className="mt-1 w-full">
             <label className="block text-lg font-semibold text-custom-title dark:text-white">
               Empresa
@@ -320,8 +299,8 @@ const FormRegisterAdmin = () => {
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Empresa</SelectLabel>
-                  {DataEmpresas && DataEmpresas.length > 0 ? (
-                    DataEmpresas.map((empresa: PaisData) => (
+                  {result && result.length > 0 ? (
+                    result.map((empresa: PaisData) => (
                       <SelectItem key={empresa.id} value={empresa.nombre}>
                         {empresa.nombre}
                       </SelectItem>

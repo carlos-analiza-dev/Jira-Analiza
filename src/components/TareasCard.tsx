@@ -105,7 +105,7 @@ const TareasCard = ({ tarea, check, setCheck }: Props) => {
             {tarea.titulo}
           </p>
           <p className="text-custom-title text-base font-light dark:text-white ">
-            <span className="font-semibold">Descripcion:</span>{" "}
+            <span className="font-semibold">Descripción:</span>{" "}
             {tarea.descripcion}
           </p>
           <p className="text-custom-title text-sm font-light dark:text-white mt-1">

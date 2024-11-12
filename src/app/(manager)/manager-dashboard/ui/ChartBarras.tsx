@@ -7,6 +7,7 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
+  ResponsiveContainer,
 } from "recharts";
 import { useEffect, useState } from "react";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
@@ -41,7 +42,6 @@ const ChartBarras = () => {
     router.push("/");
   };
 
-  // Inicializamos el estado como un array vacío
   const [chartData, setChartData] = useState<UserSucursalData[]>([]);
 
   useEffect(() => {
@@ -52,7 +52,7 @@ const ChartBarras = () => {
       }));
       setChartData(transformedData);
     }
-  }, [result]); // Usamos `result` directamente en lugar de `data`
+  }, [result]);
 
   const chartConfig = {
     cantidadUsuarios: {
@@ -62,34 +62,33 @@ const ChartBarras = () => {
   } satisfies ChartConfig;
 
   return (
-    <div>
+    <div className="w-full h-full">
       <p className="text-custom-title font-bold dark:text-white text-center">
         Usuarios por Sucursal
       </p>
-      {chartData.length === 0 ? ( // Verificamos si no hay datos
+      {chartData.length === 0 ? (
         <p className="text-center text-custom-title dark:text-white font-semibold mt-5">
           No hay sucursales disponibles.
         </p>
       ) : (
-        <ChartContainer
-          config={chartConfig}
-          className="min-h-[200px] w-full mt-5"
-        >
-          <BarChart
-            data={chartData}
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="sucursal" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar
-              dataKey="cantidadUsuarios"
-              fill={chartConfig.cantidadUsuarios.color}
-              radius={4}
-            />
-          </BarChart>
+        <ChartContainer config={chartConfig} className="min-h-full w-full mt-5">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={chartData}
+              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="sucursal" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar
+                dataKey="cantidadUsuarios"
+                fill={chartConfig.cantidadUsuarios.color}
+                radius={4}
+              />
+            </BarChart>
+          </ResponsiveContainer>
         </ChartContainer>
       )}
       {showModal && <ModalExpired handleCloseModal={handleCloseModal} />}

@@ -29,7 +29,7 @@ import { useSelector } from "react-redux";
 const FormCreateProjectUsers = () => {
   const user = useSelector((state: any) => state.auth);
   const [correo, setCorreo] = useState<string | null>(null);
-  const { error, result } = useAllDepartamentos(user.token);
+  const { error, result } = useAllDepartamentos(user.token, user.pais);
   const [responsableId, setResponsableId] = useState<UserType | null>(null);
   const [departamentos, setDepartamentos] = useState<TableRolesData[] | []>([]);
   const [empresaId, setEmpresaId] = useState<string>("");
@@ -186,16 +186,16 @@ const FormCreateProjectUsers = () => {
         )}
       </div>
       <div className="mt-3">
-        <label className="text-custom-title dark:text-white">Descripcion</label>
+        <label className="text-custom-title dark:text-white">Descripción</label>
         <Input
           {...register("descripcion", {
-            required: "El campo 'Descripcion' es obligatorio",
+            required: "El campo 'Descripción' es obligatorio",
             pattern: {
               value: /^[a-zA-Z\s\W]+$/,
               message: "El campo solo acepta letras",
             },
           })}
-          placeholder="Descripcion del proyecto"
+          placeholder="Descripción del proyecto"
           className="dark:bg-gray-800"
         />
         {errors.descripcion && (

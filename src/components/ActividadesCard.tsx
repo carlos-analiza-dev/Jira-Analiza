@@ -110,7 +110,7 @@ const ActividadesCard = ({
             {actividad.titulo}
           </p>
           <p className="text-custom-title text-base font-light dark:text-white ">
-            <span className="font-semibold">Descripcion:</span>{" "}
+            <span className="font-semibold">Descripción:</span>{" "}
             {actividad.descripcion}
           </p>
           <p className="text-custom-title text-sm font-light dark:text-white mt-1">

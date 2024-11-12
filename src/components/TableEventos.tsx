@@ -86,7 +86,7 @@ const TableEventos = ({ result, check, setCheck }: Props) => {
             Nombre
           </TableHead>
           <TableHead className="text-center text-custom-title dark:text-white font-bold">
-            Descripcion
+            Descripción
           </TableHead>
           <TableHead className="text-center text-custom-title dark:text-white font-bold">
             Estado

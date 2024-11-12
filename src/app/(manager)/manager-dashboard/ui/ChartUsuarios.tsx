@@ -27,19 +27,19 @@ const ChartUsuarios = () => {
   }, [result]);
 
   const chartData = [
-    { name: "Autorizados", value: resultado.autorizado },
-    { name: "No autorizados", value: resultado.no_autorizado },
+    { name: "Auth", value: resultado.autorizado },
+    { name: "No auth", value: resultado.no_autorizado },
   ];
 
   const chartColors = ["#f16666", "#ef1616"];
 
   const chartConfig: ChartConfig = {
     activos: {
-      label: "Autorizados",
+      label: "Auth",
       color: "#f16666",
     },
     inactivos: {
-      label: "No autorizados",
+      label: "No auth",
       color: "#ef1616",
     },
   };

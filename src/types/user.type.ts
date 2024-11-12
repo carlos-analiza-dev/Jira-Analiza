@@ -26,3 +26,13 @@ export type UserResponse = {
   data: UserType[];
   total: number;
 };
+
+export type UsersByRolPais = {
+  role: string;
+  count: number;
+};
+
+export type UsersByEmpresa = {
+  emoresa: string;
+  count: number;
+};

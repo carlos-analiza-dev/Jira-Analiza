@@ -59,7 +59,7 @@ const Colaboradores = ({ result, setCheck, check }: ColaboradorType) => {
     );
   }
   return (
-    <div className="mt-5 w-full">
+    <div className="mt-5 w-full grid grid-cols-1 sm:grid-cols-2 gap-5 overflow-y-auto max-h-96">
       {result.map((colaborador) => (
         <div
           key={colaborador.id}
@@ -91,7 +91,7 @@ const Colaboradores = ({ result, setCheck, check }: ColaboradorType) => {
                       <AlertDialogTitle className="text-custom-title dark:text-white font-bolq">
                         ¿Estas seguro de eliminar este colaborador del proyecto?
                       </AlertDialogTitle>
-                      <AlertDialogDescription>
+                      <AlertDialogDescription className="text-custom-title dark:text-white">
                         Debes estar completamente seguro antes de realizar esta
                         accion.
                       </AlertDialogDescription>

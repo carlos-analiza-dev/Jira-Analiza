@@ -134,7 +134,7 @@ const SucursalesManager = () => {
     <div className="mx-auto px-4 md:px-12">
       <div className="mt-5 text-center">
         <p className="text-custom-title font-bold text-3xl dark:text-white">
-          Sucursales
+          Sucursales - {pais}
         </p>
       </div>
       <div className="w-full flex justify-between px-5 mt-5 mb-4 gap-4">

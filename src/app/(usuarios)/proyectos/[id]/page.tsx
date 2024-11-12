@@ -73,7 +73,7 @@ const PageProyectoId = () => {
         {result.nombre}
       </h1>
       <h3 className="text-base sm:text-xl text-custom-title dark:text-white font-medium mt-5">
-        <span className="font-bold">Descripcion del proyecto:</span>{" "}
+        <span className="font-bold">Descripción del proyecto:</span>{" "}
         {result.descripcion}
       </h3>
       <div className="mt-3">

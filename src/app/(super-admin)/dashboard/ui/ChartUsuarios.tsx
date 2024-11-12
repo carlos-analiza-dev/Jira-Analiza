@@ -29,30 +29,30 @@ const ChartUsuarios = () => {
   }, [result]);
 
   const chartData = [
-    { name: "Autorizados", value: resultado.autorizado },
-    { name: "No autorizados", value: resultado.no_autorizado },
+    { name: "Auth", value: resultado.autorizado },
+    { name: "No auth", value: resultado.no_autorizado },
   ];
 
   const chartColors = ["#f16666", "#ef1616"];
 
   const chartConfig: ChartConfig = {
     activos: {
-      label: "Autorizados",
+      label: "Auth",
       color: "#f16666",
     },
     iactivos: {
-      label: "No autorizados",
+      label: "No auth",
       color: "#ef1616",
     },
   };
 
   return (
-    <div>
+    <div className="h-full w-full">
       <p className="text-custom-title font-bold dark:text-white text-center">
-        Autorizacion de usuarios
+        Autorización de usuarios
       </p>
 
-      <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <ChartContainer config={chartConfig} className="min-h-full w-full">
         <PieChart>
           <Pie
             data={chartData}

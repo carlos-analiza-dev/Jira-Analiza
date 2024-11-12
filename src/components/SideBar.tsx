@@ -13,7 +13,7 @@ const SideBar = () => {
   return (
     <div>
       <p className="text-custom-title dark:text-white font-semibold text-lg text-center">
-        Bienvenido {user.nombre}
+        {user.nombre}
       </p>
       <div className="mt-3 flex justify-center">
         <Link href="/perfil">

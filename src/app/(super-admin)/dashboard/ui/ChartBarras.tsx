@@ -63,7 +63,7 @@ const ChartBarras = () => {
   } satisfies ChartConfig;
 
   return (
-    <div>
+    <div className="w-full h-full">
       <p className="text-custom-title font-bold dark:text-white text-center">
         Usuarios por Sucursal
       </p>
@@ -72,10 +72,7 @@ const ChartBarras = () => {
           No hay sucursales disponibles.
         </p>
       ) : (
-        <ChartContainer
-          config={chartConfig}
-          className="min-h-[200px] w-full mt-5"
-        >
+        <ChartContainer config={chartConfig} className="min-h-full w-full mt-5">
           <BarChart
             data={chartData}
             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
