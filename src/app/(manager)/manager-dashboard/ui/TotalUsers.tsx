@@ -1,4 +1,3 @@
-import useGetUsersActivesAndAuth from "@/api/users/getUserActivesAndAutorizados";
 import React, { ReactElement } from "react";
 import { useSelector } from "react-redux";
 
@@ -10,7 +9,6 @@ interface Props {
 
 const TotalUsers = ({ title, icon, total }: Props) => {
   const user = useSelector((state: any) => state.auth);
-  const { result, error, loading } = useGetUsersActivesAndAuth(user.token);
 
   return (
     <div className="bg-gray-100 w-full h-full rounded-md dark:bg-gray-800 text-custom-title dark:text-white flex justify-start shadow-md p-4">

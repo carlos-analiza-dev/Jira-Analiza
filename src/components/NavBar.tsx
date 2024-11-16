@@ -12,7 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -23,7 +23,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Droplet, FileLock2, LogOut, User } from "lucide-react";
+import { Bell, Droplet, FileLock2, LogOut, User } from "lucide-react";
 import Spinner from "./Spinner";
 import {
   Select,
@@ -38,10 +38,24 @@ import { PaisesData } from "../../data/paisesData";
 import { PaisData } from "@/types/paits.data.type";
 import { setCountry } from "@/store/pais/paiseSlice";
 import { Separator } from "./ui/separator";
+import useGetProjectsResponsable from "@/api/proyectos/getProjectsResponsable";
+import { setNotificationCount } from "@/store/notificaciones/notificationSlice";
+import useGetEventosResponsable from "@/api/eventos/getEventosesponsable";
 
 export default function NavBar() {
+  const dispatch = useDispatch();
   const user = useSelector((state: any) => state.auth);
+  const { result } = useGetProjectsResponsable(user.token);
+  const { result: resultEvento } = useGetEventosResponsable(user.token);
 
+  useEffect(() => {
+    if (result && resultEvento) {
+      dispatch(setNotificationCount(result.length + resultEvento.length));
+    }
+  }, [result, dispatch]);
+  const notificationCount = useSelector(
+    (state: any) => state.notifications.notificationCount
+  );
   const selectedCountry = useSelector(
     (state: any) => state.country.selectedCountry
   );
@@ -49,7 +63,6 @@ export default function NavBar() {
   const [loading, setLoading] = useState(false);
   const pathname = usePathname();
 
-  const dispatch = useDispatch();
   const router = useRouter();
   const [popoverOpen, setPopoverOpen] = useState(false);
 
@@ -168,6 +181,18 @@ export default function NavBar() {
                       className={navigationMenuTriggerStyle()}
                     >
                       Eventos
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <Link href="/notificaciones" legacyBehavior passHref>
+                    <NavigationMenuLink
+                      className={navigationMenuTriggerStyle()}
+                    >
+                      <Bell className="relative" />
+                      <div className="absolute top-0 right-0 transform  -translate-y-1/2 p-1 h-5 w-5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs">
+                        {notificationCount}
+                      </div>
                     </NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>

@@ -8,7 +8,9 @@ const ModalExpired = ({ handleCloseModal }: Props) => {
       <div className="bg-white p-5 rounded shadow-lg">
         <h2 className="text-lg font-bold text-red-600">¡Advertencia!</h2>
         <div className="flex gap-2 items-center">
-          <p>Lo sentimos, tu sesion ha expirado.</p>
+          <p className="text-custom-title">
+            Lo sentimos, tu sesion ha expirado.
+          </p>
           <HeartCrack className="text-red-600" size={25} />
           <Frown className="text-yellow-700" size={25} />
         </div>
