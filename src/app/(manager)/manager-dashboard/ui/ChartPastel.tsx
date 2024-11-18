@@ -47,7 +47,7 @@ const ChartPastel = () => {
   const isDataEmpty = resultado.progreso === 0 && resultado.finalizado === 0;
 
   return (
-    <div>
+    <div className="w-full h-full">
       <p className="text-custom-title text-center font-bold dark:text-white">
         Seguimiento de proyectos
       </p>

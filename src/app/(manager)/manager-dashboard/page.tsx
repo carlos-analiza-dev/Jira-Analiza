@@ -20,6 +20,8 @@ import useUserByRolPais from "@/api/users/usersByRol";
 import useGetUsersByEmpresa from "@/api/users/getUsersByEmpresa";
 import EmpresaUsuariosChart from "./ui/EmpresaUsuariosChart ";
 import BarraUserByDepto from "./ui/BarraUserByDepto";
+import ChartStatusProyectos from "./ui/ChartAStatusProtectos";
+import ChartStatusEventos from "./ui/ChartStatusEventos";
 
 export default function DashBoardPage() {
   const pais = useSelector((state: any) => state.country.selectedCountry);
@@ -102,6 +104,12 @@ export default function DashBoardPage() {
         </div>
         <div className="mt-8 flex justify-center items-center sm:col-span-2">
           <EmpresaUsuariosChart data={resultEmpresa} />
+        </div>
+        <div className="mt-8 flex justify-center items-center sm:col-span-2">
+          <ChartStatusProyectos />
+        </div>
+        <div className="mt-8 flex justify-center items-center sm:col-span-2">
+          <ChartStatusEventos />
         </div>
         <div className="mt-8 flex justify-center items-center sm:col-span-2">
           <ChartPastel />

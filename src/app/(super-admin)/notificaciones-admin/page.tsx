@@ -1,16 +1,16 @@
 "use client";
+import useGetEventosResponsable from "@/api/eventos/getEventosesponsable";
 import useGetProjectsResponsable from "@/api/proyectos/getProjectsResponsable";
+import TableEventosPending from "@/components/TableEventosPending";
+import TableProyectosPending from "@/components/TableProyectosPending";
+import { setNotificationCount } from "@/store/notificaciones/notificationSlice";
+import { DataEventos } from "@/types/evento.type";
+import { TypeProyectos } from "@/types/proyectos.type";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { TypeProyectos } from "@/types/proyectos.type";
-import { setNotificationCount } from "@/store/notificaciones/notificationSlice";
-import useGetEventosResponsable from "@/api/eventos/getEventosesponsable";
-import { DataEventos } from "@/types/evento.type";
-import TableProyectosPending from "@/components/TableProyectosPending";
-import TableEventosPending from "@/components/TableEventosPending";
 
-const Notificaciones = () => {
+const NotificacionesAdmin = () => {
   const dispatch = useDispatch();
   const user = useSelector((state: any) => state.auth);
   const { result } = useGetProjectsResponsable(user.token);
@@ -44,7 +44,7 @@ const Notificaciones = () => {
   }, [proyectosPendings, dispatch, eventosPendings]);
 
   return (
-    <div className="w-full grid grid-cols-1 sm:grid-cols-2 p-5 gap-4">
+    <div className="w-full grid grid-cols-1 sm:grid-cols-2 p-10 gap-4">
       <div className="w-full">
         <div className="flex justify-center">
           <h1 className="text-custom-title dark:text-white font-semibold text-xl">
@@ -75,4 +75,4 @@ const Notificaciones = () => {
   );
 };
 
-export default Notificaciones;
+export default NotificacionesAdmin;

@@ -1,4 +1,5 @@
 import {
+  Bell,
   Building2,
   CalendarClock,
   CalendarPlus,
@@ -68,6 +69,12 @@ export const dataSide = [
   },
   {
     id: 10,
+    title: "Notificaciones",
+    link: "/notificaciones-admin",
+    icon: Bell,
+  },
+  {
+    id: 11,
     title: "Perfil",
     link: "/perfil",
     icon: User,

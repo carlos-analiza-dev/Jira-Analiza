@@ -1,63 +1,75 @@
 "use client";
 
-import useGetActiveUsers from "@/api/users/getActiveUsers";
+import useGetStatusEventosStatus from "@/api/eventos/getStatusEventosAccept";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
-import { ActiveData } from "@/types/active.type";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { Cell, Pie, PieChart } from "recharts";
 
-const ChartActivos = () => {
-  const pais = useSelector((state: any) => state.country.selectedCountry);
-  const { result, loading, error } = useGetActiveUsers(pais);
+interface DataChart {
+  aceptados: number;
+  rechazados: number;
+  pendientes: number;
+}
 
-  const [resultado, setResultado] = useState<ActiveData>({
-    activos: 0,
-    inactivos: 0,
+const ChartStatusEventos = () => {
+  const { result, loading, error } = useGetStatusEventosStatus();
+
+  const [resultado, setResultado] = useState<DataChart>({
+    aceptados: 0,
+    pendientes: 0,
+    rechazados: 0,
   });
 
   useEffect(() => {
     if (
       result &&
       typeof result === "object" &&
-      "activos" in result &&
-      "inactivos" in result
+      "aceptados" in result &&
+      "pendientes" in result &&
+      "rechazados" in result
     ) {
-      setResultado(result as ActiveData);
+      setResultado(result as DataChart);
     }
   }, [result]);
 
   const chartData = [
-    { name: "Activos", value: resultado.activos },
-    { name: "Inactivos", value: resultado.inactivos },
+    { name: "Aceptados", value: resultado.aceptados },
+    { name: "Pendientes", value: resultado.pendientes },
+    { name: "Rechazados", value: resultado.rechazados },
   ];
 
-  const chartColors = ["#2563eb", "#60a5fa"];
+  const chartColors = ["#ffb703", "#0077b6", "#2a9d8f"];
 
   const chartConfig: ChartConfig = {
-    activos: {
-      label: "Activos",
-      color: "#2563eb",
+    aceptados: {
+      label: "Aceptados",
+      color: "#ffb703",
     },
-    inactivos: {
-      label: "Inactivos",
-      color: "#60a5fa",
+    rechazados: {
+      label: "Rechazados",
+      color: "#0077b6",
+    },
+    pendientes: {
+      label: "Pendientes",
+      color: "#2a9d8f",
     },
   };
 
   return (
     <div className="w-full h-full">
       <p className="text-custom-title font-bold dark:text-white text-center">
-        Actividad de usuarios
+        Estado de Eventos
       </p>
 
       {loading ? (
         <p className="text-center text-custom-title">Cargando...</p>
       ) : error ? (
         <p className="text-center text-custom-title">Error al cargar datos.</p>
-      ) : resultado.activos === 0 && resultado.inactivos === 0 ? (
+      ) : resultado.pendientes === 0 &&
+        resultado.rechazados === 0 &&
+        resultado.aceptados === 0 ? (
         <p className="text-center text-custom-title dark:text-white">
-          No hay usuarios activos o inactivos.
+          No hay eventos por mostrar en estos momentos.
         </p>
       ) : (
         <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
@@ -88,4 +100,4 @@ const ChartActivos = () => {
   );
 };
 
-export default ChartActivos;
+export default ChartStatusEventos;

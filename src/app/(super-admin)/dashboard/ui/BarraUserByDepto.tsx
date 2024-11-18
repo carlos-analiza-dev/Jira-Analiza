@@ -34,7 +34,7 @@ const BarraUserByDepto = ({ data }: Props) => {
   }
 
   return (
-    <Card className="w-full mt-5">
+    <Card className="w-full h-full mt-5">
       <CardHeader>
         <CardTitle className="text-xl text-custom-title dark:text-white">
           Usuarios por departamento

@@ -1,4 +1,5 @@
 import {
+  Bell,
   FileLock2,
   LogIn,
   LogOut,
@@ -201,6 +202,16 @@ const MenuMobile = () => {
                           Eventos
                         </p>
                         <Presentation />
+                      </Link>
+                      <Link
+                        href="/notificaciones"
+                        className="flex justify-between items-center text-custom-title dark:text-white mt-4"
+                        onClick={handleLinkClick}
+                      >
+                        <p className="text-custom-title dark:text-white">
+                          Notificaciones
+                        </p>
+                        <Bell />
                       </Link>
                       <Link
                         href="/profile"
