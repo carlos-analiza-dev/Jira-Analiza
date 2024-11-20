@@ -46,9 +46,9 @@ const TaskList = ({ tareas, check, setCheck }: TareaListProps) => {
         toast({
           title: "Tarea actualizada exitosamente",
         });
-      } catch (error) {
+      } catch (error: any) {
         toast({
-          title: "Ocurrio un error al actualizar la tarea",
+          title: `${error.response ? error.response.data.message : "Ocurrio un error al actualizar la tarea"}`,
           variant: "destructive",
         });
       }

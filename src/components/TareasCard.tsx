@@ -114,9 +114,43 @@ const TareasCard = ({ tarea, check, setCheck }: Props) => {
               ? tarea.usuarioAsignado.nombre
               : "ND"}
           </p>
-          <p className="text-custom-title text-sm font-light dark:text-white mt-1">
-            <span className="font-semibold">Actualizado:</span>{" "}
-            {tarea.actualizadoPor ? tarea.actualizadoPor.nombre : "N/A"}
+
+          <p className="text-custom-title text-base font-light dark:text-white mt-2">
+            <span className="font-semibold">
+              Tiempo para realizar la tarea:
+            </span>{" "}
+            {tarea.fechaInicio && tarea.fechaFin
+              ? (() => {
+                  const fechaActual = new Date();
+                  const fechaFin = new Date(tarea.fechaFin);
+                  const tiempoRestante = Math.ceil(
+                    (fechaFin.getTime() - fechaActual.getTime()) /
+                      (1000 * 60 * 60 * 24)
+                  );
+
+                  const tiempoTotal = Math.ceil(
+                    (fechaFin.getTime() -
+                      new Date(tarea.fechaInicio).getTime()) /
+                      (1000 * 60 * 60 * 24)
+                  );
+
+                  return tiempoRestante > 0 ? (
+                    <span
+                      className={
+                        tiempoRestante <= 1 ? "text-red-500 font-bold" : ""
+                      }
+                    >
+                      {tiempoRestante <= tiempoTotal
+                        ? `${tiempoRestante} día${tiempoRestante > 1 ? "s" : ""}`
+                        : "Fecha límite excedida"}
+                    </span>
+                  ) : (
+                    <span className="text-red-500 font-bold">
+                      Fecha límite excedida
+                    </span>
+                  );
+                })()
+              : "Fechas incompletas"}
           </p>
         </div>
         {user.id === tarea.creador.id && (

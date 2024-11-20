@@ -6,6 +6,8 @@ export type TareasData = {
   descripcion: string;
   estado: string;
   updatedAt: string;
+  fechaInicio?: Date;
+  fechaFin?: Date;
   proyecto: {
     id: string;
     cliente: string;

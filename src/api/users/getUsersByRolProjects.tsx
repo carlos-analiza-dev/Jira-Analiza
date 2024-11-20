@@ -1,8 +1,14 @@
 import { get } from "@/helpers/axiosInstance";
 import { useEffect, useState } from "react";
 
-const useGetUsersByRolesProyectos = (proyectoId: string, token?: string) => {
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/usersByProjectRole/${proyectoId}`;
+const useGetUsersByRolesProyectos = (
+  token?: string,
+  pais: string = "",
+  departamento: string = ""
+) => {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/usersByProjectRole?pais=${pais}&departamento=${departamento}`;
+  console.log("URL", url);
+
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");

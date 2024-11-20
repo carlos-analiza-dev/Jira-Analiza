@@ -1,12 +1,6 @@
 import createTarea from "@/api/tareas/createTarea";
-import useGetByDepartamento from "@/api/users/getUserByRol";
-import useGetUsersByRolesProyectos from "@/api/users/getUsersByRolProjects";
 import updateTarea from "@/api/tareas/updateTarea";
-import {
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogFooter,
-} from "@/components/ui/alert-dialog";
+import { AlertDialogCancel } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
@@ -26,6 +20,12 @@ import {
   SelectValue,
 } from "./ui/select";
 import useColaboradoresByProjectId from "@/api/proyectos/getColaboradoresByProjectId";
+import useTareasProyectosId from "@/api/tareas/getTareasProyectoId";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { CalendarDays } from "lucide-react";
+import { Calendar } from "./ui/calendar";
+import { format } from "date-fns";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface Props {
   proyectoId: string;
@@ -45,6 +45,21 @@ const TareasForm = ({
   isEdit,
 }: Props) => {
   const user = useSelector((state: any) => state.auth);
+  const [mostrar, setMostrar] = useState(false);
+  const [dependencia, setDependencia] = useState<string>("no"); // 'no' es el valor por defecto
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    tareaUpdate?.fechaInicio ? new Date(tareaUpdate.fechaInicio) : undefined
+  );
+  const [selectedDataFinish, setSelectedDataFinish] = useState<
+    Date | undefined
+  >(tareaUpdate?.fechaFin ? new Date(tareaUpdate.fechaFin) : undefined);
+  const {
+    result: resultTareas,
+    loading: resultLoading,
+    error: resultError,
+  } = useTareasProyectosId(proyectoId, user.token, check);
+  console.log("TAREAS DESDE FORM", resultTareas);
+
   const { toast } = useToast();
   const {
     register,
@@ -59,10 +74,18 @@ const TareasForm = ({
     user.token
   );
 
+  const [tareaDependencia, setTareaDependencia] = useState<TareasData[]>([]);
+  const [tareaSeleccionada, setTareaSeleccionada] = useState("");
   const [usuariosSeleccionados, setUsuariosSeleccionados] = useState<
     UserType[]
   >([]);
   const [usuarioAsignado, setUsuarioAsignado] = useState("");
+
+  useEffect(() => {
+    if (resultTareas) {
+      setTareaDependencia(resultTareas);
+    }
+  }, [resultTareas, user.token]);
 
   useEffect(() => {
     if (usersByProjects && usersByProjects) {
@@ -81,11 +104,15 @@ const TareasForm = ({
   }, [tareaUpdate, proyectoId, setValue]);
 
   const onSubmit = async (data: PostTarea) => {
-    const { titulo, descripcion } = data;
+    const { titulo, descripcion, fechaFin, fechaInicio } = data;
 
     try {
       if (isEdit && tareaUpdate?.id) {
-        await updateTarea(tareaUpdate.id, { titulo, descripcion }, user.token);
+        const response = await updateTarea(
+          tareaUpdate.id,
+          { titulo, descripcion, fechaFin, fechaInicio },
+          user.token
+        );
 
         toast({ title: "Tarea actualizada exitosamente" });
       } else {
@@ -96,16 +123,29 @@ const TareasForm = ({
           });
           return;
         }
-        await createTarea({ ...data, proyectoId, usuarioAsignado }, user.token);
+        await createTarea(
+          {
+            ...data,
+            proyectoId,
+            usuarioAsignado,
+
+            tareaDependenciaId: tareaSeleccionada,
+          },
+          user.token
+        );
 
         toast({ title: "Tarea creada exitosamente" });
       }
       setCheck(!check);
       onClose();
       reset();
-    } catch (error) {
+    } catch (error: any) {
+      console.log("ERROR", error);
+
       toast({
-        title: "Ocurrió un error al momento de procesar la tarea",
+        title: error.response
+          ? error.response.data.message
+          : "Ocurrió un error al momento de procesar la tarea",
         variant: "destructive",
       });
     }
@@ -113,6 +153,24 @@ const TareasForm = ({
 
   const handleUsuarioAsignado = (value: string) => {
     setUsuarioAsignado(value);
+  };
+
+  const handleTareaAsignada = (value: string) => {
+    setTareaSeleccionada(value);
+  };
+
+  const handleSelectStartDate = (date: Date | undefined) => {
+    setSelectedDate(date);
+    if (date) {
+      setValue("fechaInicio", date);
+    }
+  };
+
+  const handleSelectEndDate = (date: Date | undefined) => {
+    setSelectedDataFinish(date);
+    if (date) {
+      setValue("fechaFin", date);
+    }
   };
 
   return (
@@ -162,6 +220,121 @@ const TareasForm = ({
           </span>
         )}
       </div>
+
+      <div className="mt-3">
+        <label className="block text-custom-title dark:text-white font-semibold">
+          Fecha de inicio
+        </label>
+
+        <Popover>
+          <PopoverTrigger asChild>
+            <div className="relative cursor-pointer">
+              <Input
+                placeholder="Selecciona una fecha"
+                value={selectedDate ? format(selectedDate, "PPP") : ""}
+                readOnly
+                className="w-full mt-2 cursor-pointer"
+              />
+              <CalendarDays className="absolute right-2 top-1/2 transform -translate-y-1/2 text-custom-title dark:text-white cursor-pointer" />
+            </div>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0">
+            <Calendar
+              mode="single"
+              selected={selectedDate}
+              onSelect={handleSelectStartDate}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+
+        {errors.fechaInicio && (
+          <p className="text-red-500 mt-2">
+            {errors.fechaInicio.message?.toString()}
+          </p>
+        )}
+      </div>
+
+      <div className="mt-3">
+        <label className="block text-custom-title dark:text-white font-semibold">
+          Fecha de finalización
+        </label>
+        <Popover>
+          <PopoverTrigger asChild>
+            <div className="relative">
+              <Input
+                placeholder="Selecciona una fecha"
+                value={
+                  selectedDataFinish ? format(selectedDataFinish, "PPP") : ""
+                }
+                readOnly
+                className="w-full mt-2 cursor-pointer"
+              />
+              <CalendarDays className="absolute right-2 top-1/2 transform -translate-y-1/2 text-custom-title dark:text-white cursor-pointer" />
+            </div>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0">
+            <Calendar
+              mode="single"
+              selected={selectedDataFinish}
+              onSelect={handleSelectEndDate}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+
+        {errors.fechaFin && (
+          <p className="text-red-500 mt-2">
+            {errors.fechaFin.message?.toString()}
+          </p>
+        )}
+      </div>
+
+      {!tareaUpdate && (
+        <div className="mt-3">
+          <label className="text-custom-title dark:text-white font-bold">
+            Agregar dependencia
+          </label>
+          <RadioGroup
+            className="w-full flex justify-around"
+            value={dependencia}
+            onValueChange={(value) => {
+              setDependencia(value);
+              setMostrar(value === "si");
+            }}
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="si" id="r1" />
+              <label htmlFor="r1">Si</label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="no" id="r2" />
+              <label htmlFor="r2">No</label>
+            </div>
+          </RadioGroup>
+          {mostrar && (
+            <Select onValueChange={(value) => handleTareaAsignada(value)}>
+              <SelectTrigger className="w-full dark:bg-gray-800">
+                <SelectValue placeholder="Selecciona la tarea" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Responsable</SelectLabel>
+                  {tareaDependencia && tareaDependencia.length > 0 ? (
+                    tareaDependencia.map((tarea: TareasData) => (
+                      <SelectItem key={tarea.id} value={tarea.id}>
+                        {tarea.titulo}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <p>No se encontraron tareas por seleccionar</p>
+                  )}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          )}
+        </div>
+      )}
 
       {!tareaUpdate && (
         <div className="mt-3">
