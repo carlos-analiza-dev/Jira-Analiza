@@ -58,7 +58,6 @@ const TareasForm = ({
     loading: resultLoading,
     error: resultError,
   } = useTareasProyectosId(proyectoId, user.token, check);
-  console.log("TAREAS DESDE FORM", resultTareas);
 
   const { toast } = useToast();
   const {
@@ -143,7 +142,7 @@ const TareasForm = ({
       console.log("ERROR", error);
 
       toast({
-        title: error.response
+        title: error.response.data
           ? error.response.data.message
           : "Ocurrió un error al momento de procesar la tarea",
         variant: "destructive",
@@ -319,7 +318,7 @@ const TareasForm = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Responsable</SelectLabel>
+                  <SelectLabel>Tarea dependiente</SelectLabel>
                   {tareaDependencia && tareaDependencia.length > 0 ? (
                     tareaDependencia.map((tarea: TareasData) => (
                       <SelectItem key={tarea.id} value={tarea.id}>

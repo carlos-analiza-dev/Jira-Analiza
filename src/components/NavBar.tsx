@@ -266,6 +266,16 @@ export default function NavBar() {
                   </div>
                 </Link>
               )}
+              {user && user.rol === "Manager" && (
+                <Link href="/notificaciones-manager" legacyBehavior passHref>
+                  <div className="flex items-center">
+                    <Bell className="relative text-custom-title dark:text-white" />
+                    <div className="absolute top-0 ml-4 transform  -translate-y-1/6 p-1 h-5 w-5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs">
+                      {notificationCount}
+                    </div>
+                  </div>
+                </Link>
+              )}
               <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
                 <PopoverTrigger asChild>
                   <Avatar>

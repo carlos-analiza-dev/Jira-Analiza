@@ -1,5 +1,5 @@
 import { TareasData } from "@/types/tareas.type";
-import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
+import { EllipsisVertical, Eye, Pencil, Trash2 } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -24,13 +24,16 @@ import deleteTarea from "@/api/tareas/deleteTarea";
 import { useSelector } from "react-redux";
 import { useDraggable } from "@dnd-kit/core";
 import { formatFecha } from "@/helpers/formatDate";
+import { TypeProyectos } from "@/types/proyectos.type";
+import useTareaId from "@/api/tareas/getTareaId";
 
 interface Props {
   tarea: TareasData;
   check: boolean;
   setCheck: React.Dispatch<React.SetStateAction<boolean>>;
+  proyectos: TypeProyectos;
 }
-const TareasCard = ({ tarea, check, setCheck }: Props) => {
+const TareasCard = ({ tarea, check, setCheck, proyectos }: Props) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: tarea.id,
   });
@@ -41,6 +44,7 @@ const TareasCard = ({ tarea, check, setCheck }: Props) => {
   const [tareaId, setTareaId] = useState("");
   const { toast } = useToast();
 
+  const { result, error } = useTareaId(tareaId, user.token);
   const [tareaUpdate, setTareaUpdate] = useState<TareasData | null>(null);
   const [isEdit, setIsEdit] = useState(false);
 
@@ -58,6 +62,8 @@ const TareasCard = ({ tarea, check, setCheck }: Props) => {
   const handleTareaId = (tareaId: string) => {
     setTareaId(tareaId);
   };
+
+  console.log("TAREAID", result);
 
   const deleteTask = async () => {
     try {
@@ -90,6 +96,9 @@ const TareasCard = ({ tarea, check, setCheck }: Props) => {
           : "rgb(203 213 225 / var(--tw-border-opacity))",
       }
     : undefined;
+
+  console.log("TAREA", tarea);
+  console.log("PROYECCCC", proyectos);
 
   return (
     <div className="p-2 bg-gray-50 dark:bg-gray-900 mt-2 shadow-md block w-full">
@@ -134,7 +143,16 @@ const TareasCard = ({ tarea, check, setCheck }: Props) => {
                       (1000 * 60 * 60 * 24)
                   );
 
-                  return tiempoRestante > 0 ? (
+                  if (tiempoRestante <= 0) {
+                    return (
+                      <span className="text-red-500 font-bold">
+                        Fecha límite excedida
+                      </span>
+                    );
+                  }
+
+                  // Aquí no bloqueamos, solo mostramos el tiempo restante
+                  return (
                     <span
                       className={
                         tiempoRestante <= 1 ? "text-red-500 font-bold" : ""
@@ -144,17 +162,36 @@ const TareasCard = ({ tarea, check, setCheck }: Props) => {
                         ? `${tiempoRestante} día${tiempoRestante > 1 ? "s" : ""}`
                         : "Fecha límite excedida"}
                     </span>
-                  ) : (
-                    <span className="text-red-500 font-bold">
-                      Fecha límite excedida
-                    </span>
                   );
                 })()
               : "Fechas incompletas"}
           </p>
         </div>
-        {user.id === tarea.creador.id && (
-          <div className="flex items-center cursor-pointer">
+        <div>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <p className="cursor-pointer hover:underline text-base text-custom-title dark:text-white font-semibold">
+                <Eye onClick={() => handleTareaId(tarea.id)} />
+              </p>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  your account and remove your data from our servers.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction>Continue</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+        <div className="flex items-center cursor-pointer">
+          {(proyectos?.creador?.id === user.id ||
+            proyectos?.responsable?.id === user.id) && (
             <Popover>
               <PopoverTrigger asChild>
                 <EllipsisVertical />
@@ -204,7 +241,7 @@ const TareasCard = ({ tarea, check, setCheck }: Props) => {
                         ¿Deseas eliminar esta tarea?
                       </AlertDialogTitle>
                       <AlertDialogDescription className="text-custom-title dark:text-white">
-                        Debes estar seguro antes de realizar esta accion.
+                        Debes estar seguro antes de realizar esta acción.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
@@ -220,8 +257,8 @@ const TareasCard = ({ tarea, check, setCheck }: Props) => {
                 </AlertDialog>
               </PopoverContent>
             </Popover>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

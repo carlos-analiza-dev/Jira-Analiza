@@ -3,6 +3,8 @@ export type ActividadesType = {
   descripcion: string;
   estado: string;
   titulo: string;
+  fechaInicio?: Date;
+  fechaFin?: Date;
   actualizadoPor: {
     id: string;
     nombre: string;

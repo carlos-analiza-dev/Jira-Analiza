@@ -20,6 +20,12 @@ import createActividad from "@/api/actividades/createActividad";
 import { AlertDialogAction } from "@radix-ui/react-alert-dialog";
 import updateActividad from "@/api/actividades/updateActividad";
 import useGetColaboradoresEventos from "@/api/eventos/getUserColaboradoresByEvento";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+import useGetActividadesByEventoId from "@/api/actividades/getActividadesByEventoId";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { CalendarDays } from "lucide-react";
+import { Calendar } from "./ui/calendar";
+import { format } from "date-fns";
 
 interface Props {
   eventoId: string;
@@ -38,7 +44,17 @@ const ActividadesForm = ({
 }: Props) => {
   const user = useSelector((state: any) => state.auth);
   const { toast } = useToast();
-
+  const [mostrar, setMostrar] = useState(false);
+  const [dependencia, setDependencia] = useState<string>("no");
+  const [actividadSeleccionada, setActividadSeleccionada] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    actividadUpdate?.fechaInicio
+      ? new Date(actividadUpdate.fechaInicio)
+      : undefined
+  );
+  const [selectedDataFinish, setSelectedDataFinish] = useState<
+    Date | undefined
+  >(actividadUpdate?.fechaFin ? new Date(actividadUpdate.fechaFin) : undefined);
   const {
     register,
     reset,
@@ -51,11 +67,22 @@ const ActividadesForm = ({
     eventoId,
     user.token
   );
-
+  const [actividadDependencia, setActividadDependencia] = useState<
+    ActividadesType[]
+  >([]);
   const [usuariosSeleccionados, setUsuariosSeleccionados] = useState<
     UserType[]
   >([]);
   const [usuarioAsignado, setUsuarioAsignado] = useState("");
+  const { error, loading, result } = useGetActividadesByEventoId(
+    eventoId,
+    user.token
+  );
+  useEffect(() => {
+    if (result) {
+      setActividadDependencia(result);
+    }
+  }, [result, user.token]);
 
   useEffect(() => {
     if (usersActives && usersActives) {
@@ -69,18 +96,19 @@ const ActividadesForm = ({
     if (actividadUpdate) {
       setValue("titulo", actividadUpdate.titulo);
       setValue("descripcion", actividadUpdate.descripcion);
+      setValue;
     }
     setValue("eventoId", eventoId);
   }, [actividadUpdate, eventoId, setValue]);
 
   const onSubmit = async (data: PostActividad) => {
-    const { titulo, descripcion } = data;
+    const { titulo, descripcion, fechaInicio, fechaFin } = data;
 
     try {
       if (isEdit && actividadUpdate?.id) {
         await updateActividad(
           actividadUpdate.id,
-          { titulo, descripcion },
+          { titulo, descripcion, fechaInicio, fechaFin },
           user.token
         );
 
@@ -94,7 +122,12 @@ const ActividadesForm = ({
           return;
         }
         await createActividad(
-          { ...data, eventoId, usuarioAsignado },
+          {
+            ...data,
+            eventoId,
+            usuarioAsignado,
+            actividadDependenciaId: actividadSeleccionada,
+          },
           user.token
         );
 
@@ -104,6 +137,8 @@ const ActividadesForm = ({
 
       reset();
     } catch (error) {
+      console.log(error);
+
       toast({
         title: "Ocurrió un error al momento de procesar la actividad",
         variant: "destructive",
@@ -114,6 +149,25 @@ const ActividadesForm = ({
   const handleUsuarioAsignado = (value: string) => {
     setUsuarioAsignado(value);
   };
+
+  const handleActividadAsignada = (value: string) => {
+    setActividadSeleccionada(value);
+  };
+
+  const handleSelectStartDate = (date: Date | undefined) => {
+    setSelectedDate(date);
+    if (date) {
+      setValue("fechaInicio", date);
+    }
+  };
+
+  const handleSelectEndDate = (date: Date | undefined) => {
+    setSelectedDataFinish(date);
+    if (date) {
+      setValue("fechaFin", date);
+    }
+  };
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -159,6 +213,121 @@ const ActividadesForm = ({
           <span className="mt-1 text-red-500">
             {errors.descripcion.message}
           </span>
+        )}
+      </div>
+
+      {!actividadUpdate && (
+        <div className="mt-3">
+          <label className="text-custom-title dark:text-white font-bold">
+            Agregar dependencia
+          </label>
+          <RadioGroup
+            className="w-full flex justify-around"
+            value={dependencia}
+            onValueChange={(value) => {
+              setDependencia(value);
+              setMostrar(value === "si");
+            }}
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="si" id="r1" />
+              <label htmlFor="r1">Si</label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="no" id="r2" />
+              <label htmlFor="r2">No</label>
+            </div>
+          </RadioGroup>
+          {mostrar && (
+            <Select onValueChange={(value) => handleActividadAsignada(value)}>
+              <SelectTrigger className="w-full dark:bg-gray-800">
+                <SelectValue placeholder="Selecciona la tarea" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Tarea dependiente</SelectLabel>
+                  {actividadDependencia && actividadDependencia.length > 0 ? (
+                    actividadDependencia.map((acti: ActividadesType) => (
+                      <SelectItem key={acti.id} value={acti.id}>
+                        {acti.titulo}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <p>No se encontraron tareas por seleccionar</p>
+                  )}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          )}
+        </div>
+      )}
+
+      <div className="mt-3">
+        <label className="block text-custom-title dark:text-white font-semibold">
+          Fecha de inicio
+        </label>
+
+        <Popover>
+          <PopoverTrigger asChild>
+            <div className="relative cursor-pointer">
+              <Input
+                placeholder="Selecciona una fecha"
+                value={selectedDate ? format(selectedDate, "PPP") : ""}
+                readOnly
+                className="w-full mt-2 cursor-pointer"
+              />
+              <CalendarDays className="absolute right-2 top-1/2 transform -translate-y-1/2 text-custom-title dark:text-white cursor-pointer" />
+            </div>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0">
+            <Calendar
+              mode="single"
+              selected={selectedDate}
+              onSelect={handleSelectStartDate}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+
+        {errors.fechaInicio && (
+          <p className="text-red-500 mt-2">
+            {errors.fechaInicio.message?.toString()}
+          </p>
+        )}
+      </div>
+
+      <div className="mt-3">
+        <label className="block text-custom-title dark:text-white font-semibold">
+          Fecha de finalización
+        </label>
+        <Popover>
+          <PopoverTrigger asChild>
+            <div className="relative">
+              <Input
+                placeholder="Selecciona una fecha"
+                value={
+                  selectedDataFinish ? format(selectedDataFinish, "PPP") : ""
+                }
+                readOnly
+                className="w-full mt-2 cursor-pointer"
+              />
+              <CalendarDays className="absolute right-2 top-1/2 transform -translate-y-1/2 text-custom-title dark:text-white cursor-pointer" />
+            </div>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0">
+            <Calendar
+              mode="single"
+              selected={selectedDataFinish}
+              onSelect={handleSelectEndDate}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+
+        {errors.fechaFin && (
+          <p className="text-red-500 mt-2">
+            {errors.fechaFin.message?.toString()}
+          </p>
         )}
       </div>
 

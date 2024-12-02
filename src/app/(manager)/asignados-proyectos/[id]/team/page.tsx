@@ -1,28 +1,26 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import useColaboradoresByProyecto from "@/api/proyectos/getColaboradoresByProyecto";
+import Colaboradores from "@/components/Colaboradores";
+import FormColaborador from "@/components/FormColaborador";
+import ModalExpired from "@/components/ModalExpired";
+import SkeletonProyectos from "@/components/SkeletonProyectos";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import FormColaborador from "@/components/FormColaborador";
-import Colaboradores from "@/components/Colaboradores";
-import { useSelector } from "react-redux";
-import SkeletonProyectos from "@/components/SkeletonProyectos";
+import { Button } from "@/components/ui/button";
 import { clearUser } from "@/store/auth/sessionSlice";
+import { useParams, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import useColaboradoresByProyecto from "@/api/proyectos/getColaboradoresByProyecto";
-import ModalExpired from "@/components/ModalExpired";
+import { useSelector } from "react-redux";
 
-const TeamPage = () => {
+const TeamManager = () => {
   const user = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -122,4 +120,4 @@ const TeamPage = () => {
   );
 };
 
-export default TeamPage;
+export default TeamManager;

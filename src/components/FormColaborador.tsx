@@ -36,15 +36,13 @@ const FormColaborador = ({ onSuccess, setCheck, check }: PropsForm) => {
   const params = useParams();
   const proyectoId = Array.isArray(params.id) ? params.id[0] : params.id;
   const { result: departamentos } = useAllDepartamentos(user.token, pais);
-  console.log("DEPARTAMENTOS", departamentos);
 
-  const { result, loading } = useGetUsersByRolesProyectos(
+  const { result, loading, error } = useGetUsersByRolesProyectos(
     user.token,
     pais,
-    departamento
+    departamento,
+    proyectoId
   );
-
-  console.log("RESSSS", result);
 
   const [usuariosSeleccionados, setUsuariosSeleccionados] = useState<
     UserType[]
@@ -54,6 +52,14 @@ const FormColaborador = ({ onSuccess, setCheck, check }: PropsForm) => {
     if (usuariosSeleccionados.length === 0) {
       toast({
         title: "No se ha seleccionado ningún usuario.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!departamento || departamento.length === 0) {
+      toast({
+        title: "Debes seleccionar un departamento.",
         variant: "destructive",
       });
       return;
@@ -78,6 +84,8 @@ const FormColaborador = ({ onSuccess, setCheck, check }: PropsForm) => {
       });
     }
   };
+
+  console.log("depto", departamento);
 
   return (
     <div>
@@ -122,7 +130,7 @@ const FormColaborador = ({ onSuccess, setCheck, check }: PropsForm) => {
                 <SelectLabel>Departamento</SelectLabel>
                 {departamentos && departamentos.length > 0 ? (
                   departamentos.map((res: TableRolesData) => (
-                    <SelectItem key={res.id} value={res.nombre}>
+                    <SelectItem key={res.id} value={res.id}>
                       {res.nombre}
                     </SelectItem>
                   ))
@@ -162,6 +170,10 @@ const FormColaborador = ({ onSuccess, setCheck, check }: PropsForm) => {
                 </option>
               ))}
             </select>
+          ) : error ? (
+            <p className="text-red-500">
+              Ocurrio un error al momento de cargar los usuarios.
+            </p>
           ) : (
             <p>No se encontraron usuarios disponibles.</p>
           )

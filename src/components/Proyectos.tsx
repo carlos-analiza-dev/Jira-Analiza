@@ -116,7 +116,9 @@ const Proyectos = ({ proyectos }: Props) => {
                 href={
                   user.rol && user.rol === "Administrador"
                     ? `/admin-proyectos/${proyecto.id}`
-                    : `/proyectos/${proyecto.id}`
+                    : user.rol && user.rol === "Manager"
+                      ? `/asignados-proyectos/${proyecto.id}`
+                      : `/proyectos/${proyecto.id}`
                 }
                 className="text-3xl font-bold text-custom-title dark:text-white hover:underline"
               >
@@ -158,7 +160,9 @@ const Proyectos = ({ proyectos }: Props) => {
                           href={
                             user.rol && user.rol === "Administrador"
                               ? `/admin-proyectos/${proyecto.id}`
-                              : `/proyectos/${proyecto.id}`
+                              : user.rol && user.rol === "Manager"
+                                ? `/asignados-proyectos/${proyecto.id}`
+                                : `/proyectos/${proyecto.id}`
                           }
                           className="text-sm text-custom-title dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 block p-2"
                         >
@@ -233,7 +237,9 @@ const Proyectos = ({ proyectos }: Props) => {
                             href={
                               user.rol && user.rol === "Administrador"
                                 ? `/admin-proyectos/${proyecto.id}`
-                                : `/proyectos/${proyecto.id}`
+                                : user.rol && user.rol === "Manager"
+                                  ? `/asignados-proyectos/${proyecto.id}`
+                                  : `/proyectos/${proyecto.id}`
                             }
                             className="text-sm text-custom-title dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 block p-2"
                           >
@@ -251,7 +257,9 @@ const Proyectos = ({ proyectos }: Props) => {
                           href={
                             user.rol && user.rol === "Administrador"
                               ? `/admin-proyectos/${proyecto.id}`
-                              : `/proyectos/${proyecto.id}`
+                              : user.rol && user.rol === "Manager"
+                                ? `/asignados-proyectos/${proyecto.id}`
+                                : `/proyectos/${proyecto.id}`
                           }
                           className="text-sm text-custom-title dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 block p-2"
                         >

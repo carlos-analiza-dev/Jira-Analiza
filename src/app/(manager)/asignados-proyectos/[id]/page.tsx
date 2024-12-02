@@ -1,10 +1,10 @@
 "use client";
 import useProyectoId from "@/api/proyectos/getProyectoId";
+import useTareasProyectosId from "@/api/tareas/getTareasProyectoId";
+import ModalExpired from "@/components/ModalExpired";
 import SkeletonProyectos from "@/components/SkeletonProyectos";
-import { Button } from "@/components/ui/button";
-import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import TareasForm from "@/components/TareasForm";
+import TaskList from "@/components/TaskList";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -13,14 +13,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import useTareasProyectosId from "@/api/tareas/getTareasProyectoId";
+import { Button } from "@/components/ui/button";
 import { clearUser } from "@/store/auth/sessionSlice";
 import Link from "next/link";
-import TareasForm from "@/components/TareasForm";
-import TaskList from "@/components/TaskList";
-import ModalExpired from "@/components/ModalExpired";
+import { useParams, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
-const PageProyectoId = () => {
+const PageProyectosIdManager = () => {
   const user = useSelector((state: any) => state.auth);
   const [check, setCheck] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -29,12 +30,16 @@ const PageProyectoId = () => {
   const router = useRouter();
   const proyectoId = Array.isArray(params.id) ? params.id[0] : params.id;
   const { result, loading, error } = useProyectoId(proyectoId, user.token);
-  const [showModal, setShowModal] = useState(false);
+
+  console.log("PROYECTOooooUID", result);
+
   const {
     result: resultTareas,
     loading: resultLoading,
     error: resultError,
   } = useTareasProyectosId(proyectoId, user.token, check);
+
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (error === "Request failed with status code 401") {
@@ -52,9 +57,13 @@ const PageProyectoId = () => {
     router.push("/");
   };
 
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+  };
+
   if (loading) return <SkeletonProyectos />;
 
-  if (!result)
+  if (!result || !result.nombre)
     return (
       <div className="flex justify-center">
         <p className="text-3xl text-custom-title dark:text-white">
@@ -63,17 +72,12 @@ const PageProyectoId = () => {
       </div>
     );
 
-  const handleCloseDialog = () => {
-    setIsDialogOpen(false);
-  };
-
   return (
-    <div className="w-full mx-auto mt-5 px-5 py-5 sm:px-12">
+    <div className="w-full mx-auto mt-5">
       <h1 className="text-xl sm:text-3xl text-custom-title dark:text-white font-bold">
         {result.nombre}
       </h1>
-      <h3 className="text-base sm:text-xl text-custom-title dark:text-white font-medium mt-5">
-        <span className="font-bold">Descripción del proyecto:</span>{" "}
+      <h3 className="text-base sm:text-xl text-custom-title dark:text-white font-semibold mt-5">
         {result.descripcion}
       </h3>
       <div className="mt-3">
@@ -84,8 +88,7 @@ const PageProyectoId = () => {
           Proyectos
         </Button>
       </div>
-      {user?.id === result?.creador?.id ||
-      user?.id === result?.responsable?.id ? (
+      {user.id === result.creador.id || user.id === result.responsable.id ? (
         <div className="flex justify-between sm:w-2/6 mt-5 gap-3">
           <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <AlertDialogTrigger asChild>
@@ -111,13 +114,21 @@ const PageProyectoId = () => {
             </AlertDialogContent>
           </AlertDialog>
           <Link
-            href={`/proyectos/${proyectoId}/team-users`}
-            className="dark:bg-sky-600 dark:text-white bg-custom-title text-white rounded-md p-2 shadow-md font-bold"
+            href={
+              user && user.rol === "Administrador"
+                ? `/admin-proyectos/${proyectoId}/team`
+                : user && user.rol === "Manager"
+                  ? `/asignados-proyectos/${proyectoId}/team`
+                  : `/proyectos/${proyectoId}/team-users`
+            }
+            className="dark:bg-sky-600 dark:text-white bg-custom-title hover:bg-sky-950 text-white rounded-md p-2 shadow-md font-bold"
           >
             Colaboradores
           </Link>
         </div>
-      ) : null}
+      ) : (
+        ""
+      )}
       <TaskList
         tareas={resultTareas}
         proyectos={result}
@@ -129,4 +140,4 @@ const PageProyectoId = () => {
   );
 };
 
-export default PageProyectoId;
+export default PageProyectosIdManager;

@@ -4,6 +4,7 @@ import {
   CalendarClock,
   CalendarPlus,
   ChartColumnBig,
+  FolderKanban,
   HousePlus,
   Presentation,
   Shield,
@@ -115,24 +116,37 @@ export const dataSideManager = [
 
   {
     id: 6,
+    title: "Proyectos Asignados",
+    link: "/asignados-proyectos",
+    icon: FolderKanban,
+  },
+
+  {
+    id: 7,
     title: "Departamentos",
     link: "/departamentos-manager",
     icon: Shield,
   },
   {
-    id: 7,
+    id: 8,
     title: "Empresas",
     link: "/empresas-manager",
     icon: Building2,
   },
   {
-    id: 8,
+    id: 9,
     title: "Sucursales",
     link: "/sucursales-manager",
     icon: HousePlus,
   },
   {
-    id: 9,
+    id: 10,
+    title: "Notificaciones",
+    link: "/notificaciones-manager",
+    icon: Bell,
+  },
+  {
+    id: 11,
     title: "Perfil",
     link: "/perfil-manager",
     icon: User,

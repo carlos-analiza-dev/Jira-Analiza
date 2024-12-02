@@ -5,11 +5,13 @@ import updateStatusTarea from "@/api/tareas/updateStatusTarea";
 import { useSelector } from "react-redux";
 import { useToast } from "@/components/ui/use-toast";
 import TareasCard from "./TareasCard";
+import { TypeProyectos } from "@/types/proyectos.type";
 
 type TareaListProps = {
   tareas: TareasData[];
   check: boolean;
   setCheck: React.Dispatch<React.SetStateAction<boolean>>;
+  proyectos: TypeProyectos;
 };
 
 type GroupedTasks = {
@@ -23,7 +25,7 @@ const initialStatusGroups: GroupedTasks = {
   Finalizada: [],
 };
 
-const TaskList = ({ tareas, check, setCheck }: TareaListProps) => {
+const TaskList = ({ tareas, check, setCheck, proyectos }: TareaListProps) => {
   const user = useSelector((state: any) => state.auth);
   const { toast } = useToast();
 
@@ -89,6 +91,7 @@ const TaskList = ({ tareas, check, setCheck }: TareaListProps) => {
                 ) : (
                   tareas.map((tarea) => (
                     <TareasCard
+                      proyectos={proyectos}
                       key={tarea.id}
                       tarea={tarea}
                       check={check}

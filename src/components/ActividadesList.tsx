@@ -63,9 +63,11 @@ const ActividadesList = ({
         toast({
           title: "Actividad actualizada exitosamente",
         });
-      } catch (error) {
+      } catch (error: any) {
         toast({
-          title: "Ocurrio un error al actualizar la actividad",
+          title: error.response.data
+            ? error.response.data.message
+            : "Ocurrio un error al actualizar la actividad",
           variant: "destructive",
         });
       }

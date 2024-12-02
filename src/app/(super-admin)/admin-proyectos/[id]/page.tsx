@@ -124,7 +124,12 @@ const PageProyectoId = () => {
       ) : (
         ""
       )}
-      <TaskList tareas={resultTareas} check={check} setCheck={setCheck} />
+      <TaskList
+        tareas={resultTareas}
+        proyectos={result}
+        check={check}
+        setCheck={setCheck}
+      />
       {showModal && <ModalExpired handleCloseModal={handleCloseModal} />}
     </div>
   );
