@@ -46,7 +46,10 @@ const TareasForm = ({
 }: Props) => {
   const user = useSelector((state: any) => state.auth);
   const [mostrar, setMostrar] = useState(false);
-  const [dependencia, setDependencia] = useState<string>("no"); // 'no' es el valor por defecto
+  const [selectedPrioridad, setSelectedPrioridad] = useState(
+    tareaUpdate?.prioridad
+  );
+  const [dependencia, setDependencia] = useState<string>("no");
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     tareaUpdate?.fechaInicio ? new Date(tareaUpdate.fechaInicio) : undefined
   );
@@ -66,7 +69,15 @@ const TareasForm = ({
     setValue,
     handleSubmit,
     formState: { errors },
-  } = useForm<PostTarea>();
+  } = useForm<PostTarea>({
+    defaultValues: {
+      titulo: tareaUpdate?.titulo,
+      descripcion: tareaUpdate?.descripcion,
+      fechaFin: tareaUpdate?.fechaFin,
+      fechaInicio: tareaUpdate?.fechaInicio,
+      prioridad: tareaUpdate?.prioridad,
+    },
+  });
 
   const { result: usersByProjects } = useColaboradoresByProjectId(
     proyectoId,
@@ -95,21 +106,25 @@ const TareasForm = ({
   }, [user.token, usersByProjects]);
 
   useEffect(() => {
-    if (tareaUpdate) {
-      setValue("titulo", tareaUpdate.titulo);
-      setValue("descripcion", tareaUpdate.descripcion);
-    }
+    reset({
+      titulo: tareaUpdate?.titulo,
+      descripcion: tareaUpdate?.descripcion,
+      fechaFin: tareaUpdate?.fechaFin,
+      fechaInicio: tareaUpdate?.fechaInicio,
+      prioridad: tareaUpdate?.prioridad || "Baja",
+    });
+    setSelectedPrioridad(tareaUpdate?.prioridad || "Baja");
     setValue("proyectoId", proyectoId);
   }, [tareaUpdate, proyectoId, setValue]);
 
   const onSubmit = async (data: PostTarea) => {
-    const { titulo, descripcion, fechaFin, fechaInicio } = data;
+    const { titulo, descripcion, fechaFin, fechaInicio, prioridad } = data;
 
     try {
       if (isEdit && tareaUpdate?.id) {
         const response = await updateTarea(
           tareaUpdate.id,
-          { titulo, descripcion, fechaFin, fechaInicio },
+          { titulo, descripcion, fechaFin, fechaInicio, prioridad },
           user.token
         );
 
@@ -117,7 +132,7 @@ const TareasForm = ({
       } else {
         if (!usuarioAsignado) {
           toast({
-            title: "Debe asigarse un responsable de esta tarea",
+            title: "Debe asignarse un responsable de esta tarea",
             variant: "destructive",
           });
           return;
@@ -126,8 +141,8 @@ const TareasForm = ({
           {
             ...data,
             proyectoId,
+            prioridad,
             usuarioAsignado,
-
             tareaDependenciaId: tareaSeleccionada,
           },
           user.token
@@ -139,8 +154,6 @@ const TareasForm = ({
       onClose();
       reset();
     } catch (error: any) {
-      console.log("ERROR", error);
-
       toast({
         title: error.response.data
           ? error.response.data.message
@@ -156,6 +169,11 @@ const TareasForm = ({
 
   const handleTareaAsignada = (value: string) => {
     setTareaSeleccionada(value);
+  };
+
+  const handlePrioridadChange = (value: string) => {
+    setSelectedPrioridad(value);
+    setValue("prioridad", value);
   };
 
   const handleSelectStartDate = (date: Date | undefined) => {
@@ -232,7 +250,7 @@ const TareasForm = ({
                 placeholder="Selecciona una fecha"
                 value={selectedDate ? format(selectedDate, "PPP") : ""}
                 readOnly
-                className="w-full mt-2 cursor-pointer"
+                className="w-full mt-2 cursor-pointer dark:bg-gray-800 dark:text-white"
               />
               <CalendarDays className="absolute right-2 top-1/2 transform -translate-y-1/2 text-custom-title dark:text-white cursor-pointer" />
             </div>
@@ -267,7 +285,7 @@ const TareasForm = ({
                   selectedDataFinish ? format(selectedDataFinish, "PPP") : ""
                 }
                 readOnly
-                className="w-full mt-2 cursor-pointer"
+                className="w-full mt-2 cursor-pointer dark:bg-gray-800 dark:text-white"
               />
               <CalendarDays className="absolute right-2 top-1/2 transform -translate-y-1/2 text-custom-title dark:text-white cursor-pointer" />
             </div>
@@ -287,6 +305,27 @@ const TareasForm = ({
             {errors.fechaFin.message?.toString()}
           </p>
         )}
+      </div>
+
+      <div className="mt-3">
+        <label className="text-custom-title dark:text-white font-bold">
+          Prioridad
+        </label>
+
+        <Select value={selectedPrioridad} onValueChange={handlePrioridadChange}>
+          <SelectTrigger className="w-full dark:bg-gray-800 dark:text-white">
+            <SelectValue placeholder="Selecciona la prioridad" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Prioridad</SelectLabel>
+              <SelectItem value="Baja">Baja</SelectItem>
+              <SelectItem value="Media">Media</SelectItem>
+              <SelectItem value="Alta">Alta</SelectItem>
+              <SelectItem value="Critica">Critica</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       </div>
 
       {!tareaUpdate && (
@@ -363,7 +402,9 @@ const TareasForm = ({
       )}
 
       <div className="flex justify-end gap-5 mt-5">
-        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+        <AlertDialogCancel className="dark:text-white">
+          Cancelar
+        </AlertDialogCancel>
         <Button
           type="submit"
           className="bg-custom-title text-white dark:bg-white dark:text-custom-title"

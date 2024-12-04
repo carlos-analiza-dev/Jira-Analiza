@@ -45,6 +45,9 @@ const ActividadesForm = ({
   const user = useSelector((state: any) => state.auth);
   const { toast } = useToast();
   const [mostrar, setMostrar] = useState(false);
+  const [selectedPrioridad, setSelectedPrioridad] = useState(
+    actividadUpdate?.prioridad
+  );
   const [dependencia, setDependencia] = useState<string>("no");
   const [actividadSeleccionada, setActividadSeleccionada] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
@@ -61,7 +64,15 @@ const ActividadesForm = ({
     setValue,
     handleSubmit,
     formState: { errors },
-  } = useForm<PostActividad>();
+  } = useForm<PostActividad>({
+    defaultValues: {
+      titulo: actividadUpdate?.titulo,
+      descripcion: actividadUpdate?.descripcion,
+      fechaInicio: actividadUpdate?.fechaInicio,
+      fechaFin: actividadUpdate?.fechaFin,
+      prioridad: actividadUpdate?.prioridad,
+    },
+  });
 
   const { result: usersActives } = useGetColaboradoresEventos(
     eventoId,
@@ -93,56 +104,45 @@ const ActividadesForm = ({
   }, [user.token, usersActives]);
 
   useEffect(() => {
-    if (actividadUpdate) {
-      setValue("titulo", actividadUpdate.titulo);
-      setValue("descripcion", actividadUpdate.descripcion);
-      setValue;
-    }
-    setValue("eventoId", eventoId);
-  }, [actividadUpdate, eventoId, setValue]);
+    reset({
+      titulo: actividadUpdate?.titulo,
+      descripcion: actividadUpdate?.descripcion,
+      fechaFin: actividadUpdate?.fechaFin,
+      fechaInicio: actividadUpdate?.fechaInicio,
+      prioridad: actividadUpdate?.prioridad || "Baja",
+    });
+    setSelectedPrioridad(actividadUpdate?.prioridad || "Baja");
+    setValue("prioridad", actividadUpdate?.prioridad || "Baja");
+  }, [actividadUpdate, eventoId, reset, setValue]);
 
   const onSubmit = async (data: PostActividad) => {
-    const { titulo, descripcion, fechaInicio, fechaFin } = data;
+    const { titulo, descripcion, fechaInicio, fechaFin, prioridad } = data;
 
     try {
       if (isEdit && actividadUpdate?.id) {
         await updateActividad(
           actividadUpdate.id,
-          { titulo, descripcion, fechaInicio, fechaFin },
+          { titulo, descripcion, fechaInicio, fechaFin, prioridad },
           user.token
         );
-
         toast({ title: "Actividad actualizada exitosamente" });
       } else {
-        if (!usuarioAsignado) {
-          toast({
-            title: "Debe asigarse un responsable de esta actividad",
-            variant: "destructive",
-          });
-          return;
-        }
         await createActividad(
           {
             ...data,
             eventoId,
+            prioridad,
             usuarioAsignado,
             actividadDependenciaId: actividadSeleccionada,
           },
           user.token
         );
-
         toast({ title: "Actividad creada exitosamente" });
       }
       setCheck(!check);
-
       reset();
     } catch (error) {
-      console.log(error);
-
-      toast({
-        title: "Ocurrió un error al momento de procesar la actividad",
-        variant: "destructive",
-      });
+      toast({ title: "Ocurrió un error", variant: "destructive" });
     }
   };
 
@@ -152,6 +152,11 @@ const ActividadesForm = ({
 
   const handleActividadAsignada = (value: string) => {
     setActividadSeleccionada(value);
+  };
+
+  const handlePrioridadChange = (value: string) => {
+    setSelectedPrioridad(value);
+    setValue("prioridad", value, { shouldValidate: true });
   };
 
   const handleSelectStartDate = (date: Date | undefined) => {
@@ -215,52 +220,6 @@ const ActividadesForm = ({
           </span>
         )}
       </div>
-
-      {!actividadUpdate && (
-        <div className="mt-3">
-          <label className="text-custom-title dark:text-white font-bold">
-            Agregar dependencia
-          </label>
-          <RadioGroup
-            className="w-full flex justify-around"
-            value={dependencia}
-            onValueChange={(value) => {
-              setDependencia(value);
-              setMostrar(value === "si");
-            }}
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="si" id="r1" />
-              <label htmlFor="r1">Si</label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="no" id="r2" />
-              <label htmlFor="r2">No</label>
-            </div>
-          </RadioGroup>
-          {mostrar && (
-            <Select onValueChange={(value) => handleActividadAsignada(value)}>
-              <SelectTrigger className="w-full dark:bg-gray-800">
-                <SelectValue placeholder="Selecciona la tarea" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Tarea dependiente</SelectLabel>
-                  {actividadDependencia && actividadDependencia.length > 0 ? (
-                    actividadDependencia.map((acti: ActividadesType) => (
-                      <SelectItem key={acti.id} value={acti.id}>
-                        {acti.titulo}
-                      </SelectItem>
-                    ))
-                  ) : (
-                    <p>No se encontraron tareas por seleccionar</p>
-                  )}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          )}
-        </div>
-      )}
 
       <div className="mt-3">
         <label className="block text-custom-title dark:text-white font-semibold">
@@ -329,6 +288,76 @@ const ActividadesForm = ({
             {errors.fechaFin.message?.toString()}
           </p>
         )}
+      </div>
+
+      {!actividadUpdate && (
+        <div className="mt-3">
+          <label className="text-custom-title dark:text-white font-bold">
+            Agregar dependencia
+          </label>
+          <RadioGroup
+            className="w-full flex justify-around"
+            value={dependencia}
+            onValueChange={(value) => {
+              setDependencia(value);
+              setMostrar(value === "si");
+            }}
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="si" id="r1" />
+              <label htmlFor="r1">Si</label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="no" id="r2" />
+              <label htmlFor="r2">No</label>
+            </div>
+          </RadioGroup>
+          {mostrar && (
+            <Select onValueChange={(value) => handleActividadAsignada(value)}>
+              <SelectTrigger className="w-full dark:bg-gray-800">
+                <SelectValue placeholder="Selecciona la tarea" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Tarea dependiente</SelectLabel>
+                  {actividadDependencia && actividadDependencia.length > 0 ? (
+                    actividadDependencia.map((acti: ActividadesType) => (
+                      <SelectItem key={acti.id} value={acti.id}>
+                        {acti.titulo}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <p>No se encontraron tareas por seleccionar</p>
+                  )}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          )}
+        </div>
+      )}
+
+      <div className="mt-3">
+        <label className="text-custom-title dark:text-white font-bold">
+          Prioridad
+        </label>
+
+        <Select
+          value={selectedPrioridad}
+          onValueChange={(value) => handlePrioridadChange(value)}
+        >
+          <SelectTrigger className="w-full dark:bg-gray-800 dark:text-white">
+            <SelectValue placeholder="Selecciona la prioridad" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Prioridad</SelectLabel>
+              <SelectItem value="Baja">Baja</SelectItem>
+              <SelectItem value="Media">Media</SelectItem>
+              <SelectItem value="Alta">Alta</SelectItem>
+              <SelectItem value="Critica">Critica</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       </div>
 
       {!actividadUpdate && (

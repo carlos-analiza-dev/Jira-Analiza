@@ -85,8 +85,6 @@ const FormColaborador = ({ onSuccess, setCheck, check }: PropsForm) => {
     }
   };
 
-  console.log("depto", departamento);
-
   return (
     <div>
       <div className="mt-4">

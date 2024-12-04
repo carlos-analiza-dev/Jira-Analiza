@@ -40,8 +40,6 @@ const TableEventosPending = ({ eventos, setEventosPendings }: Props) => {
         });
       }
     } catch (error) {
-      console.log("ERROR ECENTO", error);
-
       toast({
         title: "Error al actualizar el proyecto",
         variant: "destructive",

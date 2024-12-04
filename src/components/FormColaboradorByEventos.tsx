@@ -47,8 +47,6 @@ const FormColaboradorByEventos = ({
     departamento
   );
 
-  console.log("ERRRO USERW", error);
-
   const [usuariosSeleccionados, setUsuariosSeleccionados] = useState<
     UserType[]
   >([]);

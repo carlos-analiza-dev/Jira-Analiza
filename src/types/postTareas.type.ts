@@ -7,4 +7,5 @@ export type PostTarea = {
   usuarioAsignado?: string;
   tareaDependenciaId?: string;
   estado?: string;
+  prioridad?: string;
 };

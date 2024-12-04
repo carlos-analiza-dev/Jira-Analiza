@@ -1,5 +1,5 @@
 import { TareasData } from "@/types/tareas.type";
-import { EllipsisVertical, Eye, Pencil, Trash2 } from "lucide-react";
+import { EllipsisVertical, Eye, Pencil, Trash2, Check } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -16,16 +16,25 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TareasForm from "./TareasForm";
 import { useParams } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import deleteTarea from "@/api/tareas/deleteTarea";
 import { useSelector } from "react-redux";
 import { useDraggable } from "@dnd-kit/core";
-import { formatFecha } from "@/helpers/formatDate";
 import { TypeProyectos } from "@/types/proyectos.type";
 import useTareaId from "@/api/tareas/getTareaId";
+import { Avatar, AvatarFallback } from "./ui/avatar";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+import useGetComentariosTareaId from "@/api/comentariosTasks/getComentariosTaskId";
+import { ComentariosType } from "@/types/comentarios/comentarios.type";
+import createComentario from "@/api/comentariosTasks/createComentario";
+import { ComentariosPost } from "@/types/comentarios/comentarios.post.type";
+import { useForm } from "react-hook-form";
+import DetallesComentario from "./DetallesComentario";
+import Comentarios from "./Comentarios";
 
 interface Props {
   tarea: TareasData;
@@ -39,14 +48,25 @@ const TareasCard = ({ tarea, check, setCheck, proyectos }: Props) => {
   });
   const user = useSelector((state: any) => state.auth);
   const params = useParams();
+  const [check2, setCheck2] = useState(false);
   const proyectoId = Array.isArray(params.id) ? params.id[0] : params.id;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [tareaId, setTareaId] = useState("");
   const { toast } = useToast();
-
+  const [isFocused, setIsFocused] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { result, error } = useTareaId(tareaId, user.token);
+  const {
+    result: resComentarios,
+    error: errorComentarios,
+    loading,
+  } = useGetComentariosTareaId(tareaId, user.token, check2);
   const [tareaUpdate, setTareaUpdate] = useState<TareasData | null>(null);
   const [isEdit, setIsEdit] = useState(false);
+  const [task, setTask] = useState<TareasData | null>(null);
+  const [comentarios, setComentarios] = useState<ComentariosType[]>([]);
+  const [comentarioTexto, setComentarioTexto] = useState<string>("");
+  const { handleSubmit } = useForm<ComentariosPost>();
 
   const handleTarea = (tarea: TareasData) => {
     setTareaUpdate(tarea);
@@ -63,11 +83,59 @@ const TareasCard = ({ tarea, check, setCheck, proyectos }: Props) => {
     setTareaId(tareaId);
   };
 
-  console.log("TAREAID", result);
+  useEffect(() => {
+    if (resComentarios) {
+      setComentarios(resComentarios);
+    }
+  }, [resComentarios]);
+
+  useEffect(() => {
+    if (result) {
+      setTask(result);
+    }
+  }, [result]);
+
+  const onSubmit = async () => {
+    if (!comentarioTexto.trim()) {
+      toast({
+        title: "El comentario no puede estar vacío",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const nuevoComentario = await createComentario(
+        { contenido: comentarioTexto, userId: user.id },
+        tareaId,
+        user.token
+      );
+      setCheck2(!check2);
+      setComentarios((prevComentarios) => [
+        ...prevComentarios,
+        nuevoComentario as ComentariosType,
+      ]);
+
+      toast({ title: "Comentario creado exitosamente" });
+
+      setComentarioTexto("");
+      setIsFocused(false);
+    } catch (error) {
+      toast({
+        title: "Ocurrió un error al agregar el comentario",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const deleteTask = async () => {
     try {
       const response = await deleteTarea(tareaId, user.token);
+
       toast({ title: "Tarea elimninada exitosamente" });
       setCheck(!check);
     } catch (error) {
@@ -97,9 +165,6 @@ const TareasCard = ({ tarea, check, setCheck, proyectos }: Props) => {
       }
     : undefined;
 
-  console.log("TAREA", tarea);
-  console.log("PROYECCCC", proyectos);
-
   return (
     <div className="p-2 bg-gray-50 dark:bg-gray-900 mt-2 shadow-md block w-full">
       <div className="flex justify-between gap-3">
@@ -116,6 +181,14 @@ const TareasCard = ({ tarea, check, setCheck, proyectos }: Props) => {
           <p className="text-custom-title text-base font-light dark:text-white ">
             <span className="font-semibold">Descripción:</span>{" "}
             {tarea.descripcion}
+          </p>
+          <p className="text-custom-title text-base font-bold dark:text-white ">
+            Prioridad:{" "}
+            <span
+              className={`${tarea.prioridad === "Baja" ? "text-green-600" : tarea.prioridad === "Media" ? "text-sky-600" : tarea.prioridad === "Alta" ? "text-amber-600" : "text-red-500"} font-semibold`}
+            >
+              {tarea.prioridad}
+            </span>
           </p>
           <p className="text-custom-title text-sm font-light dark:text-white mt-1">
             <span className="font-semibold">Responsable:</span>{" "}
@@ -151,7 +224,6 @@ const TareasCard = ({ tarea, check, setCheck, proyectos }: Props) => {
                     );
                   }
 
-                  // Aquí no bloqueamos, solo mostramos el tiempo restante
                   return (
                     <span
                       className={
@@ -174,18 +246,78 @@ const TareasCard = ({ tarea, check, setCheck, proyectos }: Props) => {
                 <Eye onClick={() => handleTareaId(tarea.id)} />
               </p>
             </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete
-                  your account and remove your data from our servers.
+            <AlertDialogContent className="max-w-screen-xl w-full h-[60vh] sm:h-[70vh] md:h-[80vh] p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-y-auto">
+              <div className="flex justify-end">
+                <AlertDialogCancel>X</AlertDialogCancel>
+              </div>
+              <AlertDialogHeader className="max-h-screen">
+                <AlertDialogTitle className="text-custom-title dark:text-white font-semibold text-lg text-center">
+                  Detalles de la tarea - {task?.titulo}
+                </AlertDialogTitle>
+                <AlertDialogDescription className="h-full">
+                  <div className="flex flex-col sm:flex-row w-full gap-4 mt-4 h-full">
+                    <div className="p-4 dark:bg-gray-700 rounded-md w-full sm:w-3/5">
+                      <div className="flex gap-3">
+                        <Avatar className="w-10 h-10">
+                          {" "}
+                          <AvatarFallback className="bg-custom-second text-white font-bold uppercase">
+                            {user?.nombre
+                              ? `${user.nombre[0]}${user.nombre[1]}`
+                              : "??"}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="w-full">
+                          <form onSubmit={handleSubmit(onSubmit)}>
+                            <Input
+                              className="w-full dark:bg-gray-800 dark:text-white"
+                              placeholder="Añadir un comentario..."
+                              value={comentarioTexto}
+                              onChange={(e) =>
+                                setComentarioTexto(e.target.value)
+                              }
+                              onFocus={() => setIsFocused(true)}
+                              onBlur={() => {
+                                if (
+                                  !isSubmitting &&
+                                  comentarioTexto.trim() === ""
+                                ) {
+                                  setIsFocused(false);
+                                }
+                              }}
+                            />
+
+                            {isFocused && (
+                              <div className="mt-2 flex justify-start gap-3">
+                                <Button
+                                  className="bg-custom-title text-white font-bold dark:bg-white dark:text-custom-title"
+                                  type="submit"
+                                  disabled={isSubmitting}
+                                >
+                                  {isSubmitting ? "Guardando..." : "Guardar"}
+                                </Button>
+                                <Button
+                                  className="dark:bg-custom-second dark:text-white font-bold"
+                                  onClick={() => {
+                                    setComentarioTexto("");
+                                    setIsFocused(false);
+                                  }}
+                                >
+                                  Cancelar
+                                </Button>
+                              </div>
+                            )}
+                          </form>
+                        </div>
+                      </div>
+                      <Comentarios
+                        comentarios={comentarios}
+                        setComentarios={setComentarios}
+                      />
+                    </div>
+                    <DetallesComentario task={task} />
+                  </div>
                 </AlertDialogDescription>
               </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction>Continue</AlertDialogAction>
-              </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
         </div>

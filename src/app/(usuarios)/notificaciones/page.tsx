@@ -15,7 +15,7 @@ const Notificaciones = () => {
   const user = useSelector((state: any) => state.auth);
   const { result } = useGetProjectsResponsable(user.token);
   const { result: resultEvento } = useGetEventosResponsable(user.token);
-  console.log("RES EVN RES", resultEvento);
+
   const [eventosPendings, setEventosPendings] = useState<DataEventos[] | []>(
     []
   );
