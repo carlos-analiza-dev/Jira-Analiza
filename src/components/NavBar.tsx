@@ -49,10 +49,12 @@ export default function NavBar() {
   const { result: resultEvento } = useGetEventosResponsable(user.token);
 
   useEffect(() => {
-    if (result && resultEvento) {
-      dispatch(setNotificationCount(result.length + resultEvento.length));
+    if (Array.isArray(result) && Array.isArray(resultEvento)) {
+      const notificationCount = result.length + resultEvento.length;
+      dispatch(setNotificationCount(notificationCount));
     }
-  }, [result, dispatch]);
+  }, [result, resultEvento, dispatch]);
+
   const notificationCount = useSelector(
     (state: any) => state.notifications.notificationCount
   );
@@ -95,9 +97,9 @@ export default function NavBar() {
           {user && user.rol === "Manager" && (
             <Link href="/manager-dashboard">
               <Image
-                src="/images/Logotipo_principal.png"
-                width={200}
-                height={200}
+                src="/images/analiza_todos.png"
+                width={500}
+                height={500}
                 alt="Logo Analiza"
                 className="h-20 w-20"
               />
@@ -106,9 +108,9 @@ export default function NavBar() {
           {user && user.rol === "Administrador" && (
             <Link href="/dashboard">
               <Image
-                src="/images/Logotipo_principal.png"
-                width={200}
-                height={200}
+                src="/images/analiza_todos.png"
+                width={5000}
+                height={500}
                 alt="Logo Analiza"
                 className="h-20 w-20"
               />
@@ -117,9 +119,9 @@ export default function NavBar() {
           {user && user.rol === "User" && (
             <Link href="/proyectos">
               <Image
-                src="/images/Logotipo_principal.png"
-                width={200}
-                height={200}
+                src="/images/analiza_todos.png"
+                width={500}
+                height={500}
                 alt="Logo Analiza"
                 className="h-20 w-20"
               />
@@ -128,9 +130,9 @@ export default function NavBar() {
           {user.length === 0 && (
             <Link href="/">
               <Image
-                src="/images/Logotipo_principal.png"
-                width={200}
-                height={200}
+                src="/images/analiza_todos.png"
+                width={500}
+                height={500}
                 alt="Logo Analiza"
                 className="h-20 w-20"
               />
@@ -189,9 +191,15 @@ export default function NavBar() {
                     <NavigationMenuLink
                       className={navigationMenuTriggerStyle()}
                     >
-                      <Bell className="relative" />
-                      <div className="absolute top-0 right-0 transform  -translate-y-1/2 p-1 h-5 w-5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs">
-                        {notificationCount}
+                      <div
+                        className={`relative ${notificationCount > 0 ? "animate-bounce" : ""}`}
+                      >
+                        <Bell className="text-custom-title dark:text-white" />
+                        {notificationCount > 0 && (
+                          <div className="absolute top-0 right-0 transform -translate-y-1/2 p-1 h-5 w-5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs">
+                            {notificationCount}
+                          </div>
+                        )}
                       </div>
                     </NavigationMenuLink>
                   </Link>
@@ -259,9 +267,15 @@ export default function NavBar() {
               {user && user.rol === "Administrador" && (
                 <Link href="/notificaciones-admin" legacyBehavior passHref>
                   <div className="flex items-center">
-                    <Bell className="relative text-custom-title dark:text-white" />
-                    <div className="absolute top-0 ml-4 transform  -translate-y-1/6 p-1 h-5 w-5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs">
-                      {notificationCount}
+                    <div
+                      className={`relative ${notificationCount > 0 ? "animate-bounce" : ""}`}
+                    >
+                      <Bell className="text-custom-title dark:text-white" />
+                      {notificationCount > 0 && (
+                        <div className="absolute top-0 right-0 transform -translate-y-1/2 p-1 h-5 w-5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs">
+                          {notificationCount}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </Link>
@@ -269,9 +283,15 @@ export default function NavBar() {
               {user && user.rol === "Manager" && (
                 <Link href="/notificaciones-manager" legacyBehavior passHref>
                   <div className="flex items-center">
-                    <Bell className="relative text-custom-title dark:text-white" />
-                    <div className="absolute top-0 ml-4 transform  -translate-y-1/6 p-1 h-5 w-5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs">
-                      {notificationCount}
+                    <div
+                      className={`relative ${notificationCount > 0 ? "animate-bounce" : ""}`}
+                    >
+                      <Bell className="text-custom-title dark:text-white" />
+                      {notificationCount > 0 && (
+                        <div className="absolute top-0 right-0 transform -translate-y-1/2 p-1 h-5 w-5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs">
+                          {notificationCount}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </Link>

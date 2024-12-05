@@ -17,11 +17,11 @@ import { Button } from "@/components/ui/button";
 import { clearUser } from "@/store/auth/sessionSlice";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
-const PageProyectoById = () => {
+const EventosPageId = () => {
   const user = useSelector((state: any) => state.auth);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -111,7 +111,9 @@ const PageProyectoById = () => {
             href={
               user && user.rol === "Administrador"
                 ? `/eventos/${eventoId}/team-eventos-admin`
-                : `/eventos-user/${eventoId}/team-eventos-user`
+                : user.rol === "Manager"
+                  ? `/eventos-asignados/${eventoId}/team-manager`
+                  : `/eventos-user/${eventoId}/team-eventos-user`
             }
             className="dark:bg-sky-600 dark:text-white bg-custom-title text-white rounded-md p-2 shadow-md font-bold"
           >
@@ -132,4 +134,4 @@ const PageProyectoById = () => {
   );
 };
 
-export default PageProyectoById;
+export default EventosPageId;

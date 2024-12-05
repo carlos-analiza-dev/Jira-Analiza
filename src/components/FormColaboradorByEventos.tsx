@@ -20,7 +20,7 @@ import {
 } from "./ui/select";
 import useAllDepartamentos from "@/api/roles/getAllDepartamentos";
 import { TableRolesData } from "@/types/table.roles.type";
-import useGetUsersByRolesProyectos from "@/api/users/getUsersByRolProjects";
+import useGetUsersByRolesEventos from "@/api/users/getUsersByRolEvento";
 
 type PropsForm = {
   onSuccess: () => void;
@@ -41,10 +41,11 @@ const FormColaboradorByEventos = ({
   const [departamento, setDepartamento] = useState<string>("");
   const { result: departamentos } = useAllDepartamentos(user.token, pais);
 
-  const { result, loading, error } = useGetUsersByRolesProyectos(
+  const { result, loading, error } = useGetUsersByRolesEventos(
     user.token,
     pais,
-    departamento
+    departamento,
+    eventoId
   );
 
   const [usuariosSeleccionados, setUsuariosSeleccionados] = useState<
@@ -78,6 +79,8 @@ const FormColaboradorByEventos = ({
       });
     }
   };
+
+  console.log("RESUSUUS", result);
 
   return (
     <div>

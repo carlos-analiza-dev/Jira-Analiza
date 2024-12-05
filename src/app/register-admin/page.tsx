@@ -7,9 +7,9 @@ const PageRegisterAdmin = () => {
     <div className="h-full  flex justify-center items-center">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 dark:bg-gray-900 p-5 sm:w-full">
         <div className="grid-cols-1 sm:max-w-2xl flex justify-center">
-          <div className="h-full w-full flex flex-col items-center justify-center">
+          <div className="h-full md:h-screen w-full flex flex-col items-center justify-center">
             <Image
-              src="/images/Logotipo_principal.png"
+              src="/images/analiza_todos.png"
               alt="LogoAnaliza"
               layout="responsive"
               width={600}

@@ -22,7 +22,7 @@ const DetallesComentarioActividad = ({ actividad }: Props) => {
         </p>
       </div>
       <div className="mt-3 flex items-center gap-3 justify-start">
-        <p className="font-normal  dark:text-white  text-custom-title">
+        <p className="font-semibold  dark:text-white  text-custom-title">
           Responsable:
         </p>
         <div className="flex sm:gap-3 items-center">
@@ -32,7 +32,7 @@ const DetallesComentarioActividad = ({ actividad }: Props) => {
               {actividad?.usuarioAsignado.nombre[1]}
             </AvatarFallback>
           </Avatar>
-          <span className="font-normal">
+          <span className="font-normal  dark:text-white  text-custom-title">
             {actividad?.usuarioAsignado.nombre}
           </span>
         </div>
@@ -58,7 +58,9 @@ const DetallesComentarioActividad = ({ actividad }: Props) => {
               {actividad?.creador.nombre[1]}
             </AvatarFallback>
           </Avatar>
-          <span className="font-normal">{actividad?.creador.nombre}</span>
+          <span className="font-normal  dark:text-white  text-custom-title">
+            {actividad?.creador.nombre}
+          </span>
         </div>
       </div>
       <div className="mt-3 flex justify-start">

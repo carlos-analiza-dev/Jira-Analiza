@@ -29,11 +29,13 @@ import createComentario from "@/api/comentarioAct/createComentario";
 import DetallesComentarioActividad from "./DetallesComentarioActividad";
 import useGetComentariosActividadId from "@/api/comentarioAct/getComentariosTaskId";
 import ComentariosActividad from "./ComentariosActividad";
+import { DataEventos } from "@/types/evento.type";
 
 interface Props {
   actividad: ActividadesType;
   check: boolean;
   setCheck: React.Dispatch<React.SetStateAction<boolean>>;
+  eventos: DataEventos;
   setActividadesStatus: React.Dispatch<
     React.SetStateAction<ActividadesType[] | []>
   >;
@@ -44,6 +46,7 @@ const ActividadesCard = ({
   check,
   setCheck,
   setActividadesStatus,
+  eventos,
 }: Props) => {
   const { handleSubmit } = useForm<ComentariosPost>();
   const [actividadesId, setActividadesId] = useState("");
@@ -287,6 +290,7 @@ const ActividadesCard = ({
                                   {isSubmitting ? "Guardando..." : "Guardar"}
                                 </Button>
                                 <Button
+                                  variant="outline"
                                   className="dark:bg-custom-second dark:text-white font-bold"
                                   onClick={() => {
                                     setComentarioTexto("");
@@ -312,8 +316,9 @@ const ActividadesCard = ({
             </AlertDialogContent>
           </AlertDialog>
         </div>
-        {user.id === actividad.creador.id && (
-          <div className="flex items-center cursor-pointer">
+        <div className="flex items-center cursor-pointer">
+          {(eventos?.usuarioCreador?.id === user.id ||
+            eventos?.responsable?.id === user.id) && (
             <Popover>
               <PopoverTrigger asChild>
                 <EllipsisVertical />
@@ -378,8 +383,8 @@ const ActividadesCard = ({
                 </AlertDialog>
               </PopoverContent>
             </Popover>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

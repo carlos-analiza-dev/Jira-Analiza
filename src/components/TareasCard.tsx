@@ -296,6 +296,7 @@ const TareasCard = ({ tarea, check, setCheck, proyectos }: Props) => {
                                   {isSubmitting ? "Guardando..." : "Guardar"}
                                 </Button>
                                 <Button
+                                  variant="outline"
                                   className="dark:bg-custom-second dark:text-white font-bold"
                                   onClick={() => {
                                     setComentarioTexto("");

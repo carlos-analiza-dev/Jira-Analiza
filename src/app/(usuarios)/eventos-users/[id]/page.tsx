@@ -113,6 +113,7 @@ const EventosIdPage = () => {
         </div>
       ) : null}
       <ActividadesList
+        eventos={result}
         actividades={resultActividades}
         check={check}
         setCheck={setCheck}

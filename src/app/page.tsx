@@ -9,7 +9,7 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
 
   return (
-    <div className=" h-full flex justify-center items-center bg-gray-50 dark:bg-gray-900">
+    <div className=" h-full md:h-screen flex justify-center items-center bg-gray-50 dark:bg-gray-900">
       {isLoading && (
         <div className="h-full w-full">
           <Spinner />
@@ -22,7 +22,7 @@ export default function Login() {
         <div className="grid-cols-1 sm:w-full flex justify-center">
           <div className="h-full w-full flex flex-col items-center justify-center">
             <Image
-              src="/images/Logotipo_principal.png"
+              src="/images/analiza_todos.png"
               alt="LogoAnaliza"
               width={600}
               height={500}

@@ -3,6 +3,7 @@ import {
   Building2,
   CalendarClock,
   CalendarPlus,
+  CalendarSearch,
   ChartColumnBig,
   FolderKanban,
   HousePlus,
@@ -109,38 +110,44 @@ export const dataSideManager = [
   },
   {
     id: 5,
+    title: "Eventos Asignados",
+    link: "/eventos-asignados",
+    icon: CalendarSearch,
+  },
+  {
+    id: 6,
     title: "Proyectos",
     link: "/proyectos-manager",
     icon: CalendarClock,
   },
 
   {
-    id: 6,
+    id: 7,
     title: "Proyectos Asignados",
     link: "/asignados-proyectos",
     icon: FolderKanban,
   },
 
   {
-    id: 7,
+    id: 8,
     title: "Departamentos",
     link: "/departamentos-manager",
     icon: Shield,
   },
   {
-    id: 8,
+    id: 9,
     title: "Empresas",
     link: "/empresas-manager",
     icon: Building2,
   },
   {
-    id: 9,
+    id: 10,
     title: "Sucursales",
     link: "/sucursales-manager",
     icon: HousePlus,
   },
   {
-    id: 10,
+    id: 11,
     title: "Notificaciones",
     link: "/notificaciones-manager",
     icon: Bell,

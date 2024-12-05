@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { format } from "date-fns";
-import { CalendarDays } from "lucide-react";
+import { CalendarDays, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { PostEvento } from "@/types/postEevento";
@@ -28,6 +28,8 @@ import { DataEventos } from "@/types/evento.type";
 import updateEvento from "@/api/eventos/updateEvento";
 import { UserType } from "@/types/user.type";
 import useGetUsersActivesAndAuth from "@/api/users/getUserActivesAndAutorizados";
+import postEmailByUser from "@/api/users/postEmailByUser";
+import { CorreoType } from "@/types/correo.post.type";
 
 interface Props {
   check: boolean;
@@ -56,9 +58,10 @@ const FormEventos = ({
     defaultValues: evento || {},
   });
   const { result, loading, error } = useGetUsersActivesAndAuth(user.token);
+  const [correo, setCorreo] = useState<string | null>(null);
 
   const [usuarios, setUsuarios] = useState<UserType | []>([]);
-  const [responsableId, setResponsableId] = useState<string>("");
+  const [responsableId, setResponsableId] = useState<UserType | null>(null);
 
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     evento?.fechaInicio ? new Date(evento.fechaInicio) : undefined
@@ -98,7 +101,10 @@ const FormEventos = ({
         toast({ title: "Evento actualizado exitosamente" });
         setShowDialog(!showDialog);
       } else {
-        await createEvento({ ...data, responsableId }, user.token);
+        await createEvento(
+          { ...data, responsableId: responsableId?.id },
+          user.token
+        );
         setCheck(!check);
         toast({ title: "Evento creado exitosamente." });
         reset();
@@ -147,8 +153,37 @@ const FormEventos = ({
     setValue("estado", value);
   };
 
-  const handleValueIdRol = (value: string) => {
-    setResponsableId(value);
+  const handleSearchResponsable = async () => {
+    if (!correo) {
+      toast({ title: "Ingrese un correo válido.", variant: "destructive" });
+      return;
+    }
+
+    try {
+      const response = await postEmailByUser(
+        { correo } as CorreoType,
+        user.token
+      );
+
+      if (response) {
+        setResponsableId(response);
+        toast({ title: `Responsable encontrado: ${response.nombre}` });
+      } else {
+        toast({
+          title: "No se encontró el usuario con el correo proporcionado.",
+          variant: "destructive",
+        });
+      }
+    } catch (error: any) {
+      console.log("ERROR", error);
+
+      toast({
+        title: error.response.data
+          ? error.response.data.message
+          : "Error al encontrar el usuario.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -233,28 +268,30 @@ const FormEventos = ({
 
       {!evento && (
         <div className="mt-3">
-          <label className="block text-custom-title dark:text-white font-semibold">
+          <label className="text-custom-title dark:text-white">
             Responsable
           </label>
-          <Select onValueChange={(value) => handleValueIdRol(value)}>
-            <SelectTrigger className="w-full mt-2">
-              <SelectValue placeholder="-- Selecciona responsable --" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Responsable</SelectLabel>
-                {Array.isArray(usuarios) && usuarios.length > 0 ? (
-                  usuarios.map((user: UserType) => (
-                    <SelectItem key={user.id} value={user.id}>
-                      {user.nombre}
-                    </SelectItem>
-                  ))
-                ) : (
-                  <p>No hay usuarios disponibles.</p>
-                )}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          <div className="relative">
+            <Input
+              value={correo || ""}
+              onChange={(e) => setCorreo(e.target.value)}
+              placeholder="Correo del responsable"
+              className="dark:bg-gray-800"
+            />
+            <Search
+              size={20}
+              className="absolute text-custom-title dark:text-white top-1/2 transform right-1 -translate-y-1/2 cursor-pointer"
+              onClick={handleSearchResponsable}
+            />
+          </div>
+          <div>
+            {responsableId && (
+              <p className="text-custom-title dark:text-white font-bold text-sm mt-2">
+                Responsable seleccionado:
+                <span className="font-medium"> {responsableId.nombre}</span>
+              </p>
+            )}
+          </div>
         </div>
       )}
 

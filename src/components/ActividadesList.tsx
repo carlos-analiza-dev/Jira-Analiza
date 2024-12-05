@@ -6,11 +6,13 @@ import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import DropActividad from "./DropActividad";
 import updateActividad from "@/api/actividades/updateActividad";
 import { useEffect, useState } from "react";
+import { DataEventos } from "@/types/evento.type";
 
 type ActividadesListProps = {
   actividades: ActividadesType[];
   check: boolean;
   setCheck: React.Dispatch<React.SetStateAction<boolean>>;
+  eventos: DataEventos;
 };
 
 type GroupedTasks = {
@@ -28,6 +30,7 @@ const ActividadesList = ({
   actividades,
   check,
   setCheck,
+  eventos,
 }: ActividadesListProps) => {
   const user = useSelector((state: any) => state.auth);
   const { toast } = useToast();
@@ -109,6 +112,7 @@ const ActividadesList = ({
                     actividadesPorEstado.map((actividad) => (
                       <ActividadesCard
                         key={actividad.id}
+                        eventos={eventos}
                         actividad={actividad}
                         check={check}
                         setCheck={setCheck}

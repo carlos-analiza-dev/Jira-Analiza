@@ -118,7 +118,9 @@ const Eventos = ({ result, setCheck, check }: Props) => {
                 href={
                   user.rol && user.rol === "Administrador"
                     ? `/eventos/${evento.id}`
-                    : `/eventos-users/${evento.id}`
+                    : user.rol === "Manager"
+                      ? `/eventos-asignados/${evento.id}`
+                      : `/eventos-users/${evento.id}`
                 }
                 className="text-3xl font-bold text-custom-title dark:text-white hover:underline"
               >
@@ -163,7 +165,9 @@ const Eventos = ({ result, setCheck, check }: Props) => {
                             href={
                               user.rol && user.rol === "Administrador"
                                 ? `/eventos/${evento.id}`
-                                : `/eventos-users/${evento.id}`
+                                : user.rol === "Manager"
+                                  ? `/eventos-asignados/${evento.id}`
+                                  : `/eventos-users/${evento.id}`
                             }
                             className="text-sm text-custom-title dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 block p-2"
                           >

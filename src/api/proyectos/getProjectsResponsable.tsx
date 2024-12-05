@@ -20,6 +20,7 @@ const useGetProjectsResponsable = (token?: string, check?: boolean) => {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
     shouldRetryOnError: false,
+    refreshInterval: 1000,
   });
 
   return {

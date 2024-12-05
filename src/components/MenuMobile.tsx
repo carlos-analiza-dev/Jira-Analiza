@@ -1,5 +1,6 @@
 import {
   Bell,
+  CalendarSearch,
   FileLock2,
   LogIn,
   LogOut,
@@ -201,7 +202,7 @@ const MenuMobile = () => {
                         <p className="text-custom-title dark:text-white">
                           Eventos
                         </p>
-                        <Presentation />
+                        <CalendarSearch />
                       </Link>
                       <Link
                         href="/notificaciones"

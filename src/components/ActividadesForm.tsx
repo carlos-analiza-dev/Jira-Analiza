@@ -141,8 +141,13 @@ const ActividadesForm = ({
       }
       setCheck(!check);
       reset();
-    } catch (error) {
-      toast({ title: "Ocurrió un error", variant: "destructive" });
+    } catch (error: any) {
+      toast({
+        title: error.response.data
+          ? error.response.data.message
+          : "Ocurrió un error al actualizar la actividad",
+        variant: "destructive",
+      });
     }
   };
 
@@ -315,11 +320,11 @@ const ActividadesForm = ({
           {mostrar && (
             <Select onValueChange={(value) => handleActividadAsignada(value)}>
               <SelectTrigger className="w-full dark:bg-gray-800">
-                <SelectValue placeholder="Selecciona la tarea" />
+                <SelectValue placeholder="Selecciona la actividad" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Tarea dependiente</SelectLabel>
+                  <SelectLabel>Actividad dependiente</SelectLabel>
                   {actividadDependencia && actividadDependencia.length > 0 ? (
                     actividadDependencia.map((acti: ActividadesType) => (
                       <SelectItem key={acti.id} value={acti.id}>
@@ -327,7 +332,7 @@ const ActividadesForm = ({
                       </SelectItem>
                     ))
                   ) : (
-                    <p>No se encontraron tareas por seleccionar</p>
+                    <p>No se encontraron actividades por seleccionar</p>
                   )}
                 </SelectGroup>
               </SelectContent>

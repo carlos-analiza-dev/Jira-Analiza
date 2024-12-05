@@ -24,8 +24,7 @@ import updateUser from "@/api/users/updateUser";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import Image from "next/image";
-import { Pencil, Trash2 } from "lucide-react";
-import deleteUser from "@/api/users/deleteUser";
+import { Pencil } from "lucide-react";
 
 import { useSelector } from "react-redux";
 import { UserType } from "@/types/user.type";
@@ -62,19 +61,6 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
     } catch (error) {
       toast({
         title: "Ocurrio un error al actualizar la actividad.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    try {
-      const response = await deleteUser(id);
-      setCheck(!check);
-      toast({ title: "Usuario eliminado exitosamente" });
-    } catch (error) {
-      toast({
-        title: "Ocurrió un error al eliminar el usuario",
         variant: "destructive",
       });
     }
@@ -186,35 +172,6 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
                         onClick={() =>
                           handleToggleActive(user.id, user.isActive ?? 0)
                         }
-                        className="bg-custom-title dark:bg-white dark:text-custom-title font-semibold"
-                      >
-                        Continuar
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button size="icon" variant="outline">
-                      <Trash2 />
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <div className="flex justify-end">
-                        <AlertDialogCancel>X</AlertDialogCancel>
-                      </div>
-                      <AlertDialogTitle className="text-custom-title dark:text-white">
-                        ¿Estás seguro de eliminar este usuario?
-                      </AlertDialogTitle>
-                      <AlertDialogDescription className="text-custom-title dark:text-white">
-                        ¡Debes estar seguro de esta acción antes de continuar!
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => handleDelete(user.id)}
                         className="bg-custom-title dark:bg-white dark:text-custom-title font-semibold"
                       >
                         Continuar

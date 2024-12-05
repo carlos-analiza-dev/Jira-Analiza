@@ -20,6 +20,17 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [
+          "persist/PERSIST",
+          "persist/REHYDRATE",
+          "persist/REGISTER",
+        ],
+      },
+    }),
+  devTools: process.env.NODE_ENV !== "production", // Habilitar devTools en desarrollo
 });
 
 export const persistor = persistStore(store);
