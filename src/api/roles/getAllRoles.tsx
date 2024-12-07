@@ -31,7 +31,7 @@ const useAllRoles = (
     };
 
     fetchRoles();
-  }, [url, trigger, error]);
+  }, [url, trigger, offset, limit, token, pais]);
 
   return { result, loading, error };
 };

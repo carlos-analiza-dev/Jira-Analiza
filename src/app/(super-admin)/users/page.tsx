@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { SucursalData } from "@/types/sucursal.type";
 import useAllSucursales from "@/api/sucursal/getSucursalesNotPagination";
-import { Frown, HeartCrack, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import useGetAllUsuarios from "@/api/users/getAllUsuarios";
 import ModalExpired from "@/components/ModalExpired";
 

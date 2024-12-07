@@ -15,7 +15,7 @@ const ProyectoNuevo = () => {
       dispatch(clearUser());
       router.push("/");
     }
-  }, [dispatch, router]);
+  }, [dispatch, router, user]);
   return (
     <div className="px-4 py-4 sm:px-12">
       <div className="mt-4">

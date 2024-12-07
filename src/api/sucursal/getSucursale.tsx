@@ -33,7 +33,7 @@ const useAllSucursal = (
     };
 
     getAllSucursales();
-  }, [url, check, error]);
+  }, [url, check, offset, limit, departamento, pais, token]);
 
   return { resultSucursal, loading, error };
 };

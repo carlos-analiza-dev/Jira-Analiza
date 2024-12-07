@@ -48,13 +48,13 @@ export default function DashBoardPage() {
     ) {
       setResultado(resultInactivos as ActiveData);
     }
-  }, [resultInactivos]);
+  }, [resultInactivos, user]);
 
   useEffect(() => {
     if (!user && !user.token) {
       setShowModal(true);
     }
-  }, [dispatch]);
+  }, [dispatch, user]);
 
   const handleCloseModal = () => {
     setShowModal(false);

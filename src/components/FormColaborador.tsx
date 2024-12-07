@@ -147,7 +147,7 @@ const FormColaborador = ({ onSuccess, setCheck, check }: PropsForm) => {
           result && result.length > 0 ? (
             <select
               multiple
-              className="w-full p-2 border rounded dark:bg-gray-800 dark:text-white"
+              className="w-full h-[200px] p-2 border rounded dark:bg-gray-800 dark:text-white"
               onChange={(e) => {
                 const options = e.target.options;
                 const selectedUsers: UserType[] = [];

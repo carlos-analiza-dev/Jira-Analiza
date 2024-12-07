@@ -23,7 +23,7 @@ const useAllDepartamentos = (token?: string, pais: string = "") => {
     };
 
     fetchRoles();
-  }, [url, error]);
+  }, [url, pais, token]);
 
   return { result, loading, error };
 };

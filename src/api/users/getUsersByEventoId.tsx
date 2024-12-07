@@ -34,7 +34,7 @@ const useGetUsersByEventoId = (
     };
 
     getAuthUsers();
-  }, [pais, token, departamento]);
+  }, [pais, token, departamento, url]);
 
   return { result, loading, error };
 };

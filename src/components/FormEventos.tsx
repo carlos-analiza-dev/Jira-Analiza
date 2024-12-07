@@ -268,7 +268,7 @@ const FormEventos = ({
 
       {!evento && (
         <div className="mt-3">
-          <label className="text-custom-title dark:text-white">
+          <label className="block text-custom-title dark:text-white font-semibold">
             Responsable
           </label>
           <div className="relative">
@@ -276,7 +276,7 @@ const FormEventos = ({
               value={correo || ""}
               onChange={(e) => setCorreo(e.target.value)}
               placeholder="Correo del responsable"
-              className="dark:bg-gray-800"
+              className="dark:bg-gray-800 mt-2"
             />
             <Search
               size={20}

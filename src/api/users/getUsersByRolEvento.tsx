@@ -37,7 +37,7 @@ const useGetUsersByRolesEventos = (
     };
 
     fetchUsers();
-  }, [pais, departamento, token]);
+  }, [pais, departamento, token, url]);
 
   return { result, loading, error };
 };

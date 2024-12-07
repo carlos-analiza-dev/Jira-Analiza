@@ -16,7 +16,7 @@ const PerfilPage = () => {
       dispatch(clearUser());
       router.push("/");
     }
-  }, [dispatch, router, user.token]);
+  }, [dispatch, router, user]);
 
   return (
     <>

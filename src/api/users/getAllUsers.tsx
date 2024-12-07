@@ -31,7 +31,7 @@ const useAllUsers = (
     };
 
     fetchData();
-  }, [url, check]);
+  }, [url, check, token]);
 
   return { result, loading, error };
 };

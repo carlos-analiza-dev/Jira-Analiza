@@ -24,7 +24,7 @@ const useAllSucursales = (token?: string, pais: string = "") => {
     };
 
     getAllSucursales();
-  }, [url, error]);
+  }, [url, token, pais, error]);
 
   return { resultSucursal, loading, error };
 };

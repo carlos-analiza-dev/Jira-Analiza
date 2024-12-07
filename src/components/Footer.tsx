@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Twitter } from "lucide-react";
+import { Facebook, Instagram } from "lucide-react";
 import Link from "next/link";
 
 export default function Footer() {
@@ -17,9 +17,6 @@ export default function Footer() {
             target="_blank"
           >
             <Facebook className="text-custom-title dark:text-white" />
-          </Link>
-          <Link href="/">
-            <Twitter className="text-custom-title dark:text-white" />
           </Link>
         </div>
       </div>

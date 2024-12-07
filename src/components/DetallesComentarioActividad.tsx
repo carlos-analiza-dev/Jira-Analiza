@@ -44,7 +44,7 @@ const DetallesComentarioActividad = ({ actividad }: Props) => {
       </div>
       <div className="mt-3 flex justify-start">
         <p className="text-custom-title dark:text-white font-semibold">
-          Prioridad: <span className="font-normal">Alta</span>
+          Prioridad: <span className="font-normal">{actividad?.prioridad}</span>
         </p>
       </div>
       <div className="mt-3 flex items-center gap-3 justify-start">

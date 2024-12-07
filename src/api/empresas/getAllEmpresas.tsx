@@ -28,7 +28,7 @@ const useGetAllEmpresas = (
     };
 
     fetchRoles();
-  }, [url, error, check]);
+  }, [url, error, check, token]);
 
   return { result, loading, error };
 };

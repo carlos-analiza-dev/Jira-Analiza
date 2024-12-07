@@ -23,7 +23,7 @@ const useGetEmpresas = (token?: string, check?: boolean) => {
     };
 
     fetchRoles();
-  }, [url, error, check]);
+  }, [url, token, check]);
 
   return { result, loading, error };
 };
