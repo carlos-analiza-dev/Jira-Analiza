@@ -1,7 +1,8 @@
-export function formatFecha(fechaString?: string): string {
+export function formatFecha(fechaString?: string | Date): string {
   if (!fechaString) return "Fecha no disponible";
 
-  const date = new Date(fechaString);
+  const date =
+    fechaString instanceof Date ? fechaString : new Date(fechaString);
 
   if (isNaN(date.getTime())) return "Fecha inválida";
 

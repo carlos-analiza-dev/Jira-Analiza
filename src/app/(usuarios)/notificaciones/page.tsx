@@ -16,6 +16,8 @@ const Notificaciones = () => {
   const { result } = useGetProjectsResponsable(user.token);
   const { result: resultEvento } = useGetEventosResponsable(user.token);
 
+  console.log("RESULT PROYECTOS", result);
+
   const [eventosPendings, setEventosPendings] = useState<DataEventos[] | []>(
     []
   );

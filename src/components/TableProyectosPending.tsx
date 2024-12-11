@@ -12,6 +12,19 @@ import { useToast } from "@/components/ui/use-toast";
 import { TypeProyectos } from "@/types/proyectos.type";
 
 import { useSelector } from "react-redux";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/alert-dialog";
+import { Textarea } from "./ui/textarea";
+import { useState } from "react";
 
 interface Props {
   proyectos: TypeProyectos[] | [];
@@ -22,13 +35,25 @@ interface Props {
 const TableProyectosPending = ({ proyectos, setProyectosPendings }: Props) => {
   const user = useSelector((state: any) => state.auth);
   const { toast } = useToast();
+  const [justificacion, setJustificacion] = useState<string>("");
 
   const handleStatusProject = async (
     proyectoId: string,
     statusProject: string
   ) => {
+    if (statusProject === "Rechazado" && justificacion.trim() === "") {
+      toast({
+        title: "Error",
+        description:
+          "La justificación es obligatoria para rechazar un proyecto.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const projectData = {
       statusProject,
+      ...(statusProject === "Rechazado" && { justificacion }),
     };
 
     try {
@@ -41,6 +66,7 @@ const TableProyectosPending = ({ proyectos, setProyectosPendings }: Props) => {
       setProyectosPendings((projects) =>
         projects.filter((proy) => proy.id !== proyectoId)
       );
+
       if (statusProject === "Aceptado") {
         toast({ title: "Proyecto aceptado con éxito" });
       } else if (statusProject === "Rechazado") {
@@ -49,6 +75,8 @@ const TableProyectosPending = ({ proyectos, setProyectosPendings }: Props) => {
           variant: "destructive",
         });
       }
+
+      setJustificacion("");
     } catch (error) {
       toast({
         title: "Error al actualizar el proyecto",
@@ -102,18 +130,75 @@ const TableProyectosPending = ({ proyectos, setProyectosPendings }: Props) => {
             </TableCell>
             <TableCell className="text-custom-title dark:text-white text-center font-normal">
               <div className="flex justify-around gap-2">
-                <p
-                  className="dark:text-white text-custom-title font-semibold cursor-pointer hover:underline"
-                  onClick={() => handleStatusProject(proyecto.id, "Aceptado")}
-                >
-                  Aceptar
-                </p>
-                <p
-                  className="dark:text-white text-custom-title font-semibold cursor-pointer hover:underline"
-                  onClick={() => handleStatusProject(proyecto.id, "Rechazado")}
-                >
-                  Rechazar
-                </p>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <p className="dark:text-white text-custom-title font-semibold cursor-pointer hover:underline">
+                      Aceptar
+                    </p>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="text-custom-title dark:text-white font-bold">
+                        ¿Estas seguro de aceptar este proyecto?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription className="text-custom-title dark:text-white font-medium">
+                        Recuerda que si aceptas este proyecto, estaras najo la
+                        responsabilidad del mismo.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction
+                        className="bg-custom-title dark:bg-white text-white dark:text-custom-title font-semibold"
+                        onClick={() =>
+                          handleStatusProject(proyecto.id, "Aceptado")
+                        }
+                      >
+                        Continuar
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <p className="dark:text-white text-custom-title font-semibold cursor-pointer hover:underline">
+                      Rechazar
+                    </p>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="text-custom-title dark:text-white font-bold">
+                        ¿Estas seguro de realizar esta accion?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription className="text-custom-title dark:text-white font-normal">
+                        Recuerda, una vez realices esta accion, no se podra
+                        revertir.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <div className="mt-4 mb-4 ">
+                      <label className="text-custom-title dark:text-white font-semibold">
+                        Justificacion
+                      </label>
+                      <Textarea
+                        value={justificacion}
+                        onChange={(e) => setJustificacion(e.target.value)}
+                        placeholder="Escribe una justficacion de porque rechazas el proyecto."
+                      />
+                    </div>
+
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction
+                        className="bg-custom-title dark:bg-white text-white dark:text-custom-title font-semibold"
+                        onClick={() =>
+                          handleStatusProject(proyecto.id, "Rechazado")
+                        }
+                      >
+                        Aceptar
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </TableCell>
           </TableRow>

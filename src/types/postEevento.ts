@@ -1,6 +1,7 @@
 export type PostEvento = {
   nombre?: string;
   descripcion?: string;
+  justificacion?: string;
   fechaInicio?: Date;
   statusEvento?: string;
   fechaFin?: Date;

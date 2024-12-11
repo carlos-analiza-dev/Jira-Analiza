@@ -5,6 +5,8 @@ export type TypeProyectos = {
   descripcion: string;
   estado: string;
   fechaCreacion: string;
+  statusProject: string;
+  justificacion?: string;
   creador: {
     id: string;
     nombre: string;

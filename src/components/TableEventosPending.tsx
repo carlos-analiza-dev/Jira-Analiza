@@ -10,8 +10,20 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/components/ui/use-toast";
 import { DataEventos } from "@/types/evento.type";
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/alert-dialog";
+import { Textarea } from "./ui/textarea";
 interface Props {
   eventos: [] | DataEventos[];
   setEventosPendings: React.Dispatch<React.SetStateAction<[] | DataEventos[]>>;
@@ -19,14 +31,25 @@ interface Props {
 const TableEventosPending = ({ eventos, setEventosPendings }: Props) => {
   const user = useSelector((state: any) => state.auth);
   const { toast } = useToast();
+  const [justificacion, setJustificacion] = useState<string>("");
 
   const handleStatusEvento = async (eventoId: string, statusEvento: string) => {
-    const projectData = {
+    if (statusEvento === "Rechazado" && justificacion.trim() === "") {
+      toast({
+        title: "Error",
+        description: "La justificación es obligatoria para rechazar un evento.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const eventoData = {
       statusEvento,
+      ...(statusEvento === "Rechazado" && { justificacion }),
     };
 
     try {
-      const response = await updateEvento(eventoId, projectData, user.token);
+      const response = await updateEvento(eventoId, eventoData, user.token);
 
       setEventosPendings((events) =>
         events.filter((event) => event.id !== eventoId)
@@ -39,6 +62,7 @@ const TableEventosPending = ({ eventos, setEventosPendings }: Props) => {
           variant: "destructive",
         });
       }
+      setJustificacion("");
     } catch (error) {
       toast({
         title: "Error al actualizar el proyecto",
@@ -92,18 +116,75 @@ const TableEventosPending = ({ eventos, setEventosPendings }: Props) => {
             </TableCell>
             <TableCell className="text-custom-title dark:text-white text-center font-normal">
               <div className="flex justify-around gap-2">
-                <p
-                  className="dark:text-white text-custom-title font-semibold cursor-pointer hover:underline"
-                  onClick={() => handleStatusEvento(evento.id, "Aceptado")}
-                >
-                  Aceptar
-                </p>
-                <p
-                  className="dark:text-white text-custom-title font-semibold cursor-pointer hover:underline"
-                  onClick={() => handleStatusEvento(evento.id, "Rechazado")}
-                >
-                  Rechazar
-                </p>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <p className="dark:text-white text-custom-title font-semibold cursor-pointer hover:underline">
+                      Aceptar
+                    </p>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="text-custom-title dark:text-white font-bold">
+                        ¿Estas seguro de aceptar este evento?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription className="text-custom-title dark:text-white font-medium">
+                        Recuerda que si aceptas este evento, estaras najo la
+                        responsabilidad del mismo.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction
+                        className="bg-custom-title dark:bg-white text-white dark:text-custom-title font-semibold"
+                        onClick={() =>
+                          handleStatusEvento(evento.id, "Aceptado")
+                        }
+                      >
+                        Continuar
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <p className="dark:text-white text-custom-title font-semibold cursor-pointer hover:underline">
+                      Rechazar
+                    </p>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="text-custom-title dark:text-white font-bold">
+                        ¿Estas seguro de realizar esta accion?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription className="text-custom-title dark:text-white font-normal">
+                        Recuerda, una vez realices esta accion, no se podra
+                        revertir.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <div className="mt-4 mb-4 ">
+                      <label className="text-custom-title dark:text-white font-semibold">
+                        Justificacion
+                      </label>
+                      <Textarea
+                        value={justificacion}
+                        onChange={(e) => setJustificacion(e.target.value)}
+                        placeholder="Escribe una justficacion de porque rechazas el evento."
+                      />
+                    </div>
+
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction
+                        className="bg-custom-title dark:bg-white text-white dark:text-custom-title font-semibold"
+                        onClick={() =>
+                          handleStatusEvento(evento.id, "Rechazado")
+                        }
+                      >
+                        Aceptar
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </TableCell>
           </TableRow>

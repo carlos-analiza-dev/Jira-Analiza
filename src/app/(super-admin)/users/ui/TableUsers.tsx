@@ -29,6 +29,16 @@ import { Pencil } from "lucide-react";
 import { useSelector } from "react-redux";
 import { UserType } from "@/types/user.type";
 import FormularioUsuarios from "@/components/FormularioUsuarios";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import MetricasUsersProyectos from "@/components/MetricasUsersProyectos";
+import MetricasUsersEventos from "@/components/MetricasUsersEventos";
 
 export type UsersTable = {
   users: UserType[];
@@ -145,7 +155,7 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
               {`${user.isActive ? "Activo" : "Inactivo"}`}
             </TableCell>
             <TableCell className=" text-custom-title dark:text-white text-center">
-              <div className="flex justify-center gap-2">
+              <div className="flex justify-center items-center gap-2">
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="outline">
@@ -208,6 +218,64 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
                         check={check}
                         setCheck={setCheck}
                       />
+                    </div>
+                  </AlertDialogContent>
+                </AlertDialog>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <p className="text-custom-title dark:text-white font-semibold hover:underline cursor-pointer">
+                      Ver
+                    </p>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent className="max-w-5xl w-full">
+                    <div className="flex justify-end">
+                      <AlertDialogCancel>X</AlertDialogCancel>
+                    </div>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="text-custom-title dark:text-white font-bold">
+                        Aqui podras observar las metricas de este usuario.
+                      </AlertDialogTitle>
+                      <AlertDialogDescription className="text-custom-title dark:text-white font-semibold">
+                        En esta seccion se podran observar las metricas y podras
+                        dar seguimiento a los proyectos que este usuario esta
+                        asignado.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <div className="mt-4">
+                      <Tabs defaultValue="proyectos" className="w-full">
+                        <TabsList className="grid w-full grid-cols-2">
+                          <TabsTrigger value="proyectos">Proyectos</TabsTrigger>
+                          <TabsTrigger value="eventos">Eventos</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="proyectos">
+                          <Card>
+                            <CardHeader>
+                              <CardTitle>Proyectos</CardTitle>
+                              <CardDescription>
+                                Metricas de Proyectos de - {user.nombre}
+                              </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-2">
+                              <MetricasUsersProyectos id={user.id} />
+                            </CardContent>
+                          </Card>
+                        </TabsContent>
+                        <TabsContent value="eventos">
+                          <Card>
+                            <CardHeader>
+                              <CardTitle>eventos</CardTitle>
+                              <CardDescription>
+                                En esta seccion se podran observar las metricas
+                                y podras dar seguimiento a los eventos que este
+                                usuario esta asignado.
+                              </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-2">
+                              <MetricasUsersEventos id={user.id} />
+                            </CardContent>
+                          </Card>
+                        </TabsContent>
+                      </Tabs>
                     </div>
                   </AlertDialogContent>
                 </AlertDialog>

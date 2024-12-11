@@ -1,11 +1,11 @@
 services:
   nextjs-app:
     build: .
+    restart: always
     ports:
       - "3000:3000"
     environment:
       NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL}
-      CHOKIDAR_USEPOLLING: "true"
     volumes:
       - .:/app
     command: npm run dev

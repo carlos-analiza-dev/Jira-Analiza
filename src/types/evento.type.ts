@@ -5,6 +5,8 @@ export type DataEventos = {
   fechaInicio: Date;
   fechaFin: Date;
   tipoEvento?: string;
+  statusEvento?: string;
+  justificacion: string;
   estado?: string;
   usuarios: {
     id: string;
