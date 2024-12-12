@@ -21,7 +21,7 @@ import {
 } from "./ui/alert-dialog";
 import { Pencil, Trash2 } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
-import { TypeProyectos } from "@/types/proyectos.type";
+import { ResponseProyectos, TypeProyectos } from "@/types/proyectos.type";
 import { UserType } from "@/types/user.type";
 import updateProyecto from "@/api/proyectos/updateProyecto";
 import { useSelector } from "react-redux";
@@ -33,7 +33,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
 interface Props {
-  proyectos: TypeProyectos[];
+  proyectos: ResponseProyectos | null;
   check: boolean;
   setCheck: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -54,7 +54,7 @@ const ProyectoRechazadosTable = ({ proyectos, check, setCheck }: Props) => {
 
   useEffect(() => {
     if (proyectos) {
-      setProyectosRejectes(proyectos);
+      setProyectosRejectes(proyectos.proyectos);
     }
   }, [proyectos]);
 
@@ -132,14 +132,12 @@ const ProyectoRechazadosTable = ({ proyectos, check, setCheck }: Props) => {
   const handleDeleteProyecto = async (proyectoId: string) => {
     try {
       const res = await deleteProyecto(proyectoId, user.token);
-      console.log("RES DELE", res);
+
       setProyectosRejectes((proyect) =>
         proyect.filter((p) => p.id !== proyectoId)
       );
       toast({ title: "Proyecto eliminaddo correctamente." });
     } catch (error) {
-      console.log("ELIMINAR ERROR");
-
       toast({
         title: "Error al eliminar el proyecto.",
         variant: "destructive",

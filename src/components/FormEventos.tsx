@@ -175,8 +175,6 @@ const FormEventos = ({
         });
       }
     } catch (error: any) {
-      console.log("ERROR", error);
-
       toast({
         title: error.response.data
           ? error.response.data.message

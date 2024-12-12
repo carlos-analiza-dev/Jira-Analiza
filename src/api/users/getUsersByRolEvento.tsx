@@ -12,7 +12,6 @@ const useGetUsersByRolesEventos = (
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/usersByEventoRole/${eventoId}?pais=${pais}&departamento=${departamento}`;
-  console.log("URL", url);
 
   useEffect(() => {
     if (!pais || !token) {

@@ -6,6 +6,7 @@ import {
   LogOut,
   PanelsTopLeft,
   Presentation,
+  ScreenShareOff,
   Text,
   User,
   UserRoundPlus,
@@ -66,7 +67,7 @@ const MenuMobile = () => {
                 <Text />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left">
+            <SheetContent side="left" className="max-h-screen overflow-y-auto">
               <SheetHeader>
                 <SheetTitle className="text-custom-title font-bold dark:text-white mb-5">
                   ¿Donde deseas navegar?
@@ -183,6 +184,16 @@ const MenuMobile = () => {
                           Analiza proyectos
                         </p>
                         <PanelsTopLeft />
+                      </Link>
+                      <Link
+                        href="/proyectos-rechazados"
+                        className="flex justify-between items-center text-custom-title dark:text-white mt-4"
+                        onClick={handleLinkClick}
+                      >
+                        <p className="text-custom-title dark:text-white">
+                          Proyectos Rechazados
+                        </p>
+                        <ScreenShareOff />
                       </Link>
                       <Link
                         href="/nuevo-proyecto"

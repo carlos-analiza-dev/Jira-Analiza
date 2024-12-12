@@ -27,7 +27,7 @@ import { useSelector } from "react-redux";
 import { toast } from "./ui/use-toast";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { DataEventos } from "@/types/evento.type";
+import { DataEventos, ResponseEvento } from "@/types/evento.type";
 import { formatFecha } from "@/helpers/formatDate";
 import { CorreoType } from "@/types/correo.post.type";
 import postEmailByUser from "@/api/users/postEmailByUser";
@@ -40,7 +40,7 @@ import { format } from "date-fns";
 import removeEvento from "@/api/eventos/removeEvento";
 
 interface Props {
-  eventos: DataEventos[];
+  eventos: ResponseEvento | null;
   check: boolean;
   setCheck: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -88,7 +88,7 @@ const EventosRechazadosTable = ({ eventos, check, setCheck }: Props) => {
 
   useEffect(() => {
     if (eventos) {
-      setEventosRejectes(eventos);
+      setEventosRejectes(eventos.data);
     }
   }, [eventos]);
 
@@ -171,12 +171,10 @@ const EventosRechazadosTable = ({ eventos, check, setCheck }: Props) => {
   const handleDeleteevento = async (eventoId: string) => {
     try {
       const res = await removeEvento(eventoId, user.token);
-      console.log("RES DELE", res);
+
       setEventosRejectes((evento) => evento.filter((p) => p.id !== eventoId));
       toast({ title: "Evento eliminaddo correctamente." });
     } catch (error) {
-      console.log("ELIMINAR ERROR");
-
       toast({
         title: "Error al eliminar el evento.",
         variant: "destructive",

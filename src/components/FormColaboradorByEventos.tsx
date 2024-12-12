@@ -80,8 +80,6 @@ const FormColaboradorByEventos = ({
     }
   };
 
-  console.log("RESUSUUS", result);
-
   return (
     <div>
       <div className="mt-4">

@@ -265,7 +265,7 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
                         <TabsContent value="eventos">
                           <Card>
                             <CardHeader>
-                              <CardTitle>eventos</CardTitle>
+                              <CardTitle>Eventos</CardTitle>
                               <CardDescription>
                                 En esta seccion se podran observar las metricas
                                 y podras dar seguimiento a los eventos que este
