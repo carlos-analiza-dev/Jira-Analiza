@@ -36,6 +36,11 @@ const EventosRechazadosPage = () => {
 
   return (
     <div className="mx-auto">
+      <div className="flex justify-center">
+        <p className="text-custom-title dark:text-white font-bold md:text-2xl">
+          Listado de eventos que te han rechazado.{" "}
+        </p>
+      </div>
       <div className="mt-3">
         <EventosRechazadosTable
           eventos={result}

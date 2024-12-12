@@ -63,7 +63,7 @@ const TaskList = ({ tareas, check, setCheck, proyectos }: TareaListProps) => {
   };
 
   return (
-    <div>
+    <div className="max-h-screen overflow-y-auto">
       <h2 className="text-custom-title dark:text-white font-bold text-xl sm:text-3xl mt-5 text-center">
         Tareas
       </h2>
@@ -83,7 +83,7 @@ const TaskList = ({ tareas, check, setCheck, proyectos }: TareaListProps) => {
                 </div>
               </div>
               <DropTask estado={estado} />
-              <ul className="mt-5 space-y-5">
+              <ul className=" space-y-1">
                 {tareas.length === 0 ? (
                   <li className="text-custom-title dark:text-white text-center pt-3">
                     No Hay tareas

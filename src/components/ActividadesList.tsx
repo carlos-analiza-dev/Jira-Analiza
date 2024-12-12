@@ -82,7 +82,7 @@ const ActividadesList = ({
     }
   };
   return (
-    <div>
+    <div className="max-h-screen overflow-y-auto">
       <h2 className="text-custom-title dark:text-white font-bold text-xl sm:text-3xl mt-5 text-center">
         Actividades
       </h2>
