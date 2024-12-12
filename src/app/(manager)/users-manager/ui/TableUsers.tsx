@@ -229,7 +229,7 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
                       Ver
                     </p>
                   </AlertDialogTrigger>
-                  <AlertDialogContent className="max-w-5xl w-full">
+                  <AlertDialogContent className="w-full md:max-w-7xl">
                     <div className="flex justify-end">
                       <AlertDialogCancel>X</AlertDialogCancel>
                     </div>
@@ -239,22 +239,41 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
                       </AlertDialogTitle>
                       <AlertDialogDescription className="text-custom-title dark:text-white font-semibold">
                         En esta seccion se podran observar las metricas y podras
-                        dar seguimiento a los proyectos que este usuario esta
-                        asignado.
+                        dar seguimiento a los proyectos y eventos que este
+                        usuario esta asignado.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <div className="mt-4">
                       <Tabs defaultValue="proyectos" className="w-full">
-                        <TabsList className="grid w-full grid-cols-2">
+                        <TabsList className="grid w-full grid-cols-4">
                           <TabsTrigger value="proyectos">Proyectos</TabsTrigger>
+                          <TabsTrigger value="proyectos-rechazados">
+                            Proyectos Rechazados
+                          </TabsTrigger>
                           <TabsTrigger value="eventos">Eventos</TabsTrigger>
+                          <TabsTrigger value="eventos-rechazados">
+                            Eventos Rechazados
+                          </TabsTrigger>
                         </TabsList>
                         <TabsContent value="proyectos">
                           <Card>
                             <CardHeader>
                               <CardTitle>Proyectos</CardTitle>
                               <CardDescription>
-                                Metricas de Proyectos de - {user.nombre}
+                                Metricas de los Proyectos de - {user.nombre}
+                              </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-2">
+                              <MetricasUsersProyectos id={user.id} />
+                            </CardContent>
+                          </Card>
+                        </TabsContent>
+                        <TabsContent value="proyectos-rechazados">
+                          <Card>
+                            <CardHeader>
+                              <CardTitle>Proyectos Rechazados</CardTitle>
+                              <CardDescription>
+                                Metricas de los Proyectos de - {user.nombre}
                               </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-2">
@@ -267,9 +286,20 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
                             <CardHeader>
                               <CardTitle>Eventos</CardTitle>
                               <CardDescription>
-                                En esta seccion se podran observar las metricas
-                                y podras dar seguimiento a los eventos que este
-                                usuario esta asignado.
+                                Metricas de los Eventos de - {user.nombre}
+                              </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-2">
+                              <MetricasUsersEventos id={user.id} />
+                            </CardContent>
+                          </Card>
+                        </TabsContent>
+                        <TabsContent value="eventos-rechazados">
+                          <Card>
+                            <CardHeader>
+                              <CardTitle>Eventos Rechazados</CardTitle>
+                              <CardDescription>
+                                Metricas de los Eventos de - {user.nombre}
                               </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-2">

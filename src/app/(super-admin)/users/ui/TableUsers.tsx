@@ -227,7 +227,7 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
                       Ver
                     </p>
                   </AlertDialogTrigger>
-                  <AlertDialogContent className="max-w-5xl w-full">
+                  <AlertDialogContent className="w-full md:max-w-7xl">
                     <div className="flex justify-end">
                       <AlertDialogCancel>X</AlertDialogCancel>
                     </div>
@@ -237,8 +237,8 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
                       </AlertDialogTitle>
                       <AlertDialogDescription className="text-custom-title dark:text-white font-semibold">
                         En esta seccion se podran observar las metricas y podras
-                        dar seguimiento a los proyectos que este usuario esta
-                        asignado.
+                        dar seguimiento a los proyectos y eventos que este
+                        usuario esta asignado.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <div className="mt-4">
@@ -252,7 +252,7 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
                             <CardHeader>
                               <CardTitle>Proyectos</CardTitle>
                               <CardDescription>
-                                Metricas de Proyectos de - {user.nombre}
+                                Metricas de los Proyectos de - {user.nombre}
                               </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-2">
@@ -265,9 +265,7 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
                             <CardHeader>
                               <CardTitle>Eventos</CardTitle>
                               <CardDescription>
-                                En esta seccion se podran observar las metricas
-                                y podras dar seguimiento a los eventos que este
-                                usuario esta asignado.
+                                Metricas de los Eventos de - {user.nombre}
                               </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-2">

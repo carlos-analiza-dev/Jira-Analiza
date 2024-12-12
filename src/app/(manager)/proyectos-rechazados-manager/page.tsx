@@ -39,7 +39,7 @@ const RechazadosManager = () => {
     <div className="mx-auto">
       <div className="flex justify-center">
         <p className="text-custom-title dark:text-white font-bold md:text-2xl">
-          Listado de proyectos que te han rechazado.{" "}
+          Listado de proyectos que se han rechazado.{" "}
         </p>
       </div>
       <div className="mt-3">
