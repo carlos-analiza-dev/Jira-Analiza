@@ -142,7 +142,7 @@ const TableProyectosPending = ({ proyectos, setProyectosPendings }: Props) => {
                         ¿Estas seguro de aceptar este proyecto?
                       </AlertDialogTitle>
                       <AlertDialogDescription className="text-custom-title dark:text-white font-medium">
-                        Recuerda que si aceptas este proyecto, estaras najo la
+                        Recuerda que si aceptas este proyecto, estaras bajo la
                         responsabilidad del mismo.
                       </AlertDialogDescription>
                     </AlertDialogHeader>

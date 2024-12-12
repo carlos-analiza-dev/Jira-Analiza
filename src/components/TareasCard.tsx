@@ -178,10 +178,7 @@ const TareasCard = ({ tarea, check, setCheck, proyectos }: Props) => {
           <p className="text-custom-title text-lg font-bold dark:text-white">
             {tarea.titulo}
           </p>
-          <p className="text-custom-title text-base font-light dark:text-white ">
-            <span className="font-semibold">Descripción:</span>{" "}
-            {tarea.descripcion}
-          </p>
+
           <p className="text-custom-title text-base font-bold dark:text-white ">
             Prioridad:{" "}
             <span
@@ -190,7 +187,7 @@ const TareasCard = ({ tarea, check, setCheck, proyectos }: Props) => {
               {tarea.prioridad}
             </span>
           </p>
-          <p className="text-custom-title text-sm font-light dark:text-white mt-1">
+          <p className="text-custom-title text-base font-light dark:text-white mt-1">
             <span className="font-semibold">Responsable:</span>{" "}
             {tarea && tarea.usuarioAsignado
               ? tarea.usuarioAsignado.nombre
@@ -198,9 +195,7 @@ const TareasCard = ({ tarea, check, setCheck, proyectos }: Props) => {
           </p>
 
           <p className="text-custom-title text-base font-light dark:text-white mt-2">
-            <span className="font-semibold">
-              Tiempo para realizar la tarea:
-            </span>{" "}
+            <span className="font-semibold">Tiempo restante:</span>{" "}
             {tarea.fechaInicio && tarea.fechaFin
               ? (() => {
                   const fechaActual = new Date();
@@ -254,6 +249,12 @@ const TareasCard = ({ tarea, check, setCheck, proyectos }: Props) => {
                 <AlertDialogTitle className="text-custom-title dark:text-white font-semibold text-lg text-center">
                   Detalles de la tarea - {task?.titulo}
                 </AlertDialogTitle>
+                <div className="flex justify-start w-full ">
+                  <p className="text-custom-title dark:text-white font-semibold text-lg text-center">
+                    Descripcion de la tarea:{" "}
+                    <span className="font-medium">{task?.descripcion}</span>
+                  </p>
+                </div>
                 <AlertDialogDescription className="h-full">
                   <div className="flex flex-col sm:flex-row w-full gap-4 mt-4 h-full">
                     <div className="p-4 dark:bg-gray-700 rounded-md w-full sm:w-3/5">

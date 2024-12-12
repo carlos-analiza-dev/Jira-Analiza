@@ -175,10 +175,7 @@ const ActividadesCard = ({
           <p className="text-custom-title text-lg font-bold dark:text-white">
             {actividad.titulo}
           </p>
-          <p className="text-custom-title text-base font-light dark:text-white ">
-            <span className="font-semibold">Descripción:</span>{" "}
-            {actividad.descripcion}
-          </p>
+
           <p className="text-custom-title text-base font-bold dark:text-white ">
             Prioridad:{" "}
             <span
@@ -187,14 +184,12 @@ const ActividadesCard = ({
               {actividad.prioridad}
             </span>
           </p>
-          <p className="text-custom-title text-sm font-light dark:text-white mt-1">
+          <p className="text-custom-title text-base font-light dark:text-white mt-1">
             <span className="font-semibold">Responsable:</span>{" "}
             {actividad.usuarioAsignado.nombre}
           </p>
           <p className="text-custom-title text-base font-light dark:text-white mt-2">
-            <span className="font-semibold">
-              Tiempo para realizar la actividad:
-            </span>{" "}
+            <span className="font-semibold">Tiempo restante:</span>{" "}
             {actividad.fechaInicio && actividad.fechaFin
               ? (() => {
                   const fechaActual = new Date();
@@ -246,8 +241,16 @@ const ActividadesCard = ({
               </div>
               <AlertDialogHeader className="max-h-screen">
                 <AlertDialogTitle className="text-custom-title dark:text-white font-semibold text-lg text-center">
-                  Detalles de la tarea - {actividad?.titulo}
+                  Detalles de la actividad - {actividad?.titulo}
                 </AlertDialogTitle>
+                <div className="flex justify-start w-full ">
+                  <p className="text-custom-title dark:text-white font-semibold text-lg text-center">
+                    Descripcion de la actividad:{" "}
+                    <span className="font-medium">
+                      {actividad?.descripcion}
+                    </span>
+                  </p>
+                </div>
                 <AlertDialogDescription className="h-full">
                   <div className="flex flex-col sm:flex-row w-full gap-4 mt-4 h-full">
                     <div className="p-4 dark:bg-gray-700 rounded-md w-full sm:w-3/5">

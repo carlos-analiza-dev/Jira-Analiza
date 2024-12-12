@@ -128,7 +128,7 @@ const TableEventosPending = ({ eventos, setEventosPendings }: Props) => {
                         ¿Estas seguro de aceptar este evento?
                       </AlertDialogTitle>
                       <AlertDialogDescription className="text-custom-title dark:text-white font-medium">
-                        Recuerda que si aceptas este evento, estaras najo la
+                        Recuerda que si aceptas este evento, estaras bajo la
                         responsabilidad del mismo.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
