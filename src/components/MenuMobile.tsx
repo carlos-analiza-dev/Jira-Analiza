@@ -30,6 +30,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Spinner from "./Spinner";
 import { dataSide, dataSideManager } from "../../data/dataSidebar";
+import { clearNotifications } from "@/store/notificaciones/notificationSlice";
 
 const MenuMobile = () => {
   const user = useSelector((state: any) => state.auth);
@@ -43,6 +44,7 @@ const MenuMobile = () => {
     setLoading(true);
     setTimeout(() => {
       dispatch(clearUser());
+      dispatch(clearNotifications());
       router.push("/");
       setIsOpen(false);
       setLoading(false);

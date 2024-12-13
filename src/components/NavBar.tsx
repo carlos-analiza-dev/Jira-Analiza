@@ -39,7 +39,10 @@ import { PaisData } from "@/types/paits.data.type";
 import { setCountry } from "@/store/pais/paiseSlice";
 import { Separator } from "./ui/separator";
 import useGetProjectsResponsable from "@/api/proyectos/getProjectsResponsable";
-import { setNotificationCount } from "@/store/notificaciones/notificationSlice";
+import {
+  clearNotifications,
+  setNotificationCount,
+} from "@/store/notificaciones/notificationSlice";
 import useGetEventosResponsable from "@/api/eventos/getEventosesponsable";
 
 export default function NavBar() {
@@ -77,6 +80,7 @@ export default function NavBar() {
     setTimeout(() => {
       router.push("/");
       dispatch(clearUser());
+      dispatch(clearNotifications());
       setLoading(false);
     }, 1500);
   };
