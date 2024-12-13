@@ -24,7 +24,7 @@ import updateUser from "@/api/users/updateUser";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import Image from "next/image";
-import { Pencil } from "lucide-react";
+import { ChartNoAxesCombined, Pencil, TrendingDown } from "lucide-react";
 
 import { useSelector } from "react-redux";
 import { UserType } from "@/types/user.type";
@@ -39,6 +39,10 @@ import {
 } from "@/components/ui/card";
 import MetricasUsersProyectos from "@/components/MetricasUsersProyectos";
 import MetricasUsersEventos from "@/components/MetricasUsersEventos";
+import ProyectosFinalizadosByUser from "@/components/ProyectosFinalizadosByUser";
+import EventosFinalizadosByUser from "@/components/EventosFinalizadosByUser";
+import ProyectosRechazadosByUser from "@/components/ProyectosRechazadosByUser";
+import EventosRechazadosByUser from "@/components/EventosRechazadosByUser";
 
 export type UsersTable = {
   users: UserType[];
@@ -227,7 +231,7 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
                       Ver
                     </p>
                   </AlertDialogTrigger>
-                  <AlertDialogContent className="w-full md:max-w-7xl">
+                  <AlertDialogContent className="w-full sm:max-w-5xl h-full md:max-w-7xl">
                     <div className="flex justify-end">
                       <AlertDialogCancel>X</AlertDialogCancel>
                     </div>
@@ -241,14 +245,26 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
                         usuario esta asignado.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
-                    <div className="mt-4">
+                    <div className="mt-4 px-4 md:px-8 overflow-y-auto">
                       <Tabs defaultValue="proyectos" className="w-full">
-                        <TabsList className="grid w-full grid-cols-2">
+                        <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 overflow-x-auto">
                           <TabsTrigger value="proyectos">Proyectos</TabsTrigger>
+                          <TabsTrigger value="proyectos-finalizados">
+                            Proyectos finalizados
+                          </TabsTrigger>
+                          <TabsTrigger value="proyectos-rechazados">
+                            Proyectos rechazados
+                          </TabsTrigger>
                           <TabsTrigger value="eventos">Eventos</TabsTrigger>
+                          <TabsTrigger value="eventos-finalizados">
+                            Eventos finalizados
+                          </TabsTrigger>
+                          <TabsTrigger value="eventos-rechazados">
+                            Eventos rechazados
+                          </TabsTrigger>
                         </TabsList>
                         <TabsContent value="proyectos">
-                          <Card>
+                          <Card className="p-4 sm:p-6">
                             <CardHeader>
                               <CardTitle>Proyectos</CardTitle>
                               <CardDescription>
@@ -260,8 +276,49 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
                             </CardContent>
                           </Card>
                         </TabsContent>
+                        <TabsContent value="proyectos-finalizados">
+                          <Card className="p-4 sm:p-6">
+                            <CardHeader>
+                              <div className="flex justify-between">
+                                <div>
+                                  <CardTitle>Proyectos finalizados</CardTitle>
+                                  <CardDescription>
+                                    Metricas de los Proyectos de - {user.nombre}
+                                  </CardDescription>
+                                </div>
+                                <div className=" h-8 w-8 sm:h-14 sm:w-14 rounded-full bg-gray-200 dark:bg-gray-800 text-custom-title dark:text-white flex justify-center items-center">
+                                  <ChartNoAxesCombined />
+                                </div>
+                              </div>
+                            </CardHeader>
+                            <CardContent className="space-y-2">
+                              <ProyectosFinalizadosByUser id={user.id} />
+                            </CardContent>
+                          </Card>
+                        </TabsContent>
+                        <TabsContent value="proyectos-rechazados">
+                          <Card className="p-4 sm:p-6">
+                            <CardHeader>
+                              <div className="flex justify-between">
+                                <div>
+                                  <CardTitle>Proyectos rechazados</CardTitle>
+                                  <CardDescription>
+                                    Metricas de los proyectos rechzados de -{" "}
+                                    {user.nombre}
+                                  </CardDescription>
+                                </div>
+                                <div className=" h-8 w-8 sm:h-14 sm:w-14 rounded-full bg-gray-200 dark:bg-gray-800 text-custom-title dark:text-white flex justify-center items-center">
+                                  <TrendingDown />
+                                </div>
+                              </div>
+                            </CardHeader>
+                            <CardContent className="space-y-2">
+                              <ProyectosRechazadosByUser id={user.id} />
+                            </CardContent>
+                          </Card>
+                        </TabsContent>
                         <TabsContent value="eventos">
-                          <Card>
+                          <Card className="p-4 sm:p-6">
                             <CardHeader>
                               <CardTitle>Eventos</CardTitle>
                               <CardDescription>
@@ -270,6 +327,46 @@ const TableUsers = ({ users, check, setCheck }: UsersTable) => {
                             </CardHeader>
                             <CardContent className="space-y-2">
                               <MetricasUsersEventos id={user.id} />
+                            </CardContent>
+                          </Card>
+                        </TabsContent>
+                        <TabsContent value="eventos-finalizados">
+                          <Card className="p-4 sm:p-6">
+                            <CardHeader>
+                              <div className="flex justify-between">
+                                <div>
+                                  <CardTitle>Eventos finalizados</CardTitle>
+                                  <CardDescription>
+                                    Metricas de los Eventos de - {user.nombre}
+                                  </CardDescription>
+                                </div>
+                                <div className=" h-8 w-8 sm:h-14 sm:w-14 rounded-full bg-gray-200 dark:bg-gray-800 text-custom-title dark:text-white flex justify-center items-center">
+                                  <ChartNoAxesCombined />
+                                </div>
+                              </div>
+                            </CardHeader>
+                            <CardContent className="space-y-2">
+                              <EventosFinalizadosByUser id={user.id} />
+                            </CardContent>
+                          </Card>
+                        </TabsContent>
+                        <TabsContent value="eventos-rechazados">
+                          <Card className="p-4 sm:p-6">
+                            <CardHeader>
+                              <div className="flex justify-between">
+                                <div>
+                                  <CardTitle>Eventos rechazados</CardTitle>
+                                  <CardDescription>
+                                    Metricas de los Eventos de - {user.nombre}
+                                  </CardDescription>
+                                </div>
+                                <div className=" h-8 w-8 sm:h-14 sm:w-14 rounded-full bg-gray-200 dark:bg-gray-800 text-custom-title dark:text-white flex justify-center items-center">
+                                  <TrendingDown />
+                                </div>
+                              </div>
+                            </CardHeader>
+                            <CardContent className="space-y-2">
+                              <EventosRechazadosByUser id={user.id} />
                             </CardContent>
                           </Card>
                         </TabsContent>

@@ -115,11 +115,8 @@ const MetricasUsersProyectos = ({ id }: Props) => {
     return <div>Loading...</div>;
   }
 
-  console.log("DATA RES LENG1", resultados);
-  console.log("FIN LE", finalizados);
-
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
       <div>
         <Card className="flex flex-col h-full">
           <CardHeader className="items-center pb-0">
