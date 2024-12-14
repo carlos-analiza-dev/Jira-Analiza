@@ -22,6 +22,7 @@ const EmpresaUsuariosChart = ({ data }: Props) => {
       </h2>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart
+          className="text-custom-title dark:text-black"
           layout="vertical"
           data={data}
           margin={{ top: 20, right: 30, left: 20, bottom: 5 }}

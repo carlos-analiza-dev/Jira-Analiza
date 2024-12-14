@@ -71,7 +71,10 @@ const ChartBarras = () => {
           No hay sucursales disponibles.
         </p>
       ) : (
-        <ChartContainer config={chartConfig} className="min-h-full w-full mt-5">
+        <ChartContainer
+          config={chartConfig}
+          className="min-h-full w-full mt-5 text-custom-title dark:text-black"
+        >
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={chartData}

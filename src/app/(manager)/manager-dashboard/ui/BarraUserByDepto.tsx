@@ -17,7 +17,6 @@ interface Props {
 }
 
 const BarraUserByDepto = ({ data }: Props) => {
-  // Verificamos si la data está vacía
   if (!data || data.length === 0) {
     return (
       <Card className="w-full">
@@ -40,7 +39,7 @@ const BarraUserByDepto = ({ data }: Props) => {
           Usuarios por departamento
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="text-custom-title dark:text-black">
         <ResponsiveContainer width="100%" height={400}>
           <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />

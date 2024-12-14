@@ -42,7 +42,6 @@ const ChartBarras = () => {
     router.push("/");
   };
 
-  // Inicializamos el estado como un array vacío
   const [chartData, setChartData] = useState<UserSucursalData[]>([]);
 
   useEffect(() => {
@@ -53,7 +52,7 @@ const ChartBarras = () => {
       }));
       setChartData(transformedData);
     }
-  }, [result]); // Usamos `result` directamente en lugar de `data`
+  }, [result]);
 
   const chartConfig = {
     cantidadUsuarios: {
@@ -67,12 +66,15 @@ const ChartBarras = () => {
       <p className="text-custom-title font-bold dark:text-white text-center">
         Usuarios por Sucursal
       </p>
-      {chartData.length === 0 ? ( // Verificamos si no hay datos
+      {chartData.length === 0 ? (
         <p className="text-center text-custom-title dark:text-white font-semibold mt-5">
           No hay sucursales disponibles.
         </p>
       ) : (
-        <ChartContainer config={chartConfig} className="min-h-full w-full mt-5">
+        <ChartContainer
+          config={chartConfig}
+          className="min-h-full w-full mt-5 text-custom-title dark:text-black"
+        >
           <BarChart
             data={chartData}
             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
